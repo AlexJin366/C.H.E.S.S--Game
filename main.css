@@ -14,11 +14,11 @@ table, th , td{
 }
 
 .BlackBlock{
+    height: 100%;
     background: gray;
 }
 
 th, td{
-    padding: 15px;
     text-align: left;
 }
 .BoardBlock{
