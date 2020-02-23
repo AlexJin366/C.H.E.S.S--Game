@@ -88,6 +88,39 @@ class Pawn {
         this.validMoves = new Array();
     }
 
+    checkCapture(){
+        let currentPos = Number(this.position);
+        if (selectedPiece != this.position) {
+            oldSelectedPiece = selectedPiece;
+            selectedPiece = this.position;
+            clearValidMoves();
+            this.clean();
+        }
+        if(this.type == "black"){
+            if(((currentPos + 9) < (Math.floor((currentPos+10) / 10) * 10 + 9)) && (currentPos + 9) > (Math.floor((currentPos+10) / 10) * 10)){
+                if(document.getElementById((currentPos + 9).toString()).src != "" && document.getElementById((currentPos + 9).toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(currentPos + 9);
+                }
+            }
+            if(((currentPos + 11) < (Math.floor((currentPos+10) / 10) * 10 + 9)) && (currentPos + 11) > (Math.floor((currentPos+10) / 10) * 10)){
+                if(document.getElementById(currentPos + 11).toString().src != "" && document.getElementById((currentPos + 11).toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(currentPos + 11);
+                }
+            }
+        }else{
+            if(((currentPos - 9) < (Math.floor((currentPos-10) / 10) * 10 + 9)) && (currentPos - 9) > (Math.floor((currentPos-10) / 10) * 10)){
+                if(document.getElementById((currentPos - 9).toString()).src != "" && document.getElementById((currentPos - 9).toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(currentPos - 9);
+                }
+            }
+            if(((currentPos - 11) < (Math.floor((currentPos-10) / 10) * 10 + 9)) && (currentPos - 11) > (Math.floor((currentPos-10) / 10) * 10)){
+                if(document.getElementById(currentPos - 11).toString().src != "" && document.getElementById((currentPos - 11).toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(currentPos - 11);
+                }
+            }
+        }
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -123,6 +156,7 @@ class Pawn {
                 }
             }
         }
+        this.checkCapture();
         moveOptions = this.getMoveArray();
         this.highlightMoves(this.getMoveArray());
     }
@@ -163,6 +197,22 @@ class Rook {
         this.validMoves = new Array();
     }
 
+    checkCapture(position){
+        switch(this.type){
+            case "black":
+                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+            case "white":
+                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+        }
+        // console.log(position);
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -178,8 +228,10 @@ class Rook {
         //moves down
         for (let i = 10; i < movesUp; i += 10) {
             let option = currentPos + i;
-            if (document.getElementById(option.toString()).src != "")
+            if (document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break;
+            }
             if (option > 10)
                 this.getMoveArray().push(option);
         }
@@ -189,8 +241,10 @@ class Rook {
             let option = currentPos - i;
             if (option > 10 && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > 10 && document.getElementById(option.toString()).src != "")
+            if (option > 10 && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break;
+            }
         }
 
         //moves left
@@ -198,8 +252,10 @@ class Rook {
             let option = currentPos - i;
             if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != "")
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break;
+            }
         }
 
         // //moves right
@@ -207,8 +263,10 @@ class Rook {
             let option = currentPos + i;
             if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != "")
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break
+            }
         }
 
         moveOptions = this.getMoveArray();
@@ -251,6 +309,22 @@ class Knight {
         this.validMoves = new Array();
     }
 
+    checkCapture(position){
+        switch(this.type){
+            case "black":
+                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+            case "white":
+                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+        }
+        // console.log(position);
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -278,8 +352,12 @@ class Knight {
                 if (option % 10 == 0 || option % 10 == 9) {
                     continue;
                 }
-                // console.log(option);
-                this.getMoveArray().push(option);
+                if(document.getElementById(option.toString()).src == ""){
+                    // console.log(option);
+                    this.getMoveArray().push(option);
+                }else{
+                    this.checkCapture(option);
+                }
             }
         }
 
@@ -334,18 +412,7 @@ class Bishop {
             this.clean();
         }
 
-        let bishopMoves = [];
-
-        for (let i = 0; i < bishopMoves.length; i++) {
-            let option = currentPos + bishopMoves[i];
-            if (option >= 10 && option <= 88) {
-                if (option % 10 == 0 || option % 10 == 9) {
-                    continue;
-                }
-                // console.log(option);
-                this.getMoveArray().push(option);
-            }
-        }
+        let bishopMoves = [9, -9, 11, -11];
 
         moveOptions = this.getMoveArray();
         this.highlightMoves(this.getMoveArray());
@@ -388,6 +455,22 @@ class Queen {
         this.validMoves = new Array();
     }
 
+    checkCapture(position){
+        switch(this.type){
+            case "black":
+                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+            case "white":
+                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+        }
+        // console.log(position);
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -400,14 +483,49 @@ class Queen {
 
         let queenMoves = [];
 
-        for (let i = 0; i < queenMoves.length; i++) {
-            let option = currentPos + queenMoves[i];
-            if (option >= 10 && option <= 88) {
-                if (option % 10 == 0 || option % 10 == 9) {
-                    continue;
-                }
-                // console.log(option);
+        let movesUp = 90 - currentPos;
+
+        //moves down
+        for (let i = 10; i < movesUp; i += 10) {
+            let option = currentPos + i;
+            if (document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
+                break;
+            }
+            if (option > 10)
                 this.getMoveArray().push(option);
+        }
+
+        //moves up
+        for (let i = 10; i < 90; i += 10) {
+            let option = currentPos - i;
+            if (option > 10 && document.getElementById(option.toString()).src == "")
+                this.getMoveArray().push(option);
+            if (option > 10 && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
+                break;
+            }
+        }
+
+        //moves left
+        for (let i = 1; i < 9; i += 1) {
+            let option = currentPos - i;
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
+                this.getMoveArray().push(option);
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
+                break;
+            }
+        }
+
+        // //moves right
+        for (let i = 1; i < 9; i += 1) {
+            let option = currentPos + i;
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
+                this.getMoveArray().push(option);
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
+                break
             }
         }
 
@@ -452,6 +570,22 @@ class King {
         this.validMoves = new Array();
     }
 
+    checkCapture(position){
+        switch(this.type){
+            case "black":
+                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+            case "white":
+                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+        }
+        // console.log(position);
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -470,8 +604,14 @@ class King {
                 if (option % 10 == 0 || option % 10 == 9) {
                     continue;
                 }
+
+                if(document.getElementById(option.toString()).src == ""){
+                    this.getMoveArray().push(option);
+                }else{
+                    this.checkCapture(option);
+                }
                 // console.log(option);
-                this.getMoveArray().push(option);
+                // this.getMoveArray().push(option);
             }
         }
 
@@ -576,6 +716,13 @@ class Board {
             let piece = this.pieces[i];
             document.getElementById(piece.getPosition()).src = piece.getSource();
         }
+
+        //TESTING PURPOSES
+        // var cols = document.getElementsByClassName('ChessBoard')[0].getElementsByTagName('td');
+        // for(let i = 0; i < cols.length; i++){
+        //     // console.log(cols[i].childNodes[0].lastElementChild.id);
+        //     document.getElementsByTagName("td")[i].innerHTML += cols[i].childNodes[0].lastElementChild.id
+        // }
     }
 }
 
