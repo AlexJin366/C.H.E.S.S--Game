@@ -197,6 +197,22 @@ class Rook {
         this.validMoves = new Array();
     }
 
+    checkCapture(position){
+        switch(this.type){
+            case "black":
+                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+            case "white":
+                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+        }
+        // console.log(position);
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -212,8 +228,10 @@ class Rook {
         //moves down
         for (let i = 10; i < movesUp; i += 10) {
             let option = currentPos + i;
-            if (document.getElementById(option.toString()).src != "")
+            if (document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break;
+            }
             if (option > 10)
                 this.getMoveArray().push(option);
         }
@@ -223,8 +241,10 @@ class Rook {
             let option = currentPos - i;
             if (option > 10 && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > 10 && document.getElementById(option.toString()).src != "")
+            if (option > 10 && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break;
+            }
         }
 
         //moves left
@@ -232,8 +252,10 @@ class Rook {
             let option = currentPos - i;
             if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != "")
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break;
+            }
         }
 
         // //moves right
@@ -241,8 +263,10 @@ class Rook {
             let option = currentPos + i;
             if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != "")
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break
+            }
         }
 
         moveOptions = this.getMoveArray();
@@ -285,6 +309,22 @@ class Knight {
         this.validMoves = new Array();
     }
 
+    checkCapture(position){
+        switch(this.type){
+            case "black":
+                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+            case "white":
+                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+        }
+        // console.log(position);
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -312,8 +352,12 @@ class Knight {
                 if (option % 10 == 0 || option % 10 == 9) {
                     continue;
                 }
-                // console.log(option);
-                this.getMoveArray().push(option);
+                if(document.getElementById(option.toString()).src == ""){
+                    // console.log(option);
+                    this.getMoveArray().push(option);
+                }else{
+                    this.checkCapture(option);
+                }
             }
         }
 
@@ -628,11 +672,11 @@ class Board {
         }
 
         //TESTING PURPOSES
-        var cols = document.getElementsByClassName('ChessBoard')[0].getElementsByTagName('td');
-        for(let i = 0; i < cols.length; i++){
-            // console.log(cols[i].childNodes[0].lastElementChild.id);
-            document.getElementsByTagName("td")[i].innerHTML += cols[i].childNodes[0].lastElementChild.id
-        }
+        // var cols = document.getElementsByClassName('ChessBoard')[0].getElementsByTagName('td');
+        // for(let i = 0; i < cols.length; i++){
+        //     // console.log(cols[i].childNodes[0].lastElementChild.id);
+        //     document.getElementsByTagName("td")[i].innerHTML += cols[i].childNodes[0].lastElementChild.id
+        // }
     }
 }
 
