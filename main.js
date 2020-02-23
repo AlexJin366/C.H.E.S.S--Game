@@ -455,6 +455,22 @@ class Queen {
         this.validMoves = new Array();
     }
 
+    checkCapture(position){
+        switch(this.type){
+            case "black":
+                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+            case "white":
+                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+        }
+        // console.log(position);
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -472,8 +488,10 @@ class Queen {
         //moves down
         for (let i = 10; i < movesUp; i += 10) {
             let option = currentPos + i;
-            if (document.getElementById(option.toString()).src != "")
+            if (document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break;
+            }
             if (option > 10)
                 this.getMoveArray().push(option);
         }
@@ -483,8 +501,10 @@ class Queen {
             let option = currentPos - i;
             if (option > 10 && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > 10 && document.getElementById(option.toString()).src != "")
+            if (option > 10 && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break;
+            }
         }
 
         //moves left
@@ -492,8 +512,10 @@ class Queen {
             let option = currentPos - i;
             if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != "")
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break;
+            }
         }
 
         // //moves right
@@ -501,8 +523,10 @@ class Queen {
             let option = currentPos + i;
             if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != "")
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break
+            }
         }
 
         moveOptions = this.getMoveArray();
@@ -546,6 +570,22 @@ class King {
         this.validMoves = new Array();
     }
 
+    checkCapture(position){
+        switch(this.type){
+            case "black":
+                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+            case "white":
+                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+        }
+        // console.log(position);
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -561,11 +601,17 @@ class King {
         for (let i = 0; i < kingMoves.length; i++) {
             let option = currentPos + kingMoves[i];
             if (option >= 10 && option <= 88) {
-                if (option % 10 == 0 || option % 10 == 9 || document.getElementById(option.toString()).src != "") {
+                if (option % 10 == 0 || option % 10 == 9) {
                     continue;
                 }
+
+                if(document.getElementById(option.toString()).src == ""){
+                    this.getMoveArray().push(option);
+                }else{
+                    this.checkCapture(option);
+                }
                 // console.log(option);
-                this.getMoveArray().push(option);
+                // this.getMoveArray().push(option);
             }
         }
 
