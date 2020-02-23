@@ -175,14 +175,14 @@ class Rook {
 
         let movesUp = 90 - currentPos;
 
-        //moves up
+        //moves down
         for(let i = 10; i < movesUp; i+=10){
             let option = currentPos + i;
             if (option > 10)
                 this.getMoveArray().push(option);
         }
 
-        //moves down
+        //moves up
         for(let i = 10; i < 90; i+=10){
             let option = currentPos - i;
             if(option > 10)
@@ -326,17 +326,21 @@ class Bishop {
             this.clean();
         }
 
-        let bishopMoves = [];
+        let bishopMoves = [9, -9, 11, -11];
 
         for(let i = 0; i < bishopMoves.length; i++){
-            let option = currentPos + bishopMoves[i];
-            if(option >= 10 && option <= 88 ){
-                if(option % 10 == 0 || option % 10 == 9){
-                    continue;
+            let option = currentPos;
+            for(let j = 0; j < 5; j++){
+                option += bishopMoves[i];
+                if(option >= 10 && option <= 88 ){
+                    if(option % 10 == 0 || option % 10 == 9){
+                        continue;
+                    }
+                    // console.log(option);
+                    this.getMoveArray().push(option);
                 }
-                // console.log(option);
-                this.getMoveArray().push(option);
             }
+            
         }
 
         moveOptions = this.getMoveArray();
@@ -392,15 +396,34 @@ class Queen {
 
         let queenMoves = [];
 
-        for(let i = 0; i < queenMoves.length; i++){
-            let option = currentPos + queenMoves[i];
-            if(option >= 10 && option <= 88 ){
-                if(option % 10 == 0 || option % 10 == 9){
-                    continue;
-                }
-                // console.log(option);
+        let movesUp = 90 - currentPos;
+
+        //moves down
+        for(let i = 10; i < movesUp; i+=10){
+            let option = currentPos + i;
+            if (option > 10)
                 this.getMoveArray().push(option);
-            }
+        }
+
+        //moves up
+        for(let i = 10; i < 90; i+=10){
+            let option = currentPos - i;
+            if(option > 10)
+                this.getMoveArray().push(option);
+        }
+
+        //moves left
+        for(let i = 1; i < 9; i+=1){
+            let option = currentPos - i;
+            if(option > (Math.floor(currentPos/10) * 10) && option < (Math.floor(currentPos/10) * 10 + 9))
+                this.getMoveArray().push(option);
+        }
+
+        // //moves right
+        for(let i = 1; i < 9; i+=1){
+            let option = currentPos + i;
+            if(option > (Math.floor(currentPos/10) * 10) && option < (Math.floor(currentPos/10) * 10 + 9))
+                this.getMoveArray().push(option);
         }
 
         moveOptions = this.getMoveArray();
