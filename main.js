@@ -490,7 +490,7 @@ class King {
         for (let i = 0; i < kingMoves.length; i++) {
             let option = currentPos + kingMoves[i];
             if (option >= 10 && option <= 88) {
-                if (option % 10 == 0 || option % 10 == 9) {
+                if (option % 10 == 0 || option % 10 == 9 || document.getElementById(option.toString()).src != "") {
                     continue;
                 }
                 // console.log(option);
