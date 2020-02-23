@@ -13,6 +13,10 @@ table, th , td{
     
 }
 
+.SelectSection{
+    background: #bfbc9f !important;
+}
+
 .BlackBlock{
     height: 100%;
     background: gray;
