@@ -407,31 +407,39 @@ class Queen {
         let movesUp = 90 - currentPos;
 
         //moves down
-        for(let i = 10; i < movesUp; i+=10){
+        for (let i = 10; i < movesUp; i += 10) {
             let option = currentPos + i;
+            if (document.getElementById(option.toString()).src != "")
+                break;
             if (option > 10)
                 this.getMoveArray().push(option);
         }
 
         //moves up
-        for(let i = 10; i < 90; i+=10){
+        for (let i = 10; i < 90; i += 10) {
             let option = currentPos - i;
-            if(option > 10)
+            if (option > 10 && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
+            if (option > 10 && document.getElementById(option.toString()).src != "")
+                break;
         }
 
         //moves left
-        for(let i = 1; i < 9; i+=1){
+        for (let i = 1; i < 9; i += 1) {
             let option = currentPos - i;
-            if(option > (Math.floor(currentPos/10) * 10) && option < (Math.floor(currentPos/10) * 10 + 9))
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != "")
+                break;
         }
 
         // //moves right
-        for(let i = 1; i < 9; i+=1){
+        for (let i = 1; i < 9; i += 1) {
             let option = currentPos + i;
-            if(option > (Math.floor(currentPos/10) * 10) && option < (Math.floor(currentPos/10) * 10 + 9))
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != "")
+                break
         }
 
         moveOptions = this.getMoveArray();
