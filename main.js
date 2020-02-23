@@ -717,7 +717,7 @@ class Board {
             document.getElementById(piece.getPosition()).src = piece.getSource();
         }
 
-        //TESTING PURPOSES
+        // TESTING PURPOSES
         // var cols = document.getElementsByClassName('ChessBoard')[0].getElementsByTagName('td');
         // for(let i = 0; i < cols.length; i++){
         //     // console.log(cols[i].childNodes[0].lastElementChild.id);
@@ -772,23 +772,23 @@ function load() {
 
     let whiteKing1 = new King("85", "Pices/White/wK.png", "white");
 
-    chessArray.push(blackPawn0);
-    chessArray.push(blackPawn1);
-    chessArray.push(blackPawn2);
-    chessArray.push(blackPawn3);
-    chessArray.push(blackPawn4);
-    chessArray.push(blackPawn5);
-    chessArray.push(blackPawn6);
-    chessArray.push(blackPawn7);
+    // chessArray.push(blackPawn0);
+    // chessArray.push(blackPawn1);
+    // chessArray.push(blackPawn2);
+    // chessArray.push(blackPawn3);
+    // chessArray.push(blackPawn4);
+    // chessArray.push(blackPawn5);
+    // chessArray.push(blackPawn6);
+    // chessArray.push(blackPawn7);
 
-    chessArray.push(whitePawn0);
-    chessArray.push(whitePawn1);
-    chessArray.push(whitePawn2);
-    chessArray.push(whitePawn3);
-    chessArray.push(whitePawn4);
-    chessArray.push(whitePawn5);
-    chessArray.push(whitePawn6);
-    chessArray.push(whitePawn7);
+    // chessArray.push(whitePawn0);
+    // chessArray.push(whitePawn1);
+    // chessArray.push(whitePawn2);
+    // chessArray.push(whitePawn3);
+    // chessArray.push(whitePawn4);
+    // chessArray.push(whitePawn5);
+    // chessArray.push(whitePawn6);
+    // chessArray.push(whitePawn7);
 
     chessArray.push(blackRook1);
     chessArray.push(blackRook2);
