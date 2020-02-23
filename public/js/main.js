@@ -581,49 +581,49 @@ class Board {
 
 function load() {
 
-    let blackPawn0 = new Pawn("21", "Pices/Black/bP.png", "black");
-    let blackPawn1 = new Pawn("22", "Pices/Black/bP.png", "black");
-    let blackPawn2 = new Pawn("23", "Pices/Black/bP.png", "black");
-    let blackPawn3 = new Pawn("24", "Pices/Black/bP.png", "black");
-    let blackPawn4 = new Pawn("25", "Pices/Black/bP.png", "black");
-    let blackPawn5 = new Pawn("26", "Pices/Black/bP.png", "black");
-    let blackPawn6 = new Pawn("27", "Pices/Black/bP.png", "black");
-    let blackPawn7 = new Pawn("28", "Pices/Black/bP.png", "black");
+    let blackPawn0 = new Pawn("21", "./img/Black/bP.png", "black");
+    let blackPawn1 = new Pawn("22", "./img/Black/bP.png", "black");
+    let blackPawn2 = new Pawn("23", "./img/Black/bP.png", "black");
+    let blackPawn3 = new Pawn("24", "./img/Black/bP.png", "black");
+    let blackPawn4 = new Pawn("25", "./img/Black/bP.png", "black");
+    let blackPawn5 = new Pawn("26", "./img/Black/bP.png", "black");
+    let blackPawn6 = new Pawn("27", "./img/Black/bP.png", "black");
+    let blackPawn7 = new Pawn("28", "./img/Black/bP.png", "black");
 
-    let whitePawn0 = new Pawn("71", "Pices/White/wP.png", "white");
-    let whitePawn1 = new Pawn("72", "Pices/White/wP.png", "white");
-    let whitePawn2 = new Pawn("73", "Pices/White/wP.png", "white");
-    let whitePawn3 = new Pawn("74", "Pices/White/wP.png", "white");
-    let whitePawn4 = new Pawn("75", "Pices/White/wP.png", "white");
-    let whitePawn5 = new Pawn("76", "Pices/White/wP.png", "white");
-    let whitePawn6 = new Pawn("77", "Pices/White/wP.png", "white");
-    let whitePawn7 = new Pawn("78", "Pices/White/wP.png", "white");
+    let whitePawn0 = new Pawn("71", "./img/White/wP.png", "white");
+    let whitePawn1 = new Pawn("72", "./img/White/wP.png", "white");
+    let whitePawn2 = new Pawn("73", "./img/White/wP.png", "white");
+    let whitePawn3 = new Pawn("74", "./img/White/wP.png", "white");
+    let whitePawn4 = new Pawn("75", "./img/White/wP.png", "white");
+    let whitePawn5 = new Pawn("76", "./img/White/wP.png", "white");
+    let whitePawn6 = new Pawn("77", "./img/White/wP.png", "white");
+    let whitePawn7 = new Pawn("78", "./img/White/wP.png", "white");
 
-    let blackRook1 = new Rook("11", "Pices/Black/bR.png", "black");
-    let blackRook2 = new Rook("18", "Pices/Black/bR.png", "black");
+    let blackRook1 = new Rook("11", "./img/Black/bR.png", "black");
+    let blackRook2 = new Rook("18", "./img/Black/bR.png", "black");
 
-    let whiteRook1 = new Rook("81", "Pices/White/wR.png", "white");
-    let whiteRook2 = new Rook("88", "Pices/White/wR.png", "white");
+    let whiteRook1 = new Rook("81", "./img/White/wR.png", "white");
+    let whiteRook2 = new Rook("88", "./img/White/wR.png", "white");
 
-    let blackKnight1 = new Knight("12", "Pices/Black/bN.png", "black");
-    let blackKnight2 = new Knight("17", "Pices/Black/bN.png", "black");
+    let blackKnight1 = new Knight("12", "./img/Black/bN.png", "black");
+    let blackKnight2 = new Knight("17", "./img/Black/bN.png", "black");
 
-    let whiteKnight1 = new Knight("82", "Pices/White/wN.png", "white");
-    let whiteKnight2 = new Knight("87", "Pices/White/wN.png", "white");
+    let whiteKnight1 = new Knight("82", "./img/White/wN.png", "white");
+    let whiteKnight2 = new Knight("87", "./img/White/wN.png", "white");
 
-    let blackBishop1 = new Bishop("13", "Pices/Black/bB.png", "black");
-    let blackBishop2 = new Bishop("16", "Pices/Black/bB.png", "black");
+    let blackBishop1 = new Bishop("13", "./img/Black/bB.png", "black");
+    let blackBishop2 = new Bishop("16", "./img/Black/bB.png", "black");
 
-    let whiteBishop1 = new Bishop("83", "Pices/White/wB.png", "white");
-    let whiteBishop2 = new Bishop("86", "Pices/White/wB.png", "white");
+    let whiteBishop1 = new Bishop("83", "./img/White/wB.png", "white");
+    let whiteBishop2 = new Bishop("86", "./img/White/wB.png", "white");
 
-    let blackQueen1 = new Queen("14", "Pices/Black/bQ.png", "black");
+    let blackQueen1 = new Queen("14", "./img/Black/bQ.png", "black");
 
-    let whiteQueen1 = new Queen("84", "Pices/White/wQ.png", "white");
+    let whiteQueen1 = new Queen("84", "./img/White/wQ.png", "white");
 
-    let blackKing1 = new King("15", "Pices/Black/bK.png", "black");
+    let blackKing1 = new King("15", "./img/Black/bK.png", "black");
 
-    let whiteKing1 = new King("85", "Pices/White/wK.png", "white");
+    let whiteKing1 = new King("85", "./img/White/wK.png", "white");
 
     chessArray.push(blackPawn0);
     chessArray.push(blackPawn1);
