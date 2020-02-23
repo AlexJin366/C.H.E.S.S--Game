@@ -4,15 +4,15 @@ let oldSelectedPiece = null;
 let selectedPiece = null;
 let piece;
 
-function clearValidMoves(){
-    for(let i = 0; i < chessArray.length; i++){
-        if(chessArray[i].getPosition() == oldSelectedPiece){
+function clearValidMoves() {
+    for (let i = 0; i < chessArray.length; i++) {
+        if (chessArray[i].getPosition() == oldSelectedPiece) {
             let selectedPiece = chessArray[i].getMoveArray()
-            for(let j = 0; j < selectedPiece.length; j++){
-                if(document.getElementById(selectedPiece[j]).parentElement.className == "BlackBlock"){
-                    document.getElementById(selectedPiece[j]).parentElement.style.background = "gray"; 
-                }else{
-                    document.getElementById(selectedPiece[j]).parentElement.style.background = "white"; 
+            for (let j = 0; j < selectedPiece.length; j++) {
+                if (document.getElementById(selectedPiece[j]).parentElement.className == "BlackBlock") {
+                    document.getElementById(selectedPiece[j]).parentElement.style.background = "gray";
+                } else {
+                    document.getElementById(selectedPiece[j]).parentElement.style.background = "white";
                 }
             }
         }
@@ -21,17 +21,17 @@ function clearValidMoves(){
     piece.validMoves = new Array();
 }
 
-function clearMoveMade(){
-    for(let i = 0; i < moveOptions.length; i++){
-        if(document.getElementById(moveOptions[i].toString()).parentElement.className == "BlackBlock"){
-            document.getElementById(moveOptions[i].toString()).parentElement.style.background = "gray"; 
-        }else{
-            document.getElementById(moveOptions[i].toString()).parentElement.style.background = "white"; 
+function clearMoveMade() {
+    for (let i = 0; i < moveOptions.length; i++) {
+        if (document.getElementById(moveOptions[i].toString()).parentElement.className == "BlackBlock") {
+            document.getElementById(moveOptions[i].toString()).parentElement.style.background = "gray";
+        } else {
+            document.getElementById(moveOptions[i].toString()).parentElement.style.background = "white";
         }
     }
 }
 
-function movePiece(element, childId){
+function movePiece(element, childId) {
     document.getElementById(piece.position).removeAttribute("src");
     document.getElementById(childId).src = piece.source;
     clearMoveMade();
@@ -41,83 +41,83 @@ function movePiece(element, childId){
     moveOptions = new Array();
 }
 
-function makeMove(element){
+function makeMove(element) {
     let childId = parseFloat(element.childNodes[0].id);
-    if(moveOptions.includes(childId)){
+    if (moveOptions.includes(childId)) {
         movePiece(element, childId);
         moveOptions = new Array();
         piece.moveOptions = new Array();
-    }else{
+    } else {
         console.log("can't move there");
     }
 }
 
 class Pawn {
     constructor(position, source, type) {
-      this.position = position;
-      this.source = source;
-      this.type = type;
-      this.default = true;
-      this.validMoves = new Array();
-    }
-
-    getPosition() {
-    //   console.log("My position is on " + this.position);
-      return this.position;
-    }
-
-    setPosition(newPos){
-        this.position = newPos;
-    }
-
-    getSource(){
-        return this.source
-    }
-
-    highlightMoves(validMoves){
-        for(let i = 0; i < validMoves.length; i++){
-            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";  
-        }
-    }
-
-    getMoveArray(){
-        return this.validMoves;
-    }
-
-    clean(){
+        this.position = position;
+        this.source = source;
+        this.type = type;
+        this.default = true;
         this.validMoves = new Array();
     }
 
-    getValidMoves(){
+    getPosition() {
+        //   console.log("My position is on " + this.position);
+        return this.position;
+    }
+
+    setPosition(newPos) {
+        this.position = newPos;
+    }
+
+    getSource() {
+        return this.source
+    }
+
+    highlightMoves(validMoves) {
+        for (let i = 0; i < validMoves.length; i++) {
+            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
+        }
+    }
+
+    getMoveArray() {
+        return this.validMoves;
+    }
+
+    clean() {
+        this.validMoves = new Array();
+    }
+
+    getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
-        if(selectedPiece != this.position){
+        if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
             selectedPiece = this.position;
             clearValidMoves();
             this.clean();
         }
-        if(this.type == "black"){
-            if(this.default){
+        if (this.type == "black") {
+            if (this.default) {
 
                 if (document.getElementById((currentPos + 10).toString()).src == "" && document.getElementById((currentPos + 20).toString()).src == "") {
                     this.getMoveArray().push(currentPos += 10, currentPos += 10);
                 } else if (document.getElementById((currentPos + 20).toString()).src != "" && document.getElementById((currentPos + 10).toString()).src == "") {
                     this.getMoveArray().push(currentPos += 10);
                 }
-            }else{
-                if(document.getElementById((currentPos+10).toString()).src == ""){
+            } else {
+                if (document.getElementById((currentPos + 10).toString()).src == "") {
                     this.getMoveArray().push(currentPos += 10);
                 }
             }
-        }else{
-            if(this.default){
-                if (document.getElementById((currentPos - 10).toString()).src == "" && document.getElementById((currentPos - 20).toString()).src == ""){
+        } else {
+            if (this.default) {
+                if (document.getElementById((currentPos - 10).toString()).src == "" && document.getElementById((currentPos - 20).toString()).src == "") {
                     this.getMoveArray().push(currentPos -= 10, currentPos -= 10);
-                } else if (document.getElementById((currentPos - 20).toString()).src != "" && document.getElementById((currentPos - 10).toString()).src == "" ){
+                } else if (document.getElementById((currentPos - 20).toString()).src != "" && document.getElementById((currentPos - 10).toString()).src == "") {
                     this.getMoveArray().push(currentPos -= 10);
                 }
-            }else{
+            } else {
                 if (document.getElementById((currentPos - 10).toString()).src == "") {
                     this.getMoveArray().push(currentPos -= 10);
                 }
@@ -130,43 +130,43 @@ class Pawn {
 
 class Rook {
     constructor(position, source, type) {
-      this.position = position;
-      this.source = source;
-      this.type = type;
-      this.default = true;
-      this.validMoves = new Array();
+        this.position = position;
+        this.source = source;
+        this.type = type;
+        this.default = true;
+        this.validMoves = new Array();
     }
     getPosition() {
-    //   console.log("My position is on " + this.position);
-      return this.position;
+        //   console.log("My position is on " + this.position);
+        return this.position;
     }
 
-    setPosition(newPos){
+    setPosition(newPos) {
         this.position = newPos;
     }
 
-    getSource(){
+    getSource() {
         return this.source
     }
 
-    highlightMoves(validMoves){
+    highlightMoves(validMoves) {
         // console.log(validMoves);
-        for(let i = 0; i < validMoves.length; i++)
-            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f"; 
+        for (let i = 0; i < validMoves.length; i++)
+            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
     }
 
-    getMoveArray(){
+    getMoveArray() {
         return this.validMoves;
     }
 
-    clean(){
+    clean() {
         this.validMoves = new Array();
     }
 
-    getValidMoves(){
+    getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
-        if(selectedPiece != this.position){
+        if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
             selectedPiece = this.position;
             clearValidMoves();
@@ -175,32 +175,40 @@ class Rook {
 
         let movesUp = 90 - currentPos;
 
-        //moves up
-        for(let i = 10; i < movesUp; i+=10){
+        //moves down
+        for (let i = 10; i < movesUp; i += 10) {
             let option = currentPos + i;
+            if (document.getElementById(option.toString()).src != "")
+                break;
             if (option > 10)
                 this.getMoveArray().push(option);
         }
 
-        //moves down
-        for(let i = 10; i < 90; i+=10){
+        //moves up
+        for (let i = 10; i < 90; i += 10) {
             let option = currentPos - i;
-            if(option > 10)
+            if (option > 10 && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
+            if (option > 10 && document.getElementById(option.toString()).src != "")
+                break;
         }
 
         //moves left
-        for(let i = 1; i < 9; i+=1){
+        for (let i = 1; i < 9; i += 1) {
             let option = currentPos - i;
-            if(option > (Math.floor(currentPos/10) * 10) && option < (Math.floor(currentPos/10) * 10 + 9))
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != "")
+                break;
         }
 
         // //moves right
-        for(let i = 1; i < 9; i+=1){
+        for (let i = 1; i < 9; i += 1) {
             let option = currentPos + i;
-            if(option > (Math.floor(currentPos/10) * 10) && option < (Math.floor(currentPos/10) * 10 + 9))
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != "")
+                break
         }
 
         moveOptions = this.getMoveArray();
@@ -210,43 +218,43 @@ class Rook {
 
 class Knight {
     constructor(position, source, type) {
-      this.position = position;
-      this.source = source;
-      this.type = type;
-      this.default = true;
-      this.validMoves = new Array();
+        this.position = position;
+        this.source = source;
+        this.type = type;
+        this.default = true;
+        this.validMoves = new Array();
     }
     getPosition() {
-    //   console.log("My position is on " + this.position);
-      return this.position;
+        //   console.log("My position is on " + this.position);
+        return this.position;
     }
 
-    setPosition(newPos){
+    setPosition(newPos) {
         this.position = newPos;
     }
 
-    getSource(){
+    getSource() {
         return this.source
     }
 
-    highlightMoves(validMoves){
+    highlightMoves(validMoves) {
         // console.log(validMoves);
-        for(let i = 0; i < validMoves.length; i++)
-            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f"; 
+        for (let i = 0; i < validMoves.length; i++)
+            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
     }
 
-    getMoveArray(){
+    getMoveArray() {
         return this.validMoves;
     }
 
-    clean(){
+    clean() {
         this.validMoves = new Array();
     }
 
-    getValidMoves(){
+    getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
-        if(selectedPiece != this.position){
+        if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
             selectedPiece = this.position;
             clearValidMoves();
@@ -264,10 +272,10 @@ class Knight {
 
         let knightMoves = [-8, 12, -19, -21, -12, 8, 21, 19];
 
-        for(let i = 0; i < knightMoves.length; i++){
+        for (let i = 0; i < knightMoves.length; i++) {
             let option = currentPos + knightMoves[i];
-            if(option >= 10 && option <= 88 ){
-                if(option % 10 == 0 || option % 10 == 9){
+            if (option >= 10 && option <= 88) {
+                if (option % 10 == 0 || option % 10 == 9) {
                     continue;
                 }
                 // console.log(option);
@@ -283,43 +291,43 @@ class Knight {
 
 class Bishop {
     constructor(position, source, type) {
-      this.position = position;
-      this.source = source;
-      this.type = type;
-      this.default = true;
-      this.validMoves = new Array();
+        this.position = position;
+        this.source = source;
+        this.type = type;
+        this.default = true;
+        this.validMoves = new Array();
     }
     getPosition() {
-    //   console.log("My position is on " + this.position);
-      return this.position;
+        //   console.log("My position is on " + this.position);
+        return this.position;
     }
 
-    setPosition(newPos){
+    setPosition(newPos) {
         this.position = newPos;
     }
 
-    getSource(){
+    getSource() {
         return this.source
     }
 
-    highlightMoves(validMoves){
+    highlightMoves(validMoves) {
         // console.log(validMoves);
-        for(let i = 0; i < validMoves.length; i++)
-            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f"; 
+        for (let i = 0; i < validMoves.length; i++)
+            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
     }
 
-    getMoveArray(){
+    getMoveArray() {
         return this.validMoves;
     }
 
-    clean(){
+    clean() {
         this.validMoves = new Array();
     }
 
-    getValidMoves(){
+    getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
-        if(selectedPiece != this.position){
+        if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
             selectedPiece = this.position;
             clearValidMoves();
@@ -328,10 +336,10 @@ class Bishop {
 
         let bishopMoves = [];
 
-        for(let i = 0; i < bishopMoves.length; i++){
+        for (let i = 0; i < bishopMoves.length; i++) {
             let option = currentPos + bishopMoves[i];
-            if(option >= 10 && option <= 88 ){
-                if(option % 10 == 0 || option % 10 == 9){
+            if (option >= 10 && option <= 88) {
+                if (option % 10 == 0 || option % 10 == 9) {
                     continue;
                 }
                 // console.log(option);
@@ -347,43 +355,43 @@ class Bishop {
 
 class Queen {
     constructor(position, source, type) {
-      this.position = position;
-      this.source = source;
-      this.type = type;
-      this.default = true;
-      this.validMoves = new Array();
+        this.position = position;
+        this.source = source;
+        this.type = type;
+        this.default = true;
+        this.validMoves = new Array();
     }
     getPosition() {
-    //   console.log("My position is on " + this.position);
-      return this.position;
+        //   console.log("My position is on " + this.position);
+        return this.position;
     }
 
-    setPosition(newPos){
+    setPosition(newPos) {
         this.position = newPos;
     }
 
-    getSource(){
+    getSource() {
         return this.source
     }
 
-    highlightMoves(validMoves){
+    highlightMoves(validMoves) {
         // console.log(validMoves);
-        for(let i = 0; i < validMoves.length; i++)
-            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f"; 
+        for (let i = 0; i < validMoves.length; i++)
+            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
     }
 
-    getMoveArray(){
+    getMoveArray() {
         return this.validMoves;
     }
 
-    clean(){
+    clean() {
         this.validMoves = new Array();
     }
 
-    getValidMoves(){
+    getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
-        if(selectedPiece != this.position){
+        if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
             selectedPiece = this.position;
             clearValidMoves();
@@ -392,10 +400,10 @@ class Queen {
 
         let queenMoves = [];
 
-        for(let i = 0; i < queenMoves.length; i++){
+        for (let i = 0; i < queenMoves.length; i++) {
             let option = currentPos + queenMoves[i];
-            if(option >= 10 && option <= 88 ){
-                if(option % 10 == 0 || option % 10 == 9){
+            if (option >= 10 && option <= 88) {
+                if (option % 10 == 0 || option % 10 == 9) {
                     continue;
                 }
                 // console.log(option);
@@ -411,43 +419,43 @@ class Queen {
 
 class King {
     constructor(position, source, type) {
-      this.position = position;
-      this.source = source;
-      this.type = type;
-      this.default = true;
-      this.validMoves = new Array();
+        this.position = position;
+        this.source = source;
+        this.type = type;
+        this.default = true;
+        this.validMoves = new Array();
     }
     getPosition() {
-    //   console.log("My position is on " + this.position);
-      return this.position;
+        //   console.log("My position is on " + this.position);
+        return this.position;
     }
 
-    setPosition(newPos){
+    setPosition(newPos) {
         this.position = newPos;
     }
 
-    getSource(){
+    getSource() {
         return this.source
     }
 
-    highlightMoves(validMoves){
+    highlightMoves(validMoves) {
         // console.log(validMoves);
-        for(let i = 0; i < validMoves.length; i++)
-            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f"; 
+        for (let i = 0; i < validMoves.length; i++)
+            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
     }
 
-    getMoveArray(){
+    getMoveArray() {
         return this.validMoves;
     }
 
-    clean(){
+    clean() {
         this.validMoves = new Array();
     }
 
-    getValidMoves(){
+    getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
-        if(selectedPiece != this.position){
+        if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
             selectedPiece = this.position;
             clearValidMoves();
@@ -456,10 +464,10 @@ class King {
 
         let kingMoves = [-10, 10, -1, 1, -9, 9, 11, -11];
 
-        for(let i = 0; i < kingMoves.length; i++){
+        for (let i = 0; i < kingMoves.length; i++) {
             let option = currentPos + kingMoves[i];
-            if(option >= 10 && option <= 88 ){
-                if(option % 10 == 0 || option % 10 == 9){
+            if (option >= 10 && option <= 88) {
+                if (option % 10 == 0 || option % 10 == 9) {
                     continue;
                 }
                 // console.log(option);
@@ -473,12 +481,12 @@ class King {
     }
 }
 
-class Board{
-    constructor(pieces){
+class Board {
+    constructor(pieces) {
         this.pieces = pieces;
     }
 
-    renderBoard(){
+    renderBoard() {
         let boardHTML = `<table class="ChessBoard">
         <tr>
             <td><div class="BoardBlock" onclick="makeMove(this)"><img onclick="select(this.id)" id="11"></div></td>
@@ -564,15 +572,15 @@ class Board{
     </table>`;
 
         document.getElementsByClassName("Board_div")[0].innerHTML = boardHTML;
-        for(let i = 0; i < this.pieces.length; i++){
+        for (let i = 0; i < this.pieces.length; i++) {
             let piece = this.pieces[i];
             document.getElementById(piece.getPosition()).src = piece.getSource();
         }
     }
 }
 
-function load(){
-  
+function load() {
+
     let blackPawn0 = new Pawn("21", "Pices/Black/bP.png", "black");
     let blackPawn1 = new Pawn("22", "Pices/Black/bP.png", "black");
     let blackPawn2 = new Pawn("23", "Pices/Black/bP.png", "black");
@@ -595,19 +603,19 @@ function load(){
     let blackRook2 = new Rook("18", "Pices/Black/bR.png", "black");
 
     let whiteRook1 = new Rook("81", "Pices/White/wR.png", "white");
-    let whiteRook2 = new Rook("88",  "Pices/White/wR.png", "white");
+    let whiteRook2 = new Rook("88", "Pices/White/wR.png", "white");
 
     let blackKnight1 = new Knight("12", "Pices/Black/bN.png", "black");
     let blackKnight2 = new Knight("17", "Pices/Black/bN.png", "black");
 
     let whiteKnight1 = new Knight("82", "Pices/White/wN.png", "white");
-    let whiteKnight2 = new Knight("87",  "Pices/White/wN.png", "white");
+    let whiteKnight2 = new Knight("87", "Pices/White/wN.png", "white");
 
     let blackBishop1 = new Bishop("13", "Pices/Black/bB.png", "black");
     let blackBishop2 = new Bishop("16", "Pices/Black/bB.png", "black");
 
     let whiteBishop1 = new Bishop("83", "Pices/White/wB.png", "white");
-    let whiteBishop2 = new Bishop("86",  "Pices/White/wB.png", "white");
+    let whiteBishop2 = new Bishop("86", "Pices/White/wB.png", "white");
 
     let blackQueen1 = new Queen("14", "Pices/Black/bQ.png", "black");
 
@@ -670,9 +678,9 @@ function load(){
     // }
 }
 
-function select(position){
-    for(let i = 0; i < chessArray.length; i++){
-        if(chessArray[i].getPosition() == position){
+function select(position) {
+    for (let i = 0; i < chessArray.length; i++) {
+        if (chessArray[i].getPosition() == position) {
             piece = chessArray[i];
         }
     }
