@@ -32,7 +32,7 @@ function clearMoveMade(){
 }
 
 function movePiece(element, childId){
-    document.getElementById(piece.position).src = "";
+    document.getElementById(piece.position).removeAttribute("src");
     document.getElementById(childId).src = piece.source;
     clearMoveMade();
     piece.position = childId;
@@ -75,9 +75,9 @@ class Pawn {
     }
 
     highlightMoves(validMoves){
-        // console.log(validMoves);
-        for(let i = 0; i < validMoves.length; i++)
-            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f"; 
+        for(let i = 0; i < validMoves.length; i++){
+            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";  
+        }
     }
 
     getMoveArray(){
@@ -99,15 +99,28 @@ class Pawn {
         }
         if(this.type == "black"){
             if(this.default){
-                this.getMoveArray().push(currentPos + 10, currentPos + 20);
+
+                if (document.getElementById((currentPos + 10).toString()).src == "" && document.getElementById((currentPos + 20).toString()).src == "") {
+                    this.getMoveArray().push(currentPos += 10, currentPos += 10);
+                } else if (document.getElementById((currentPos + 20).toString()).src != "" && document.getElementById((currentPos + 10).toString()).src == "") {
+                    this.getMoveArray().push(currentPos += 10);
+                }
             }else{
-                this.getMoveArray().push(currentPos + 10);
+                if(document.getElementById((currentPos+10).toString()).src == ""){
+                    this.getMoveArray().push(currentPos += 10);
+                }
             }
         }else{
             if(this.default){
-                this.getMoveArray().push(currentPos - 10, currentPos - 20);
+                if (document.getElementById((currentPos - 10).toString()).src == "" && document.getElementById((currentPos - 20).toString()).src == ""){
+                    this.getMoveArray().push(currentPos -= 10, currentPos -= 10);
+                } else if (document.getElementById((currentPos - 20).toString()).src != "" && document.getElementById((currentPos - 10).toString()).src == "" ){
+                    this.getMoveArray().push(currentPos -= 10);
+                }
             }else{
-                this.getMoveArray().push(currentPos - 10);
+                if (document.getElementById((currentPos - 10).toString()).src == "") {
+                    this.getMoveArray().push(currentPos -= 10);
+                }
             }
         }
         moveOptions = this.getMoveArray();
