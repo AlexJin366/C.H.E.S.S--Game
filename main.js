@@ -31,14 +31,19 @@ function clearMoveMade(){
 
 function movePiece(element, childId){
     document.getElementById(piece.position).src = "";
-    document.getElementById(childId).src = piece.source; 
+    document.getElementById(childId).src = piece.source;
     clearMoveMade();
+    piece.position = childId;
+    piece.default = false;
+    piece.clean();
+    moveOptions = null;
 }
 
 function makeMove(element){
     let childId = parseFloat(element.childNodes[0].id);
     if(moveOptions.includes(childId)){
         movePiece(element, childId);
+        moveOptions = null;
     }else{
         console.log("can't move there");
     }
@@ -76,27 +81,30 @@ class Pawn {
         return this.validMoves;
     }
 
+    clean(){
+        this.validMoves = new Array();
+    }
+
     getValidMoves(){
         let currentPos = Number(this.position);
-        // console.log(currentPos);
+        console.log("------" + currentPos);
         if(selectedPiece != this.position){
             oldSelectedPiece = selectedPiece;
             selectedPiece = this.position;
             clearValidMoves();
+            this.clean();
         }
         if(this.type == "black"){
-            currentPos++;
             if(this.default){
-                this.getMoveArray().push(currentPos++, currentPos++);
+                this.getMoveArray().push(currentPos += 10, currentPos += 10);
             }else{
-                this.getMoveArray().push(currentPos++);
+                this.getMoveArray().push(currentPos += 10);
             }
         }else{
             if(this.default){
-                currentPos--;
-                this.getMoveArray().push(currentPos--, currentPos--);
+                this.getMoveArray().push(currentPos -= 10, currentPos -= 10);
             }else{
-                this.getMoveArray().push(currentPos--);
+                this.getMoveArray().push(currentPos -= 10);
             }
         }
         moveOptions = this.getMoveArray();
@@ -201,49 +209,49 @@ class King {
 
 function load(){
   
-    let blackPawn0 = new Pawn("2.1", "Pices/Black/bP.png", "black");
-    let blackPawn1 = new Pawn("2.2", "Pices/Black/bP.png", "black");
-    let blackPawn2 = new Pawn("2.3", "Pices/Black/bP.png", "black");
-    let blackPawn3 = new Pawn("2.4", "Pices/Black/bP.png", "black");
-    let blackPawn4 = new Pawn("2.5", "Pices/Black/bP.png", "black");
-    let blackPawn5 = new Pawn("2.6", "Pices/Black/bP.png", "black");
-    let blackPawn6 = new Pawn("2.7", "Pices/Black/bP.png", "black");
-    let blackPawn7 = new Pawn("2.8", "Pices/Black/bP.png", "black");
+    let blackPawn0 = new Pawn("21", "Pices/Black/bP.png", "black");
+    let blackPawn1 = new Pawn("22", "Pices/Black/bP.png", "black");
+    let blackPawn2 = new Pawn("23", "Pices/Black/bP.png", "black");
+    let blackPawn3 = new Pawn("24", "Pices/Black/bP.png", "black");
+    let blackPawn4 = new Pawn("25", "Pices/Black/bP.png", "black");
+    let blackPawn5 = new Pawn("26", "Pices/Black/bP.png", "black");
+    let blackPawn6 = new Pawn("27", "Pices/Black/bP.png", "black");
+    let blackPawn7 = new Pawn("28", "Pices/Black/bP.png", "black");
 
-    let whitePawn0 = new Pawn("7.1", "Pices/White/wP.png", "white");
-    let whitePawn1 = new Pawn("7.2", "Pices/White/wP.png", "white");
-    let whitePawn2 = new Pawn("7.3", "Pices/White/wP.png", "white");
-    let whitePawn3 = new Pawn("7.4", "Pices/White/wP.png", "white");
-    let whitePawn4 = new Pawn("7.5", "Pices/White/wP.png", "white");
-    let whitePawn5 = new Pawn("7.6", "Pices/White/wP.png", "white");
-    let whitePawn6 = new Pawn("7.7", "Pices/White/wP.png", "white");
-    let whitePawn7 = new Pawn("7.8", "Pices/White/wP.png", "white");
+    let whitePawn0 = new Pawn("71", "Pices/White/wP.png", "white");
+    let whitePawn1 = new Pawn("72", "Pices/White/wP.png", "white");
+    let whitePawn2 = new Pawn("73", "Pices/White/wP.png", "white");
+    let whitePawn3 = new Pawn("74", "Pices/White/wP.png", "white");
+    let whitePawn4 = new Pawn("75", "Pices/White/wP.png", "white");
+    let whitePawn5 = new Pawn("76", "Pices/White/wP.png", "white");
+    let whitePawn6 = new Pawn("77", "Pices/White/wP.png", "white");
+    let whitePawn7 = new Pawn("78", "Pices/White/wP.png", "white");
 
-    let blackRook1 = new Rook("1.1", "Pices/Black/bR.png");
-    let blackRook2 = new Rook("1.8", "Pices/Black/bR.png");
+    let blackRook1 = new Rook("11", "Pices/Black/bR.png");
+    let blackRook2 = new Rook("18", "Pices/Black/bR.png");
 
-    let whiteRook1 = new Rook("8.1", "Pices/White/wR.png");
-    let whiteRook2 = new Rook("8.8",  "Pices/White/wR.png");
+    let whiteRook1 = new Rook("81", "Pices/White/wR.png");
+    let whiteRook2 = new Rook("88",  "Pices/White/wR.png");
 
-    let blackKnight1 = new Rook("1.2", "Pices/Black/bN.png");
-    let blackKnight2 = new Rook("1.7", "Pices/Black/bN.png");
+    let blackKnight1 = new Rook("12", "Pices/Black/bN.png");
+    let blackKnight2 = new Rook("17", "Pices/Black/bN.png");
 
-    let whiteKnight1 = new Rook("8.2", "Pices/White/wN.png");
-    let whiteKnight2 = new Rook("8.7",  "Pices/White/wN.png");
+    let whiteKnight1 = new Rook("82", "Pices/White/wN.png");
+    let whiteKnight2 = new Rook("87",  "Pices/White/wN.png");
 
-    let blackBishop1 = new Bishop("1.3", "Pices/Black/bB.png");
-    let blackBishop2 = new Bishop("1.6", "Pices/Black/bB.png");
+    let blackBishop1 = new Bishop("13", "Pices/Black/bB.png");
+    let blackBishop2 = new Bishop("16", "Pices/Black/bB.png");
 
-    let whiteBishop1 = new Bishop("8.3", "Pices/White/wB.png");
-    let whiteBishop2 = new Bishop("8.6",  "Pices/White/wB.png");
+    let whiteBishop1 = new Bishop("83", "Pices/White/wB.png");
+    let whiteBishop2 = new Bishop("86",  "Pices/White/wB.png");
 
-    let blackQueen1 = new Bishop("1.4", "Pices/Black/bQ.png");
+    let blackQueen1 = new Bishop("14", "Pices/Black/bQ.png");
 
-    let whiteQueen1 = new Bishop("8.4", "Pices/White/wQ.png");
+    let whiteQueen1 = new Bishop("84", "Pices/White/wQ.png");
 
-    let blackKing1 = new Bishop("1.5", "Pices/Black/bK.png");
+    let blackKing1 = new Bishop("15", "Pices/Black/bK.png");
 
-    let whiteKing1 = new Bishop("8.5", "Pices/White/wK.png");
+    let whiteKing1 = new Bishop("85", "Pices/White/wK.png");
 
     chessArray.push(blackPawn0);
     chessArray.push(blackPawn1);
