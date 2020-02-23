@@ -402,6 +402,17 @@ class Bishop {
         this.validMoves = new Array();
     }
 
+    boardcheck(number) {
+        console.log("Check,", number);
+        if (number > 88 || number < 11) {
+            return false;
+        }
+        else if (number % 10 > 8 || number % 10 == 0) {
+            return false;
+        }
+        else { return true; }
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -413,6 +424,24 @@ class Bishop {
         }
 
         let bishopMoves = [9, -9, 11, -11];
+
+        for (let i = 0; i < bishopMoves.length; i++) {
+            let option = currentPos;
+            option += bishopMoves[i];
+
+            var check = this.boardcheck(option);
+            if (!check) { continue; }
+
+            do {
+                if (document.getElementById(option.toString()).src == ""){
+                    this.getMoveArray().push(option);
+                }else{
+                    break;
+                }
+                option += bishopMoves[i];
+            } while (this.boardcheck(option));
+
+        }
 
         moveOptions = this.getMoveArray();
         this.highlightMoves(this.getMoveArray());
