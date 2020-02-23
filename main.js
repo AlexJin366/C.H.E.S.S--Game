@@ -88,6 +88,39 @@ class Pawn {
         this.validMoves = new Array();
     }
 
+    checkCapture(){
+        let currentPos = Number(this.position);
+        if (selectedPiece != this.position) {
+            oldSelectedPiece = selectedPiece;
+            selectedPiece = this.position;
+            clearValidMoves();
+            this.clean();
+        }
+        if(this.type == "black"){
+            if(((currentPos + 9) < (Math.floor((currentPos+10) / 10) * 10 + 9)) && (currentPos + 9) > (Math.floor((currentPos+10) / 10) * 10)){
+                if(document.getElementById((currentPos + 9).toString()).src != "" && document.getElementById((currentPos + 9).toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(currentPos + 9);
+                }
+            }
+            if(((currentPos + 11) < (Math.floor((currentPos+10) / 10) * 10 + 9)) && (currentPos + 11) > (Math.floor((currentPos+10) / 10) * 10)){
+                if(document.getElementById(currentPos + 11).toString().src != "" && document.getElementById((currentPos + 11).toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(currentPos + 11);
+                }
+            }
+        }else{
+            if(((currentPos - 9) < (Math.floor((currentPos-10) / 10) * 10 + 9)) && (currentPos - 9) > (Math.floor((currentPos-10) / 10) * 10)){
+                if(document.getElementById((currentPos - 9).toString()).src != "" && document.getElementById((currentPos - 9).toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(currentPos - 9);
+                }
+            }
+            if(((currentPos - 11) < (Math.floor((currentPos-10) / 10) * 10 + 9)) && (currentPos - 11) > (Math.floor((currentPos-10) / 10) * 10)){
+                if(document.getElementById(currentPos - 11).toString().src != "" && document.getElementById((currentPos - 11).toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(currentPos - 11);
+                }
+            }
+        }
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -123,6 +156,7 @@ class Pawn {
                 }
             }
         }
+        this.checkCapture();
         moveOptions = this.getMoveArray();
         this.highlightMoves(this.getMoveArray());
     }
@@ -335,21 +369,6 @@ class Bishop {
         }
 
         let bishopMoves = [9, -9, 11, -11];
-
-        for(let i = 0; i < bishopMoves.length; i++){
-            let option = currentPos;
-            for(let j = 0; j < 5; j++){
-                option += bishopMoves[i];
-                if(option >= 10 && option <= 88 ){
-                    if(option % 10 == 0 || option % 10 == 9){
-                        continue;
-                    }
-                    // console.log(option);
-                    this.getMoveArray().push(option);
-                }
-            }
-            
-        }
 
         moveOptions = this.getMoveArray();
         this.highlightMoves(this.getMoveArray());
@@ -606,6 +625,13 @@ class Board {
         for (let i = 0; i < this.pieces.length; i++) {
             let piece = this.pieces[i];
             document.getElementById(piece.getPosition()).src = piece.getSource();
+        }
+
+        //TESTING PURPOSES
+        var cols = document.getElementsByClassName('ChessBoard')[0].getElementsByTagName('td');
+        for(let i = 0; i < cols.length; i++){
+            // console.log(cols[i].childNodes[0].lastElementChild.id);
+            document.getElementsByTagName("td")[i].innerHTML += cols[i].childNodes[0].lastElementChild.id
         }
     }
 }
