@@ -122,7 +122,8 @@ function load() {
 
     let whiteQueen1 = new Queen("84", "Pices/White/wQ.png", "white");
 
-    let blackKing1 = new King("15", "Pices/Black/bK.png", "black");
+    let blackKing1 = new King("15", "Pices/Black/bK.png", "black"
+    );
 
     let whiteKing1 = new King("85", "Pices/White/wK.png", "white");
 
