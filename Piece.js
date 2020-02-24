@@ -32,14 +32,15 @@ class Piece {
     }
 
     checkCapture(position){
+        var imgSrc = document.getElementById(position.toString()).src;
         switch(this.type){
             case "black":
-                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
+                if(imgSrc.includes("Pices/White/")){
                     this.getMoveArray().push(position);
                 }
                 break;
             case "white":
-                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
+                if(imgSrc.includes("Pices/Black/")){
                     this.getMoveArray().push(position);
                 }
                 break;

@@ -5,7 +5,6 @@ class King extends Piece {
     
     getValidMoves() {
         let currentPos = Number(this.position);
-        console.log("------" + currentPos);
         if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
             selectedPiece = this.position;
@@ -21,14 +20,13 @@ class King extends Piece {
                 if (option % 10 == 0 || option % 10 == 9) {
                     continue;
                 }
-
-                if(document.getElementById(option.toString()).src == ""){
+                
+                var isSquareEmpty = document.getElementById(option.toString()).src == "";
+                if(isSquareEmpty){
                     this.getMoveArray().push(option);
                 }else{
                     this.checkCapture(option);
                 }
-                // console.log(option);
-                // this.getMoveArray().push(option);
             }
         }
 
