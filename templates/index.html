@@ -3,7 +3,8 @@
 <head>
     <title>Chess Game</title>
     <link rel='stylesheet' type='text/css' media='screen' href='./css/main.css'>
-    <script src='./js/main.js'></script>
+    <script src='./js/main.js'>
+    </script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
 	<script type="text/javascript">
@@ -40,9 +41,10 @@
 			
 			socket.on('my_response1', function(msg, cb) {
                 $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
-				 
-                if (cb)
+                test(msg);
+                if (cb){
                     cb();
+                }
             });
 		
 		$('form#join').submit(function(event) {
@@ -61,12 +63,12 @@
 <body onload="load()">
 <form id="join" method="POST" action='#'>
         <input type="text" name="join_room" id="join_room" placeholder="Room Name">
-        <input type="submit" value="Join Room">
+        <input type="submit" value="Join Room" id="joinSubmit">
     </form>
     <form id="send_room" method="POST" action='#'>
         <input type="text" name="room_name" id="room_name" placeholder="Room Name">
         <input type="text" name="room_data" id="room_data" placeholder="Message">
-        <input type="submit" value="Send to Room">
+        <input type="submit" value="Send to Room" id="sendSubmit">
     </form>
 	<div>	
 	<h2>Receive:</h2>

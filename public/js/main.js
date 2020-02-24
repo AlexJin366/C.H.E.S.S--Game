@@ -5,6 +5,8 @@ let selectedPiece = null;
 let piece;
 let oldPiece = null;
 let captured = false;
+let childId = null;
+let newChildId = null;
 
 var script = document.createElement('script');
 script.src = 'https://code.jquery.com/jquery-3.4.1.min.js';
@@ -73,29 +75,77 @@ function movePiece(element, childId) {
     moveOptions = new Array();
 }
 
+function updateBoard(oldPosition, newPosition) {
+
+    let oldSrc;
+    let newSrc;
+
+    for (let i = 0; i < chessArray.length; i++) {
+        if (chessArray[i].getPosition() == parseInt(oldPosition)) {
+            oldSrc = chessArray[i];
+            piece = chessArray[i];
+        }else if (chessArray[i].getPosition() == parseInt(newPosition)){
+            newSrc = chessArray[i];
+            piece = chessArray[i];
+        }
+    }
+    
+
+    document.getElementById(oldPosition).removeAttribute("src");
+    if(!captured){
+        if(newSrc){
+            document.getElementById(newPosition).src = newSrc.source;
+        }
+        else{
+            document.getElementById(newPosition).src = oldSrc.source;
+        }
+    }else{
+        if(newSrc){
+            document.getElementById(newPosition).src = newSrc.source;
+        }
+        else{
+            document.getElementById(newPosition).src = oldSrc.source;
+        }
+    }
+    
+    clearMoveMade();
+    piece.position = newPosition;
+    piece.default = false;
+    piece.clean();
+    moveOptions = new Array();
+}
+
+function test(msg){
+    let data = msg.data.split(",");
+    let oldPos = data[0];
+    let newPos = data[1];
+    updateBoard(oldPos, newPos);
+}
+
+let joined = false;
+
+function sendData(oldPosition, newPosition){
+    let data = [oldPosition, newPosition]
+    if(!joined){
+        document.getElementById("join_room").value = "1";
+        document.getElementById("joinSubmit").click();
+        joined = true;
+    }
+    document.getElementById("room_name").value = "1";
+    document.getElementById("room_data").value = data;
+    document.getElementById("sendSubmit").click();
+}
+
 function makeMove(element) {
-    // if()
-    let childId = parseFloat(element.childNodes[0].id);
+    let old = childId;
+    childId = parseFloat(element.childNodes[0].id);
     if (moveOptions.includes(childId)) {
         movePiece(element, childId);
         moveOptions = new Array();
         piece.moveOptions = new Array();
-		let data = [{'piece' : "sd", 'current_loc' : "fsafds", "new_loc" : "fdsajfkds"}]
-		namespace = '/test';
-		var socket = io(namespace);
-		
-		//socket.on('senddata', function (res) {
-		//	console.log(data);
-      //      socket.emit('my_response1', {room: $('1').val(), data: $('asdfasdf').val()});
-    //        return false;
-  //      });	
-				
-		$.post("/postmethod",{
-			javascript_data: JSON.stringify(data)
-		},
-		function(data, status){
-			console.log("Data: " + data + "\nStatus: " + status);
-		});
+        if(old && childId){
+            sendData(old, childId);
+        }
     } else {
         console.log("can't move there");
     }
