@@ -1,37 +1,6 @@
-class Pawn {
+class Pawn extends Piece{
     constructor(position, source, type) {
-        this.position = position;
-        this.source = source;
-        this.type = type;
-        this.default = true;
-        this.validMoves = new Array();
-    }
-
-    getPosition() {
-        //   console.log("My position is on " + this.position);
-        return this.position;
-    }
-
-    setPosition(newPos) {
-        this.position = newPos;
-    }
-
-    getSource() {
-        return this.source
-    }
-
-    highlightMoves(validMoves) {
-        for (let i = 0; i < validMoves.length; i++) {
-            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
-        }
-    }
-
-    getMoveArray() {
-        return this.validMoves;
-    }
-
-    clean() {
-        this.validMoves = new Array();
+        super(position,source,type);
     }
 
     checkCapture(){
@@ -69,7 +38,6 @@ class Pawn {
 
     getValidMoves() {
         let currentPos = Number(this.position);
-        console.log("------" + currentPos);
         if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
             selectedPiece = this.position;
