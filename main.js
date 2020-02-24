@@ -3,6 +3,8 @@ let moveOptions = new Array();
 let oldSelectedPiece = null;
 let selectedPiece = null;
 let piece;
+let oldPiece = null;
+let captured = false;
 
 function clearValidMoves() {
     for (let i = 0; i < chessArray.length; i++) {
@@ -21,6 +23,26 @@ function clearValidMoves() {
     piece.validMoves = new Array();
 }
 
+function capture(){
+    console.log("this is what is eating -- " + oldPiece.source);
+    console.log("this is being eaten --- " + piece.source);
+    if(moveOptions.includes(parseInt(piece.position, 10))){
+        console.log("yes can eat");
+        document.getElementById(piece.position).removeAttribute("src");
+        document.getElementById(oldPiece.position).removeAttribute("src");
+        document.getElementById(piece.position).src = oldPiece.source;
+        const index = chessArray.indexOf(piece);
+        piece = oldPiece;
+        if (index > -1) {
+            chessArray.splice(index, 1);
+        }
+        return true;
+    }else{
+        console.log("no cant eat");
+    }
+    // console.log("--what i want to eat" + position);
+}
+
 function clearMoveMade() {
     for (let i = 0; i < moveOptions.length; i++) {
         if (document.getElementById(moveOptions[i].toString()).parentElement.className == "BlackBlock") {
@@ -33,7 +55,12 @@ function clearMoveMade() {
 
 function movePiece(element, childId) {
     document.getElementById(piece.position).removeAttribute("src");
-    document.getElementById(childId).src = piece.source;
+    if(!captured){
+        document.getElementById(childId).src = piece.source;
+    }else{
+        document.getElementById(childId).src = oldPiece.source;
+    }
+    
     clearMoveMade();
     piece.position = childId;
     piece.default = false;
@@ -42,6 +69,7 @@ function movePiece(element, childId) {
 }
 
 function makeMove(element) {
+    // if()
     let childId = parseFloat(element.childNodes[0].id);
     if (moveOptions.includes(childId)) {
         movePiece(element, childId);
@@ -185,8 +213,9 @@ class Rook {
 
     highlightMoves(validMoves) {
         // console.log(validMoves);
-        for (let i = 0; i < validMoves.length; i++)
+        for (let i = 0; i < validMoves.length; i++){
             document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
+        }
     }
 
     getMoveArray() {
@@ -271,6 +300,7 @@ class Rook {
 
         moveOptions = this.getMoveArray();
         this.highlightMoves(this.getMoveArray());
+        
     }
 }
 
@@ -419,7 +449,7 @@ class Bishop {
     }
 
     boardcheck(number) {
-        console.log("Check,", number);
+        // console.log("Check,", number);
         if (number > 88 || number < 11) {
             return false;
         }
@@ -902,15 +932,34 @@ function load() {
     //     document.getElementById(piece.getPosition()).src = piece.getSource();
     // }
 }
+let first = true;
 
 function select(position) {
+    let found = false;
+    captured = false;
     for (let i = 0; i < chessArray.length; i++) {
-        if (chessArray[i].getPosition() == position) {
-            piece = chessArray[i];
+        if(first){
+            if (chessArray[i].getPosition() == position) {
+                piece = chessArray[i];
+                first = false;
+                found = true;
+                break;
+            }
+        }else if(!first){
+            if (chessArray[i].getPosition() == position) {
+                oldPiece = piece;
+                piece = chessArray[i];
+            }
         }
+        
     }
 
-    piece.getValidMoves();
-
+    if(oldPiece != null){
+        captured = capture();
+    }
+    if(!captured){
+        piece.getValidMoves();
+    }
+    
     console.log(piece);
 }
