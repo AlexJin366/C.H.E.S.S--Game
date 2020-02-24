@@ -1,58 +1,11 @@
-class Rook {
+class Rook extends Piece{
     constructor(position, source, type) {
-        this.position = position;
-        this.source = source;
-        this.type = type;
-        this.default = true;
-        this.validMoves = new Array();
-    }
-    getPosition() {
-        //   console.log("My position is on " + this.position);
-        return this.position;
-    }
-
-    setPosition(newPos) {
-        this.position = newPos;
-    }
-
-    getSource() {
-        return this.source
-    }
-
-    highlightMoves(validMoves) {
-        // console.log(validMoves);
-        for (let i = 0; i < validMoves.length; i++){
-            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
-        }
-    }
-
-    getMoveArray() {
-        return this.validMoves;
-    }
-
-    clean() {
-        this.validMoves = new Array();
-    }
-
-    checkCapture(position){
-        switch(this.type){
-            case "black":
-                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
-                    this.getMoveArray().push(position);
-                }
-                break;
-            case "white":
-                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
-                    this.getMoveArray().push(position);
-                }
-                break;
-        }
-        // console.log(position);
+        super(position,source,type);
     }
 
     getValidMoves() {
+        
         let currentPos = Number(this.position);
-        console.log("------" + currentPos);
         if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
             selectedPiece = this.position;
@@ -87,9 +40,11 @@ class Rook {
         //moves left
         for (let i = 1; i < 9; i += 1) {
             let option = currentPos - i;
-            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
+            let mathRequirement1 = (Math.floor(currentPos / 10) * 10 + 9);
+            let mathRequirement2 = (Math.floor(currentPos / 10) * 10);
+            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != ""){
                 this.checkCapture(option);
                 break;
             }
@@ -98,9 +53,11 @@ class Rook {
         // //moves right
         for (let i = 1; i < 9; i += 1) {
             let option = currentPos + i;
-            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
+            let mathRequirement1 = (Math.floor(currentPos / 10) * 10 + 9);
+            let mathRequirement2 = (Math.floor(currentPos / 10) * 10);
+            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != ""){
                 this.checkCapture(option);
                 break
             }
