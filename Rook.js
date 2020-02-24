@@ -50,7 +50,7 @@ class Rook extends Piece{
             }
         }
 
-        // //moves right
+        //moves right
         for (let i = 1; i < 9; i += 1) {
             let option = currentPos + i;
             let mathRequirement1 = (Math.floor(currentPos / 10) * 10 + 9);
