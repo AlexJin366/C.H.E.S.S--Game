@@ -1,56 +1,5 @@
-class Bishop {
-    constructor(position, source, type) {
-        this.position = position;
-        this.source = source;
-        this.type = type;
-        this.default = true;
-        this.validMoves = new Array();
-    }
-    getPosition() {
-        //   console.log("My position is on " + this.position);
-        return this.position;
-    }
-
-    setPosition(newPos) {
-        this.position = newPos;
-    }
-
-    getSource() {
-        return this.source
-    }
-
-    highlightMoves(validMoves) {
-        // console.log(validMoves);
-        for (let i = 0; i < validMoves.length; i++)
-            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
-    }
-
-    getMoveArray() {
-        return this.validMoves;
-    }
-
-    clean() {
-        this.validMoves = new Array();
-    }
-
-    checkCapture(position){
-        switch(this.type){
-            case "black":
-                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
-                    this.getMoveArray().push(position);
-                }
-                break;
-            case "white":
-                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
-                    this.getMoveArray().push(position);
-                }
-                break;
-        }
-        // console.log(position);
-    }
-
+class Bishop extends Piece {
     boardcheck(number) {
-        // console.log("Check,", number);
         if (number > 88 || number < 11) {
             return false;
         }
@@ -62,7 +11,6 @@ class Bishop {
 
     getValidMoves() {
         let currentPos = Number(this.position);
-        console.log("------" + currentPos);
         if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
             selectedPiece = this.position;
@@ -80,7 +28,8 @@ class Bishop {
             if (!check) { continue; }
 
             do {
-                if (document.getElementById(option.toString()).src == ""){
+                var isEmptySquare = document.getElementById(option.toString()).src == "";
+                if (isEmptySquare){
                     this.getMoveArray().push(option);
                 }else{
                     this.checkCapture(option);
