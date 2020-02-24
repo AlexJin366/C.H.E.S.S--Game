@@ -25,6 +25,13 @@ table, th , td{
 th, td{
     text-align: left;
 }
+
 .BoardBlock{
     height: 80px;
+}
+
+.blockDimension{
+	height: 100px;
+	width: 100px;
+	text-align: center;
 }
