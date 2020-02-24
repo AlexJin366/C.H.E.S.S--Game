@@ -40,11 +40,11 @@ class Rook extends Piece{
         //moves left
         for (let i = 1; i < 9; i += 1) {
             let option = currentPos - i;
-            let mathRequierment1 = (Math.floor(currentPos / 10) * 10 + 9);
-            let MathRequierment2 = (Math.floor(currentPos / 10) * 10);
-            if (option > mathRequierment2 && option < mathRequierment1 && document.getElementById(option.toString()).src == "")
+            let mathRequirement1 = (Math.floor(currentPos / 10) * 10 + 9);
+            let mathRequirement2 = (Math.floor(currentPos / 10) * 10);
+            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > mathRequierment2 && option < mathRequierment1 && document.getElementById(option.toString()).src != ""){
+            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != ""){
                 this.checkCapture(option);
                 break;
             }
@@ -53,11 +53,11 @@ class Rook extends Piece{
         // //moves right
         for (let i = 1; i < 9; i += 1) {
             let option = currentPos + i;
-            let mathRequierment1 = (Math.floor(currentPos / 10) * 10 + 9);
-            let mathRequierment2 = (Math.floor(currentPos / 10) * 10);
-            if (option > mathRequierment2 && option < mathRequierment1 && document.getElementById(option.toString()).src == "")
+            let mathRequirement1 = (Math.floor(currentPos / 10) * 10 + 9);
+            let mathRequirement2 = (Math.floor(currentPos / 10) * 10);
+            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > mathRequierment2 && option < mathRequierment1 && document.getElementById(option.toString()).src != ""){
+            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != ""){
                 this.checkCapture(option);
                 break
             }
