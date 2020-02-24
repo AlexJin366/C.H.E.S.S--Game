@@ -1,8 +1,7 @@
 class King extends Piece {
-    constructor(position, source, type){
+    constructor(position, source, type) {
         super(position, source, type);
     }
-
     
     getValidMoves() {
         let currentPos = Number(this.position);

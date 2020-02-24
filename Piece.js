@@ -7,7 +7,6 @@ class Piece {
         this.validMoves = new Array();
     }
     getPosition() {
-        //   console.log("My position is on " + this.position);
         return this.position;
     }
 
