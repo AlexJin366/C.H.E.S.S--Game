@@ -36,12 +36,12 @@ class Queen {
     checkCapture(position){
         switch(this.type){
             case "black":
-                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
+                if(document.getElementById(position.toString()).src.includes("/Pieces/White/")){
                     this.getMoveArray().push(position);
                 }
                 break;
             case "white":
-                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
+                if(document.getElementById(position.toString()).src.includes("/Pieces/Black/")){
                     this.getMoveArray().push(position);
                 }
                 break;
