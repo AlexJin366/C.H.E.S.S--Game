@@ -1,54 +1,9 @@
-class King {
-    constructor(position, source, type) {
-        this.position = position;
-        this.source = source;
-        this.type = type;
-        this.default = true;
-        this.validMoves = new Array();
-    }
-    getPosition() {
-        //   console.log("My position is on " + this.position);
-        return this.position;
+class King extends Piece {
+    constructor(position, source, type){
+        super(position, source, type);
     }
 
-    setPosition(newPos) {
-        this.position = newPos;
-    }
-
-    getSource() {
-        return this.source
-    }
-
-    highlightMoves(validMoves) {
-        // console.log(validMoves);
-        for (let i = 0; i < validMoves.length; i++)
-            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
-    }
-
-    getMoveArray() {
-        return this.validMoves;
-    }
-
-    clean() {
-        this.validMoves = new Array();
-    }
-
-    checkCapture(position){
-        switch(this.type){
-            case "black":
-                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
-                    this.getMoveArray().push(position);
-                }
-                break;
-            case "white":
-                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
-                    this.getMoveArray().push(position);
-                }
-                break;
-        }
-        // console.log(position);
-    }
-
+    
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
