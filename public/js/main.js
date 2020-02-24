@@ -487,6 +487,7 @@ class Board {
     }
 
     renderBoard() {
+
         let boardHTML = `<table class="ChessBoard">
         <tr>
             <td><div class="BoardBlock" onclick="makeMove(this)"><img onclick="select(this.id)" id="11"></div></td>
@@ -568,7 +569,6 @@ class Board {
             <td><div class="BlackBlock" onclick="makeMove(this)"><img onclick="select(this.id)" id="87"></div></td>
             <td><div class="BoardBlock" onclick="makeMove(this)"><img onclick="select(this.id)" id="88"></div></td>
         </tr>
-
     </table>`;
 
         document.getElementsByClassName("Board_div")[0].innerHTML = boardHTML;
