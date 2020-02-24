@@ -45,7 +45,7 @@ function capture(){
 
 function clearMoveMade() {
     for (let i = 0; i < moveOptions.length; i++) {
-        if (document.getElementById(moveOptions[i].toString()).parentElement.className == "BlackBlock") {
+        if (document.getElementById(moveOptions[i].toString()).parentElement.className == "BlackDimension BlackBlock") {
             document.getElementById(moveOptions[i].toString()).parentElement.style.background = "gray";
         } else {
             document.getElementById(moveOptions[i].toString()).parentElement.style.background = "white";

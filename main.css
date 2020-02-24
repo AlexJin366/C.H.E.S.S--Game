@@ -19,6 +19,7 @@ table, th , td{
 
 .BlackBlock{
     height: 100%;
+    width: 100px;
     background: gray;
 }
 
@@ -28,10 +29,18 @@ th, td{
 
 .BoardBlock{
     height: 80px;
+    width: 100px;
 }
 
-.blockDimension{
+.BlockDimension{
 	height: 100px;
 	width: 100px;
 	text-align: center;
+}
+
+.BlackDimension{
+	height: 100px;
+	width: 100px;
+	text-align: center;
+	background: gray;
 }
