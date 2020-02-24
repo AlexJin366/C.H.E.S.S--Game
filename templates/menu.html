@@ -40,11 +40,8 @@
             });
 			
 			socket.on('my_response1', function(msg, cb) {
-				//if(cb){}
                 $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
-				 
                 if (cb)
-					
                     cb();
 					//window.location = "/index";
             });

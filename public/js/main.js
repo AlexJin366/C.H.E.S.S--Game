@@ -6,6 +6,11 @@ let piece;
 let oldPiece = null;
 let captured = false;
 
+var script = document.createElement('script');
+script.src = 'https://code.jquery.com/jquery-3.4.1.min.js';
+script.type = 'text/javascript';
+document.getElementsByTagName('head')[0].appendChild(script);
+
 function clearValidMoves() {
     for (let i = 0; i < chessArray.length; i++) {
         if (chessArray[i].getPosition() == oldSelectedPiece) {
@@ -75,6 +80,22 @@ function makeMove(element) {
         movePiece(element, childId);
         moveOptions = new Array();
         piece.moveOptions = new Array();
+		let data = [{'piece' : "sd", 'current_loc' : "fsafds", "new_loc" : "fdsajfkds"}]
+		namespace = '/test';
+		var socket = io(namespace);
+		
+		//socket.on('senddata', function (res) {
+		//	console.log(data);
+      //      socket.emit('my_response1', {room: $('1').val(), data: $('asdfasdf').val()});
+    //        return false;
+  //      });	
+				
+		$.post("/postmethod",{
+			javascript_data: JSON.stringify(data)
+		},
+		function(data, status){
+			console.log("Data: " + data + "\nStatus: " + status);
+		});
     } else {
         console.log("can't move there");
     }

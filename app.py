@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 from threading import Lock
 from flask import Flask, render_template, session, request, \
-    copy_current_request_context
+    copy_current_request_context,request,jsonify
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
-
+import sys
+import json
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
 # the best option based on installed packages.
@@ -104,10 +105,28 @@ def disconnect_request():
          {'data': 'Disconnected!', 'count': session['receive_count']},
          callback=can_disconnect)
 
+@socketio.on('senddata', namespace='/test')
+def senddata():
+    return "RETURN"
+    
+
 
 @socketio.on('my_ping', namespace='/test')
 def ping_pong():
     emit('my_pong')
+    
+@app.route('/postmethod', methods = ['POST'])
+def get_post_javascript_data():
+    if request.method == "POST":
+        jsdata = json.loads(request.form['javascript_data'])#request.form['javascript_data']
+    gamepiece = jsdata[0]['piece']
+    current_loc = jsdata[0]['current_loc']
+    new_loc = jsdata[0]['new_loc']
+    return jsonify(gamepiece,current_loc,new_loc)
+    #return emit('broadcast', 'hello friends!');
+
+
+#need a method to broadcast info
 
 
 @socketio.on('connect', namespace='/test')
