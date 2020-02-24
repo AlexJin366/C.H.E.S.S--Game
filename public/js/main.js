@@ -3,6 +3,8 @@ let moveOptions = new Array();
 let oldSelectedPiece = null;
 let selectedPiece = null;
 let piece;
+let oldPiece = null;
+let captured = false;
 
 function clearValidMoves() {
     for (let i = 0; i < chessArray.length; i++) {
@@ -21,6 +23,26 @@ function clearValidMoves() {
     piece.validMoves = new Array();
 }
 
+function capture(){
+    console.log("this is what is eating -- " + oldPiece.source);
+    console.log("this is being eaten --- " + piece.source);
+    if(moveOptions.includes(parseInt(piece.position, 10))){
+        console.log("yes can eat");
+        document.getElementById(piece.position).removeAttribute("src");
+        document.getElementById(oldPiece.position).removeAttribute("src");
+        document.getElementById(piece.position).src = oldPiece.source;
+        const index = chessArray.indexOf(piece);
+        piece = oldPiece;
+        if (index > -1) {
+            chessArray.splice(index, 1);
+        }
+        return true;
+    }else{
+        console.log("no cant eat");
+    }
+    // console.log("--what i want to eat" + position);
+}
+
 function clearMoveMade() {
     for (let i = 0; i < moveOptions.length; i++) {
         if (document.getElementById(moveOptions[i].toString()).parentElement.className == "BlackBlock") {
@@ -33,7 +55,12 @@ function clearMoveMade() {
 
 function movePiece(element, childId) {
     document.getElementById(piece.position).removeAttribute("src");
-    document.getElementById(childId).src = piece.source;
+    if(!captured){
+        document.getElementById(childId).src = piece.source;
+    }else{
+        document.getElementById(childId).src = oldPiece.source;
+    }
+    
     clearMoveMade();
     piece.position = childId;
     piece.default = false;
@@ -42,6 +69,7 @@ function movePiece(element, childId) {
 }
 
 function makeMove(element) {
+    // if()
     let childId = parseFloat(element.childNodes[0].id);
     if (moveOptions.includes(childId)) {
         movePiece(element, childId);
@@ -88,6 +116,39 @@ class Pawn {
         this.validMoves = new Array();
     }
 
+    checkCapture(){
+        let currentPos = Number(this.position);
+        if (selectedPiece != this.position) {
+            oldSelectedPiece = selectedPiece;
+            selectedPiece = this.position;
+            clearValidMoves();
+            this.clean();
+        }
+        if(this.type == "black"){
+            if(((currentPos + 9) < (Math.floor((currentPos+10) / 10) * 10 + 9)) && (currentPos + 9) > (Math.floor((currentPos+10) / 10) * 10)){
+                if(document.getElementById((currentPos + 9).toString()).src != "" && document.getElementById((currentPos + 9).toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(currentPos + 9);
+                }
+            }
+            if(((currentPos + 11) < (Math.floor((currentPos+10) / 10) * 10 + 9)) && (currentPos + 11) > (Math.floor((currentPos+10) / 10) * 10)){
+                if(document.getElementById(currentPos + 11).toString().src != "" && document.getElementById((currentPos + 11).toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(currentPos + 11);
+                }
+            }
+        }else{
+            if(((currentPos - 9) < (Math.floor((currentPos-10) / 10) * 10 + 9)) && (currentPos - 9) > (Math.floor((currentPos-10) / 10) * 10)){
+                if(document.getElementById((currentPos - 9).toString()).src != "" && document.getElementById((currentPos - 9).toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(currentPos - 9);
+                }
+            }
+            if(((currentPos - 11) < (Math.floor((currentPos-10) / 10) * 10 + 9)) && (currentPos - 11) > (Math.floor((currentPos-10) / 10) * 10)){
+                if(document.getElementById(currentPos - 11).toString().src != "" && document.getElementById((currentPos - 11).toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(currentPos - 11);
+                }
+            }
+        }
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -123,6 +184,7 @@ class Pawn {
                 }
             }
         }
+        this.checkCapture();
         moveOptions = this.getMoveArray();
         this.highlightMoves(this.getMoveArray());
     }
@@ -151,8 +213,9 @@ class Rook {
 
     highlightMoves(validMoves) {
         // console.log(validMoves);
-        for (let i = 0; i < validMoves.length; i++)
+        for (let i = 0; i < validMoves.length; i++){
             document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
+        }
     }
 
     getMoveArray() {
@@ -161,6 +224,22 @@ class Rook {
 
     clean() {
         this.validMoves = new Array();
+    }
+
+    checkCapture(position){
+        switch(this.type){
+            case "black":
+                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+            case "white":
+                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+        }
+        // console.log(position);
     }
 
     getValidMoves() {
@@ -178,8 +257,10 @@ class Rook {
         //moves down
         for (let i = 10; i < movesUp; i += 10) {
             let option = currentPos + i;
-            if (document.getElementById(option.toString()).src != "")
+            if (document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break;
+            }
             if (option > 10)
                 this.getMoveArray().push(option);
         }
@@ -189,8 +270,10 @@ class Rook {
             let option = currentPos - i;
             if (option > 10 && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > 10 && document.getElementById(option.toString()).src != "")
+            if (option > 10 && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break;
+            }
         }
 
         //moves left
@@ -198,8 +281,10 @@ class Rook {
             let option = currentPos - i;
             if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != "")
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break;
+            }
         }
 
         // //moves right
@@ -207,12 +292,15 @@ class Rook {
             let option = currentPos + i;
             if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != "")
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
                 break
+            }
         }
 
         moveOptions = this.getMoveArray();
         this.highlightMoves(this.getMoveArray());
+        
     }
 }
 
@@ -251,6 +339,22 @@ class Knight {
         this.validMoves = new Array();
     }
 
+    checkCapture(position){
+        switch(this.type){
+            case "black":
+                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+            case "white":
+                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+        }
+        // console.log(position);
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -278,8 +382,12 @@ class Knight {
                 if (option % 10 == 0 || option % 10 == 9) {
                     continue;
                 }
-                // console.log(option);
-                this.getMoveArray().push(option);
+                if(document.getElementById(option.toString()).src == ""){
+                    // console.log(option);
+                    this.getMoveArray().push(option);
+                }else{
+                    this.checkCapture(option);
+                }
             }
         }
 
@@ -324,6 +432,33 @@ class Bishop {
         this.validMoves = new Array();
     }
 
+    checkCapture(position){
+        switch(this.type){
+            case "black":
+                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+            case "white":
+                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+        }
+        // console.log(position);
+    }
+
+    boardcheck(number) {
+        // console.log("Check,", number);
+        if (number > 88 || number < 11) {
+            return false;
+        }
+        else if (number % 10 > 8 || number % 10 == 0) {
+            return false;
+        }
+        else { return true; }
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -334,17 +469,25 @@ class Bishop {
             this.clean();
         }
 
-        let bishopMoves = [];
+        let bishopMoves = [9, -9, 11, -11];
 
         for (let i = 0; i < bishopMoves.length; i++) {
-            let option = currentPos + bishopMoves[i];
-            if (option >= 10 && option <= 88) {
-                if (option % 10 == 0 || option % 10 == 9) {
-                    continue;
+            let option = currentPos;
+            option += bishopMoves[i];
+
+            var check = this.boardcheck(option);
+            if (!check) { continue; }
+
+            do {
+                if (document.getElementById(option.toString()).src == ""){
+                    this.getMoveArray().push(option);
+                }else{
+                    this.checkCapture(option);
+                    break;
                 }
-                // console.log(option);
-                this.getMoveArray().push(option);
-            }
+                option += bishopMoves[i];
+            } while (this.boardcheck(option));
+
         }
 
         moveOptions = this.getMoveArray();
@@ -388,6 +531,33 @@ class Queen {
         this.validMoves = new Array();
     }
 
+    checkCapture(position){
+        switch(this.type){
+            case "black":
+                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+            case "white":
+                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+        }
+        // console.log(position);
+    }
+
+    boardcheck(number) {
+        console.log("Check,", number);
+        if (number > 88 || number < 11) {
+            return false;
+        }
+        else if (number % 10 > 8 || number % 10 == 0) {
+            return false;
+        }
+        else { return true; }
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -400,15 +570,71 @@ class Queen {
 
         let queenMoves = [];
 
-        for (let i = 0; i < queenMoves.length; i++) {
-            let option = currentPos + queenMoves[i];
-            if (option >= 10 && option <= 88) {
-                if (option % 10 == 0 || option % 10 == 9) {
-                    continue;
-                }
-                // console.log(option);
-                this.getMoveArray().push(option);
+        let movesUp = 90 - currentPos;
+
+        //moves down
+        for (let i = 10; i < movesUp; i += 10) {
+            let option = currentPos + i;
+            if (document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
+                break;
             }
+            if (option > 10)
+                this.getMoveArray().push(option);
+        }
+
+        //moves up
+        for (let i = 10; i < 90; i += 10) {
+            let option = currentPos - i;
+            if (option > 10 && document.getElementById(option.toString()).src == "")
+                this.getMoveArray().push(option);
+            if (option > 10 && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
+                break;
+            }
+        }
+
+        //moves left
+        for (let i = 1; i < 9; i += 1) {
+            let option = currentPos - i;
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
+                this.getMoveArray().push(option);
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
+                break;
+            }
+        }
+
+        // //moves right
+        for (let i = 1; i < 9; i += 1) {
+            let option = currentPos + i;
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
+                this.getMoveArray().push(option);
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+                this.checkCapture(option);
+                break
+            }
+        }
+
+        let bishopMoves = [9, -9, 11, -11];
+
+        for (let i = 0; i < bishopMoves.length; i++) {
+            let option = currentPos;
+            option += bishopMoves[i];
+
+            var check = this.boardcheck(option);
+            if (!check) { continue; }
+
+            do {
+                if (document.getElementById(option.toString()).src == ""){
+                    this.getMoveArray().push(option);
+                }else{
+                    this.checkCapture(option);
+                    break;
+                }
+                option += bishopMoves[i];
+            } while (this.boardcheck(option));
+
         }
 
         moveOptions = this.getMoveArray();
@@ -452,6 +678,22 @@ class King {
         this.validMoves = new Array();
     }
 
+    checkCapture(position){
+        switch(this.type){
+            case "black":
+                if(document.getElementById(position.toString()).src.includes("Pices/White/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+            case "white":
+                if(document.getElementById(position.toString()).src.includes("Pices/Black/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+        }
+        // console.log(position);
+    }
+
     getValidMoves() {
         let currentPos = Number(this.position);
         console.log("------" + currentPos);
@@ -470,8 +712,14 @@ class King {
                 if (option % 10 == 0 || option % 10 == 9) {
                     continue;
                 }
+
+                if(document.getElementById(option.toString()).src == ""){
+                    this.getMoveArray().push(option);
+                }else{
+                    this.checkCapture(option);
+                }
                 // console.log(option);
-                this.getMoveArray().push(option);
+                // this.getMoveArray().push(option);
             }
         }
 
@@ -487,7 +735,6 @@ class Board {
     }
 
     renderBoard() {
-
         let boardHTML = `<table class="ChessBoard">
         <tr>
             <td><div class="BoardBlock" onclick="makeMove(this)"><img onclick="select(this.id)" id="11"></div></td>
@@ -569,6 +816,7 @@ class Board {
             <td><div class="BlackBlock" onclick="makeMove(this)"><img onclick="select(this.id)" id="87"></div></td>
             <td><div class="BoardBlock" onclick="makeMove(this)"><img onclick="select(this.id)" id="88"></div></td>
         </tr>
+
     </table>`;
 
         document.getElementsByClassName("Board_div")[0].innerHTML = boardHTML;
@@ -576,54 +824,61 @@ class Board {
             let piece = this.pieces[i];
             document.getElementById(piece.getPosition()).src = piece.getSource();
         }
+
+        // TESTING PURPOSES
+        // var cols = document.getElementsByClassName('ChessBoard')[0].getElementsByTagName('td');
+        // for(let i = 0; i < cols.length; i++){
+        //     // console.log(cols[i].childNodes[0].lastElementChild.id);
+        //     document.getElementsByTagName("td")[i].innerHTML += cols[i].childNodes[0].lastElementChild.id
+        // }
     }
 }
 
 function load() {
 
-    let blackPawn0 = new Pawn("21", "./img/Black/bP.png", "black");
-    let blackPawn1 = new Pawn("22", "./img/Black/bP.png", "black");
-    let blackPawn2 = new Pawn("23", "./img/Black/bP.png", "black");
-    let blackPawn3 = new Pawn("24", "./img/Black/bP.png", "black");
-    let blackPawn4 = new Pawn("25", "./img/Black/bP.png", "black");
-    let blackPawn5 = new Pawn("26", "./img/Black/bP.png", "black");
-    let blackPawn6 = new Pawn("27", "./img/Black/bP.png", "black");
-    let blackPawn7 = new Pawn("28", "./img/Black/bP.png", "black");
+    let blackPawn0 = new Pawn("21", "Pices/Black/bP.png", "black");
+    let blackPawn1 = new Pawn("22", "Pices/Black/bP.png", "black");
+    let blackPawn2 = new Pawn("23", "Pices/Black/bP.png", "black");
+    let blackPawn3 = new Pawn("24", "Pices/Black/bP.png", "black");
+    let blackPawn4 = new Pawn("25", "Pices/Black/bP.png", "black");
+    let blackPawn5 = new Pawn("26", "Pices/Black/bP.png", "black");
+    let blackPawn6 = new Pawn("27", "Pices/Black/bP.png", "black");
+    let blackPawn7 = new Pawn("28", "Pices/Black/bP.png", "black");
 
-    let whitePawn0 = new Pawn("71", "./img/White/wP.png", "white");
-    let whitePawn1 = new Pawn("72", "./img/White/wP.png", "white");
-    let whitePawn2 = new Pawn("73", "./img/White/wP.png", "white");
-    let whitePawn3 = new Pawn("74", "./img/White/wP.png", "white");
-    let whitePawn4 = new Pawn("75", "./img/White/wP.png", "white");
-    let whitePawn5 = new Pawn("76", "./img/White/wP.png", "white");
-    let whitePawn6 = new Pawn("77", "./img/White/wP.png", "white");
-    let whitePawn7 = new Pawn("78", "./img/White/wP.png", "white");
+    let whitePawn0 = new Pawn("71", "Pices/White/wP.png", "white");
+    let whitePawn1 = new Pawn("72", "Pices/White/wP.png", "white");
+    let whitePawn2 = new Pawn("73", "Pices/White/wP.png", "white");
+    let whitePawn3 = new Pawn("74", "Pices/White/wP.png", "white");
+    let whitePawn4 = new Pawn("75", "Pices/White/wP.png", "white");
+    let whitePawn5 = new Pawn("76", "Pices/White/wP.png", "white");
+    let whitePawn6 = new Pawn("77", "Pices/White/wP.png", "white");
+    let whitePawn7 = new Pawn("78", "Pices/White/wP.png", "white");
 
-    let blackRook1 = new Rook("11", "./img/Black/bR.png", "black");
-    let blackRook2 = new Rook("18", "./img/Black/bR.png", "black");
+    let blackRook1 = new Rook("11", "Pices/Black/bR.png", "black");
+    let blackRook2 = new Rook("18", "Pices/Black/bR.png", "black");
 
-    let whiteRook1 = new Rook("81", "./img/White/wR.png", "white");
-    let whiteRook2 = new Rook("88", "./img/White/wR.png", "white");
+    let whiteRook1 = new Rook("81", "Pices/White/wR.png", "white");
+    let whiteRook2 = new Rook("88", "Pices/White/wR.png", "white");
 
-    let blackKnight1 = new Knight("12", "./img/Black/bN.png", "black");
-    let blackKnight2 = new Knight("17", "./img/Black/bN.png", "black");
+    let blackKnight1 = new Knight("12", "Pices/Black/bN.png", "black");
+    let blackKnight2 = new Knight("17", "Pices/Black/bN.png", "black");
 
-    let whiteKnight1 = new Knight("82", "./img/White/wN.png", "white");
-    let whiteKnight2 = new Knight("87", "./img/White/wN.png", "white");
+    let whiteKnight1 = new Knight("82", "Pices/White/wN.png", "white");
+    let whiteKnight2 = new Knight("87", "Pices/White/wN.png", "white");
 
-    let blackBishop1 = new Bishop("13", "./img/Black/bB.png", "black");
-    let blackBishop2 = new Bishop("16", "./img/Black/bB.png", "black");
+    let blackBishop1 = new Bishop("13", "Pices/Black/bB.png", "black");
+    let blackBishop2 = new Bishop("16", "Pices/Black/bB.png", "black");
 
-    let whiteBishop1 = new Bishop("83", "./img/White/wB.png", "white");
-    let whiteBishop2 = new Bishop("86", "./img/White/wB.png", "white");
+    let whiteBishop1 = new Bishop("83", "Pices/White/wB.png", "white");
+    let whiteBishop2 = new Bishop("86", "Pices/White/wB.png", "white");
 
-    let blackQueen1 = new Queen("14", "./img/Black/bQ.png", "black");
+    let blackQueen1 = new Queen("14", "Pices/Black/bQ.png", "black");
 
-    let whiteQueen1 = new Queen("84", "./img/White/wQ.png", "white");
+    let whiteQueen1 = new Queen("84", "Pices/White/wQ.png", "white");
 
-    let blackKing1 = new King("15", "./img/Black/bK.png", "black");
+    let blackKing1 = new King("15", "Pices/Black/bK.png", "black");
 
-    let whiteKing1 = new King("85", "./img/White/wK.png", "white");
+    let whiteKing1 = new King("85", "Pices/White/wK.png", "white");
 
     chessArray.push(blackPawn0);
     chessArray.push(blackPawn1);
@@ -677,15 +932,34 @@ function load() {
     //     document.getElementById(piece.getPosition()).src = piece.getSource();
     // }
 }
+let first = true;
 
 function select(position) {
+    let found = false;
+    captured = false;
     for (let i = 0; i < chessArray.length; i++) {
-        if (chessArray[i].getPosition() == position) {
-            piece = chessArray[i];
+        if(first){
+            if (chessArray[i].getPosition() == position) {
+                piece = chessArray[i];
+                first = false;
+                found = true;
+                break;
+            }
+        }else if(!first){
+            if (chessArray[i].getPosition() == position) {
+                oldPiece = piece;
+                piece = chessArray[i];
+            }
         }
+        
     }
 
-    piece.getValidMoves();
-
+    if(oldPiece != null){
+        captured = capture();
+    }
+    if(!captured){
+        piece.getValidMoves();
+    }
+    
     console.log(piece);
 }
