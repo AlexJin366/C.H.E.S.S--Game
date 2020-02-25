@@ -7,11 +7,66 @@ let oldPiece = null;
 let captured = false;
 let childId = null;
 let newChildId = null;
+let globalBoard = null;
+let boardObj;
+let socket;
 
 var script = document.createElement('script');
 script.src = 'https://code.jquery.com/jquery-3.4.1.min.js';
 script.type = 'text/javascript';
 document.getElementsByTagName('head')[0].appendChild(script);
+
+$(document).ready(function () {
+    // 	// Use a "/test" namespace.
+    //         // An application can open a connection on multiple namespaces, and
+    //         // Socket.IO will multiplex all those connections on a single
+    //         // physical channel. If you don't care about multiple channels, you
+    //         // can set the namespace to an empty string.
+    namespace = '/test';
+
+    //         // Connect to the Socket.IO server.
+    //         // The connection URL has the following format, relative to the current page:
+    //         //     http[s]://<domain>:<port>[/<namespace>]
+    socket = io(namespace);
+
+    //         // Event handler for new connections.
+    //         // The callback function is invoked when a connection with the
+    //         // server is established.
+    socket.on('connect', function () {
+        socket.emit('my_event', { data: 'I\'m connected!' });
+    });
+
+    //         // Event handler for server sent data.
+    //         // The callback function is invoked whenever the server emits data
+    //         // to the client. The data is then displayed in the "Received"
+    //         // section of the page.
+
+    socket.on('my_response', function (msg, cb) {
+        console.log("fdsja")
+        // $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
+        if (cb)
+            cb();
+    });
+
+    socket.on('my_response1', function (msg, cb) {
+        // $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
+        console.log("-------" + msg);
+        test(msg);
+        if (cb) {
+            cb();
+        }
+    });
+
+    // $('form#join').submit(function (event) {
+    //     socket.emit('join', { room: $('#join_room').val() });
+    //     return false;
+    // });
+
+    // $('form#send_room').submit(function (event) {
+    //     socket.emit('my_room_event', { room: $('#room_name').val(), data: $('#room_data').val() });
+    //     return false;
+    // });
+});		
 
 function clearValidMoves() {
     for (let i = 0; i < chessArray.length; i++) {
@@ -75,16 +130,43 @@ function movePiece(element, childId) {
     moveOptions = new Array();
 }
 
-function updateBoard(oldPosition, newPosition) {
+function createObject(object, i){
+    let position = object.position;
+    let src = object.source;
+    let type = object.type;
+    switch (src.substring(src.length-5, src.length)){
+        case "B.png":
+            chessArray[i] = new Bishop(position, src, type)
+            break;
+        case "K.png":
+            chessArray[i] = new King(position, src, type)
+            break;
+        case "N.png":
+            chessArray[i] = new Knight(position, src, type)
+            break;
+        case "P.png":
+            chessArray[i] = new Pawn(position, src, type)
+            break;
+        case "Q.png":
+            chessArray[i] = new Queen(position, src, type)
+            break;
+        case "R.png":
+            chessArray[i] = new Rook(position, src, type)
+            break;
+    }
+
+}
+
+function updateBoard(oldPosition, newPosition, board) {
 
     let oldSrc;
     let newSrc;
 
     for (let i = 0; i < chessArray.length; i++) {
-        if (chessArray[i].getPosition() == parseInt(oldPosition)) {
+        if (chessArray[i].position == oldPosition) {
             oldSrc = chessArray[i];
             piece = chessArray[i];
-        }else if (chessArray[i].getPosition() == parseInt(newPosition)){
+        }else if (chessArray[i].position == newPosition){
             newSrc = chessArray[i];
             piece = chessArray[i];
         }
@@ -111,40 +193,62 @@ function updateBoard(oldPosition, newPosition) {
     clearMoveMade();
     piece.position = newPosition;
     piece.default = false;
-    piece.clean();
+    piece.validMoves = new Array();
     moveOptions = new Array();
+    // globalBoard = board;
+    // boardObj.update(globalBoard);
 }
 
 function test(msg){
-    let data = msg.data.split(",");
-    let oldPos = data[0];
-    let newPos = data[1];
-    updateBoard(oldPos, newPos);
+    // console.log(msg);
+    let oldPos = msg.data[0];
+    let newPos = msg.data[1];
+    chessArray = msg.data[2];
+    for(let i  = 0; i < chessArray.length; i++){
+        createObject(chessArray[i], i);
+    }
+    console.log("here" + chessArray);
+    updateBoard(oldPos, newPos, globalBoard);
 }
 
 let joined = false;
 
-function sendData(oldPosition, newPosition){
-    let data = [oldPosition, newPosition]
-    if(!joined){
-        document.getElementById("join_room").value = "1";
-        document.getElementById("joinSubmit").click();
-        joined = true;
-    }
-    document.getElementById("room_name").value = "1";
-    document.getElementById("room_data").value = data;
-    document.getElementById("sendSubmit").click();
+function sendData(oldPosition, newPosition, chessArray){
+    console.log(chessArray);
+    let data = [oldPosition, newPosition, chessArray]
+
+    // namespace = '/test';
+    // let socket1 = io(namespace);
+    socket.emit('my_room_event', { room: '1' , "data" : data});
+
+    // socket1.on('my_response1', function (msg, cb) {
+    //     $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
+    //     console.log("-------" + msg);
+    //     test(msg);
+    //     if(cb){
+    //         cb();
+    //     }
+    // });
+
+    // if(!joined){
+    //     document.getElementById("join_room").value = "1";
+    //     document.getElementById("joinSubmit").click();
+    //     joined = true;
+    // }
+    // document.getElementById("room_name").value = "1";
+    // document.getElementById("room_data").value = data;
+    // document.getElementById("sendSubmit").click();
 }
 
 function makeMove(element) {
     let old = childId;
     childId = parseFloat(element.childNodes[0].id);
     if (moveOptions.includes(childId)) {
-        movePiece(element, childId);
+        movePiece(element, childId.toString());
         moveOptions = new Array();
-        piece.moveOptions = new Array();
+        // piece.moveOptions = new Array();
         if(old && childId){
-            sendData(old, childId);
+            sendData(old, childId.toString(), chessArray);
         }
     } else {
         console.log("can't move there");
@@ -803,10 +907,11 @@ class King {
 class Board {
     constructor(pieces) {
         this.pieces = pieces;
+        this.boardHTML = null;
     }
 
     renderBoard() {
-        let boardHTML = `<table class="ChessBoard">
+        this.boardHTML = `<table class="ChessBoard">
         <tr>
             <td><div class="BoardBlock" onclick="makeMove(this)"><img onclick="select(this.id)" id="11"></div></td>
             <td><div class="BlackBlock" onclick="makeMove(this)"><img onclick="select(this.id)" id="12"></div></td>
@@ -890,7 +995,7 @@ class Board {
 
     </table>`;
 
-        document.getElementsByClassName("Board_div")[0].innerHTML = boardHTML;
+        document.getElementsByClassName("Board_div")[0].innerHTML = this.boardHTML;
         for (let i = 0; i < this.pieces.length; i++) {
             let piece = this.pieces[i];
             document.getElementById(piece.getPosition()).src = piece.getSource();
@@ -902,6 +1007,15 @@ class Board {
         //     // console.log(cols[i].childNodes[0].lastElementChild.id);
         //     document.getElementsByTagName("td")[i].innerHTML += cols[i].childNodes[0].lastElementChild.id
         // }
+    }
+
+    update(board){
+        this.boardHTML = board;
+        document.getElementsByClassName("Board_div")[0].innerHTML = this.boardHTML;
+        for (let i = 0; i < this.pieces.length; i++) {
+            let piece = this.pieces[i];
+            document.getElementById(piece.getPosition()).src = piece.getSource();
+        }
     }
 }
 
@@ -995,8 +1109,9 @@ function load() {
 
     chessArray.push(whiteQueen1);
 
-    let board = new Board(chessArray);
-    board.renderBoard();
+    boardObj = new Board(chessArray);
+    boardObj.renderBoard();
+    globalBoard = boardObj.boardHTML;
 
     // for(let i = 0; i < chessArray.length; i++){
     //     let piece = chessArray[i];
@@ -1010,14 +1125,14 @@ function select(position) {
     captured = false;
     for (let i = 0; i < chessArray.length; i++) {
         if(first){
-            if (chessArray[i].getPosition() == position) {
+            if (chessArray[i].position == position) {
                 piece = chessArray[i];
                 first = false;
                 found = true;
                 break;
             }
         }else if(!first){
-            if (chessArray[i].getPosition() == position) {
+            if (chessArray[i].position == position) {
                 oldPiece = piece;
                 piece = chessArray[i];
             }

@@ -3,49 +3,51 @@
 <head>
     <title>Chess Game</title>
     <link rel='stylesheet' type='text/css' media='screen' href='./css/main.css'>
+    <script type=text/javascript src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src='./js/main.js'>
     </script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
 	<script type="text/javascript">
 	$(document).ready(function() {
-		// Use a "/test" namespace.
-            // An application can open a connection on multiple namespaces, and
-            // Socket.IO will multiplex all those connections on a single
-            // physical channel. If you don't care about multiple channels, you
-            // can set the namespace to an empty string.
+	// // 	// Use a "/test" namespace.
+    // //         // An application can open a connection on multiple namespaces, and
+    // //         // Socket.IO will multiplex all those connections on a single
+    // //         // physical channel. If you don't care about multiple channels, you
+    // //         // can set the namespace to an empty string.
             namespace = '/test';
 
-            // Connect to the Socket.IO server.
-            // The connection URL has the following format, relative to the current page:
-            //     http[s]://<domain>:<port>[/<namespace>]
-            var socket = io(namespace);
+    // //         // Connect to the Socket.IO server.
+    // //         // The connection URL has the following format, relative to the current page:
+    // //         //     http[s]://<domain>:<port>[/<namespace>]
+            socket = io(namespace);
 
-            // Event handler for new connections.
-            // The callback function is invoked when a connection with the
-            // server is established.
-            socket.on('connect', function() {
-                socket.emit('my_event', {data: 'I\'m connected!'});
-            });
+    // //         // Event handler for new connections.
+    // //         // The callback function is invoked when a connection with the
+    // //         // server is established.
+    //         socket.on('connect', function() {
+    //             socket.emit('my_event', {data: 'I\'m connected!'});
+    //         });
 
-            // Event handler for server sent data.
-            // The callback function is invoked whenever the server emits data
-            // to the client. The data is then displayed in the "Received"
-            // section of the page.
+    // //         // Event handler for server sent data.
+    // //         // The callback function is invoked whenever the server emits data
+    // //         // to the client. The data is then displayed in the "Received"
+    // //         // section of the page.
 			
-			socket.on('my_response', function(msg, cb) {
-                $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
-                if (cb)
-                    cb();
-            });
+	// 		socket.on('my_response', function(msg, cb) {
+    //             $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
+    //             if (cb)
+    //                 cb();
+    //         });
 			
-			socket.on('my_response1', function(msg, cb) {
-                $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
-                test(msg);
-                if (cb){
-                    cb();
-                }
-            });
+	// 		socket.on('my_response1', function(msg, cb) {
+    //             $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
+    //             console.log("-------" + msg);
+    //             test(msg);
+    //             if (cb){
+    //                 cb();
+    //             }
+    //         });
 		
 		$('form#join').submit(function(event) {
                 socket.emit('join', {room: $('#join_room').val()});
@@ -62,7 +64,7 @@
 </head>
 <body onload="load()">
 <form id="join" method="POST" action='#'>
-        <input type="text" name="join_room" id="join_room" placeholder="Room Name">
+        <input type="text" name="join_room" id="join_room" value='1'>
         <input type="submit" value="Join Room" id="joinSubmit">
     </form>
     <form id="send_room" method="POST" action='#'>

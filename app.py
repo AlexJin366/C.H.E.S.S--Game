@@ -59,7 +59,7 @@ def generic(name):
 def join(message):
     join_room(message['room'])
     session['receive_count'] = session.get('receive_count', 0) + 1
-    
+    print("djsfkahfjdak----------")
     emit('my_response',
          {'data': 'In rooms: ' + ', '.join(rooms()),
           'count': session['receive_count']})
@@ -85,6 +85,7 @@ def join(message):
 @socketio.on('my_room_event', namespace='/test')
 def send_room_message(message):
     session['receive_count'] = session.get('receive_count', 0) + 1
+    print(message['data'])
     emit('my_response1',
          {'data': message['data'], 'count': session['receive_count']},
          room=message['room'])
