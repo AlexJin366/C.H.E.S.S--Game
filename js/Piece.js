@@ -35,12 +35,12 @@ class Piece {
         var imgSrc = document.getElementById(position.toString()).src;
         switch(this.type){
             case "black":
-                if(imgSrc.includes("Pices/White/")){
+                if(imgSrc.includes("Pieces/White/")){
                     this.getMoveArray().push(position);
                 }
                 break;
             case "white":
-                if(imgSrc.includes("Pices/Black/")){
+                if(imgSrc.includes("Pieces/Black/")){
                     this.getMoveArray().push(position);
                 }
                 break;
