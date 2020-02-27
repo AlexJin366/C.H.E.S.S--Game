@@ -33,12 +33,25 @@ def background_thread():
 def index():
     return render_template('menu.html', async_mode=socketio.async_mode)
 
+app.route('/index')
+def game(name):
+    return render_template('index.html')
+
 
 # Handle any unhandled filename by loading its template
 @app.route('/<name>')
 def generic(name):
-    return render_template(name + '.html')
-
+    if name == "index":
+        global numberofplayer
+        if numberofplayer<2:
+            numberofplayer+=1
+            print("--------------------------------")
+            print(numberofplayer)
+            return render_template(name + '.html')
+        else:
+            return render_template('cannotplay.html')
+    else:
+        return render_template(name+'.html')
 
 # @socketio.on('my_event', namespace='/test')
 # def test_message(message):
@@ -57,12 +70,18 @@ def generic(name):
 
 @socketio.on('join', namespace='/test')
 def join(message):
+    #global numberofplayer
+    #print(numberofplayer)
+    #f numberofplayer <2:
+     #   numberofplayer+=1
     join_room(message['room'])
     session['receive_count'] = session.get('receive_count', 0) + 1
-    print("djsfkahfjdak----------")
+    #print("djsfkahfjdak----------")
+    
+        
     emit('my_response',
-         {'data': 'In rooms: ' + ', '.join(rooms()),
-          'count': session['receive_count']})
+        {'data': 'In rooms: ' + ', '.join(rooms()),
+        'count': session['receive_count']})
 
 
 # @socketio.on('leave', namespace='/test')
@@ -85,7 +104,7 @@ def join(message):
 @socketio.on('my_room_event', namespace='/test')
 def send_room_message(message):
     session['receive_count'] = session.get('receive_count', 0) + 1
-    print(message['data'])
+    #print(message['data'])
     emit('my_response1',
          {'data': message['data'], 'count': session['receive_count']},
          room=message['room'])
@@ -106,7 +125,7 @@ def send_room_message(message):
 #          callback=can_disconnect)
 
 @socketio.on('senddata', namespace='/test')
-def senddata():
+def senddata():                     #USELESS
     return "RETURN"
     
 
@@ -144,4 +163,5 @@ def get_post_javascript_data():
 
 
 if __name__ == '__main__':
+    numberofplayer=0
     socketio.run(app, debug=True)
