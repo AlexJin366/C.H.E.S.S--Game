@@ -46,11 +46,11 @@ class Board {
             <td><div class="BlockDimension BoardBlock"  onclick="makeMove(this)"><img onclick="select(this.id)" id="48"></div></td>
         </tr>
         <tr>
-            <td><div class="BlockDimension BoardBlock"   onclick="makeMove(this)"><img onclick="select(this.id)" id="51"></div></td>
+            <td><div class="BlockDimension BoardBlock"  onclick="makeMove(this)"><img onclick="select(this.id)" id="51"></div></td>
             <td><div class="BlackDimension BlackBlock"  onclick="makeMove(this)"><img onclick="select(this.id)" id="52"></div></td>
-            <td><div class="BlockDimension BoardBlock"   onclick="makeMove(this)"><img onclick="select(this.id)" id="53"></div></td>
-            <td><div class="BlackDimension BlackBlock" onclick="makeMove(this)"><img onclick="select(this.id)" id="54"></div></td>
-            <td><div class="BlockDimension BoardBlock"   onclick="makeMove(this)"><img onclick="select(this.id)" id="55"></div></td>
+            <td><div class="BlockDimension BoardBlock"  onclick="makeMove(this)"><img onclick="select(this.id)" id="53"></div></td>
+            <td><div class="BlackDimension BlackBlock"  onclick="makeMove(this)"><img onclick="select(this.id)" id="54"></div></td>
+            <td><div class="BlockDimension BoardBlock"  onclick="makeMove(this)"><img onclick="select(this.id)" id="55"></div></td>
             <td><div class="BlackDimension BlackBlock"  onclick="makeMove(this)"><img onclick="select(this.id)" id="56"></div></td>
             <td><div class="BlockDimension BoardBlock"  onclick="makeMove(this)"><img onclick="select(this.id)" id="57"></div></td>
             <td><div class="BlackDimension BlackBlock"  onclick="makeMove(this)"><img onclick="select(this.id)" id="58"></div></td>

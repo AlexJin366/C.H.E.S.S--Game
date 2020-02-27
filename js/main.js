@@ -11,7 +11,7 @@ function clearValidMoves() {
         if (chessArray[i].getPosition() == oldSelectedPiece) {
             let selectedPiece = chessArray[i].getMoveArray()
             for (let j = 0; j < selectedPiece.length; j++) {
-                if (document.getElementById(selectedPiece[j]).parentElement.className == "BlackBlock") {
+                if (document.getElementById(selectedPiece[j]).parentElement.className == "BlackDimension BlackBlock") {
                     document.getElementById(selectedPiece[j]).parentElement.style.background = "gray";
                 } else {
                     document.getElementById(selectedPiece[j]).parentElement.style.background = "white";

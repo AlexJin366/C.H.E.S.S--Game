@@ -18,8 +18,8 @@ table, th , td{
 }
 
 .BlackBlock{
-    height: 80px;
-    width:  80px;
+    height: 100%;
+    width: 100px;
     background: gray;
 }
 
@@ -29,18 +29,18 @@ th, td{
 
 .BoardBlock{
     height: 80px;
-    width:  80px;
+    width: 100px;
 }
 
 .BlockDimension{
-	height: 80px;
-	width:  80px;
+	height: 100px;
+	width: 100px;
 	text-align: center;
 }
 
 .BlackDimension{
-	height: 80px;
-	width:  80px;
+	height: 100px;
+	width: 100px;
 	text-align: center;
 	background: gray;
 }
