@@ -94,13 +94,6 @@ class Board {
             let piece = this.pieces[i];
             document.getElementById(piece.getPosition()).src = piece.getSource();
         }
-
-        // TESTING PURPOSES
-        // var cols = document.getElementsByClassName('ChessBoard')[0].getElementsByTagName('td');
-        // for(let i = 0; i < cols.length; i++){
-        //     // console.log(cols[i].childNodes[0].lastElementChild.id);
-        //     document.getElementsByTagName("td")[i].innerHTML += cols[i].childNodes[0].lastElementChild.id
-        // }
     }
 
     update(board){

@@ -11,56 +11,27 @@ let globalBoard = null;
 let boardObj;	
 let socket;	
 
-//Serve code starts
-
 var script = document.createElement('script');	
 script.src = 'https://code.jquery.com/jquery-3.4.1.min.js';	
 script.type = 'text/javascript';	
 document.getElementsByTagName('head')[0].appendChild(script);
 
 $(document).ready(function () {	
-    // 	// Use a "/test" namespace.	
-    //         // An application can open a connection on multiple namespaces, and	
-    //         // Socket.IO will multiplex all those connections on a single	
-    //         // physical channel. If you don't care about multiple channels, you	
-    //         // can set the namespace to an empty string.	
     namespace = '/test';	
-    //         // Connect to the Socket.IO server.	
-    //         // The connection URL has the following format, relative to the current page:	
-    //         //     http[s]://<domain>:<port>[/<namespace>]	
     socket = io(namespace);	
-    //         // Event handler for new connections.	
-    //         // The callback function is invoked when a connection with the	
-    //         // server is established.	
     socket.on('connect', function () {	
         socket.emit('my_event', { data: 'I\'m connected!' });	
     });	
-    //         // Event handler for server sent data.	
-    //         // The callback function is invoked whenever the server emits data	
-    //         // to the client. The data is then displayed in the "Received"	
-    //         // section of the page.	
     socket.on('my_response', function (msg, cb) {	
-        console.log("fdsja")	
-        // $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());	
         if (cb)	
             cb();	
     });	
     socket.on('my_response1', function (msg, cb) {	
-        // $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());	
-        console.log("-------" + msg);	
         test(msg);	
         if (cb) {	
             cb();	
         }	
     });	
-    // $('form#join').submit(function (event) {	
-    //     socket.emit('join', { room: $('#join_room').val() });	
-    //     return false;	
-    // });	
-    // $('form#send_room').submit(function (event) {	
-    //     socket.emit('my_room_event', { room: $('#room_name').val(), data: $('#room_data').val() });	
-    //     return false;	
-    // });	
 });		
 
 function createObject(object, i){	
@@ -123,46 +94,21 @@ function updateBoard(oldPosition, newPosition, board) {
     piece.default = false;	
     piece.validMoves = new Array();	
     moveOptions = new Array();	
-    // globalBoard = board;	
-    // boardObj.update(globalBoard);	
 }	
 function test(msg){	
-    // console.log(msg);	
     let oldPos = msg.data[0];	
     let newPos = msg.data[1];	
     chessArray = msg.data[2];	
     for(let i  = 0; i < chessArray.length; i++){	
         createObject(chessArray[i], i);	
     }	
-    console.log("here" + chessArray);	
     updateBoard(oldPos, newPos, globalBoard);	
 }	
 let joined = false;	
-function sendData(oldPosition, newPosition, chessArray){	
-    console.log(chessArray);	
+function sendData(oldPosition, newPosition, chessArray){		
     let data = [oldPosition, newPosition, chessArray]	
-    // namespace = '/test';	
-    // let socket1 = io(namespace);	
     socket.emit('my_room_event', { room: '1' , "data" : data});	
-    // socket1.on('my_response1', function (msg, cb) {	
-    //     $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());	
-    //     console.log("-------" + msg);	
-    //     test(msg);	
-    //     if(cb){	
-    //         cb();	
-    //     }	
-    // });	
-    // if(!joined){	
-    //     document.getElementById("join_room").value = "1";	
-    //     document.getElementById("joinSubmit").click();	
-    //     joined = true;	
-    // }	
-    // document.getElementById("room_name").value = "1";	
-    // document.getElementById("room_data").value = data;	
-    // document.getElementById("sendSubmit").click();	
 }
-
-///Server code end
 
 function clearValidMoves() {
     for (let i = 0; i < chessArray.length; i++) {
@@ -182,10 +128,7 @@ function clearValidMoves() {
 }
 
 function capture(){
-    console.log("this is what is eating -- " + oldPiece.source);
-    console.log("this is being eaten --- " + piece.source);
     if(moveOptions.includes(parseInt(piece.position, 10))){
-        console.log("yes can eat");
         document.getElementById(piece.position).removeAttribute("src");
         document.getElementById(oldPiece.position).removeAttribute("src");
         document.getElementById(piece.position).src = oldPiece.source;
@@ -195,10 +138,7 @@ function capture(){
             chessArray.splice(index, 1);
         }
         return true;
-    }else{
-        console.log("no cant eat");
     }
-    // console.log("--what i want to eat" + position);
 }
 
 function clearMoveMade() {
@@ -226,7 +166,6 @@ function movePiece(element, childId) {
     moveOptions = new Array();
 }
 
-//Changed function from server
 
 	function makeMove(element) {	
     let old = childId;	
@@ -234,27 +173,11 @@ function movePiece(element, childId) {
     if (moveOptions.includes(childId)) {	
         movePiece(element, childId.toString());	
         moveOptions = new Array();	
-        // piece.moveOptions = new Array();	
         if(old && childId){	
             sendData(old, childId.toString(), chessArray);	
         }	
-    } else {	
-        console.log("can't move there");	
     }	
 }
-/*
-function makeMove(element) {
-    // if()
-    let childId = parseFloat(element.childNodes[0].id);
-    if (moveOptions.includes(childId)) {
-        movePiece(element, childId);
-        moveOptions = new Array();
-        piece.moveOptions = new Array();
-    } else {
-        console.log("can't move there");
-    }
-}
-*/
 
 function load() {
 
@@ -350,11 +273,6 @@ function load() {
     boardObj = new Board(chessArray);	
     boardObj.renderBoard();	
     globalBoard = boardObj.boardHTML;
-
-    // for(let i = 0; i < chessArray.length; i++){
-    //     let piece = chessArray[i];
-    //     document.getElementById(piece.getPosition()).src = piece.getSource();
-    // }
 }
 let first = true;
 
@@ -384,6 +302,4 @@ function select(position) {
     if(!captured){
         piece.getValidMoves();
     }
-    
-    console.log(piece);
 }

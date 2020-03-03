@@ -20,27 +20,18 @@
 	<script type="text/javascript">
 	
 	$(document).ready(function() {
-            namespace = '/test';
-            
-			
+            namespace = '/test';			
 			socket = io(namespace);
-	
-		
+
 		$('form#join').submit(function(event) {
 				socket.emit('join', {room: '1'});
                 return false;
             });
-			
-//		$('form#send_room').submit(function(event) {
-  //              socket.emit('my_room_event', {room: '1', data: $('#room_data').val()});
-    //            return false;
-      //      });
 	});		
 	
     </script>
 </head>
 <body onmouseover ='document.getElementById("joinSubmit").click();' onload="load()" style = "background-color:black">
-<!---	TODO: DONT MAKE MOVE UNTIL TWO PLAYERS JOIN	--->
 	<form id="join" method="POST" action="#">
         <input style="visibility: hidden" type="submit" value="Join Room" id="joinSubmit">	
     </form>

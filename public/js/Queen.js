@@ -7,7 +7,6 @@ class Queen {
         this.validMoves = new Array();
     }
     getPosition() {
-        //   console.log("My position is on " + this.position);
         return this.position;
     }
 
@@ -20,7 +19,6 @@ class Queen {
     }
 
     highlightMoves(validMoves) {
-        // console.log(validMoves);
         for (let i = 0; i < validMoves.length; i++)
             document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
     }
@@ -46,11 +44,9 @@ class Queen {
                 }
                 break;
         }
-        // console.log(position);
     }
 
     boardcheck(number) {
-        console.log("Check,", number);
         if (number > 88 || number < 11) {
             return false;
         }
@@ -62,7 +58,6 @@ class Queen {
 
     getValidMoves() {
         let currentPos = Number(this.position);
-        console.log("------" + currentPos);
         if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
             selectedPiece = this.position;
