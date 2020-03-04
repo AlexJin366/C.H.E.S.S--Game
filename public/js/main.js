@@ -300,6 +300,6 @@ function select(position) {
         captured = capture();
     }
     if(!captured){
-        piece.getValidMoves();
+        piece.getValidMoves(piece.position);
     }
 }

@@ -9,11 +9,11 @@ class Queen extends Piece {
         else { return true; }
     }
 
-    getValidMoves() {
-        let currentPos = Number(this.position);
-        if (selectedPiece != this.position) {
+    getValidMoves(currentPosition) {
+        let currentPos = Number(currentPosition);
+        if (selectedPiece != currentPosition) {
             oldSelectedPiece = selectedPiece;
-            selectedPiece = this.position;
+            selectedPiece = currentPosition;
             clearValidMoves();
             this.clean();
         }
