@@ -1,51 +1,4 @@
-class Queen {
-    constructor(position, source, type) {
-        this.position = position;
-        this.source = source;
-        this.type = type;
-        this.default = true;
-        this.validMoves = new Array();
-    }
-    getPosition() {
-        return this.position;
-    }
-
-    setPosition(newPos) {
-        this.position = newPos;
-    }
-
-    getSource() {
-        return this.source
-    }
-
-    highlightMoves(validMoves) {
-        for (let i = 0; i < validMoves.length; i++)
-            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
-    }
-
-    getMoveArray() {
-        return this.validMoves;
-    }
-
-    clean() {
-        this.validMoves = new Array();
-    }
-
-    checkCapture(position){
-        switch(this.type){
-            case "black":
-                if(document.getElementById(position.toString()).src.includes("/Pieces/White/")){
-                    this.getMoveArray().push(position);
-                }
-                break;
-            case "white":
-                if(document.getElementById(position.toString()).src.includes("/Pieces/Black/")){
-                    this.getMoveArray().push(position);
-                }
-                break;
-        }
-    }
-
+class Queen extends Piece {
     boardcheck(number) {
         if (number > 88 || number < 11) {
             return false;
@@ -65,11 +18,9 @@ class Queen {
             this.clean();
         }
 
-        let queenMoves = [];
-
         let movesUp = 90 - currentPos;
 
-        //moves down
+        // Moves Down
         for (let i = 10; i < movesUp; i += 10) {
             let option = currentPos + i;
             if (document.getElementById(option.toString()).src != ""){
@@ -80,7 +31,7 @@ class Queen {
                 this.getMoveArray().push(option);
         }
 
-        //moves up
+        // Moves Up
         for (let i = 10; i < 90; i += 10) {
             let option = currentPos - i;
             if (option > 10 && document.getElementById(option.toString()).src == "")
@@ -91,7 +42,7 @@ class Queen {
             }
         }
 
-        //moves left
+        // Moves Left
         for (let i = 1; i < 9; i += 1) {
             let option = currentPos - i;
             if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
@@ -102,7 +53,7 @@ class Queen {
             }
         }
 
-        // //moves right
+        // Moves Right
         for (let i = 1; i < 9; i += 1) {
             let option = currentPos + i;
             if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
