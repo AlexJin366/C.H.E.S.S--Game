@@ -113,8 +113,11 @@ function sendData(oldPosition, newPosition, chessArray){
 function isCheckCastle(nextMoveArray,type) {
     for (var j = 0; j < nextMoveArray.length; j++) {
         for (var i = 0; i < chessArray.length; i++) {
-            if ("86" == nextMoveArray[j].toString()&&type=="black") {
-                return true;
+            if (type == "black") {
+                return "86" == nextMoveArray[j].toString() || "87" == nextMoveArray[j].toString();
+            }
+            if (type == "white") {
+                return "16" == nextMoveArray[j].toString() || "17" == nextMoveArray[j].toString();
             }
         }
     }
@@ -129,9 +132,9 @@ function canCastle(piece) {
     let isKingNotInCheck = true;
     let isSpaceFree = false;
 
+    //let nextMoveArray = piece.getNextValidMoves(piece);
+    //console.log(isCheckCastle(nextMoveArray,piece.type));
 
-    let nextMoveArray = piece.getNextValidMoves(piece);
-    console.log(isCheckCastle(nextMoveArray,piece.type));
     // isKingAndRookDefault
     if (piece.type == "white" && piece.constructor.name == "King") {
         // isKingAndRookDefault
@@ -277,7 +280,6 @@ function makeMove(element) {
                     }
                 }
             }
-            canCastle(piece);
            
 
             sendData(old, childId.toString(), chessArray);	
@@ -435,8 +437,10 @@ function select(position) {
     if(!captured){
         piece.getValidMoves();
     }
-    // if (canCastle(piece)) {
-    //     console.log("castling works");
-    //     castle(piece);
-    // }
+    if (canCastle(piece)) {
+        console.log("castling works");
+        castle(piece);
+    } else {
+        console.log("castle fail");
+    }
 }
