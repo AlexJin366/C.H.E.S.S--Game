@@ -132,10 +132,11 @@ function canCastle(piece) {
     let isKingNotInCheck = true;
     let isSpaceFree = false;
 
-    //let nextMoveArray = piece.getNextValidMoves(piece);
-    //console.log(isCheckCastle(nextMoveArray,piece.type));
+    let nextMoveArray = piece.getNextValidMoves(piece);
+    console.log(isCheckCastle(nextMoveArray,piece.type));
 
-    // isKingAndRookDefault
+    isPathNotBlocked = isCheckCastle(nextMoveArray,piece.type);
+
     if (piece.type == "white" && piece.constructor.name == "King") {
         // isKingAndRookDefault
         isKingDefault = piece.default;
