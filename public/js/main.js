@@ -118,20 +118,34 @@ function canCastle(piece) {
     let isKingNotInCheck = true;
     let isSpaceFree = false;
 
-    // isKingAndRookDefault
+    
     if (piece.type == "white" && piece.constructor.name == "King") {
+        // isKingAndRookDefault
         isKingDefault = piece.default;
-        
         for (let i = 0; i < chessArray.length; i++) {
             if (chessArray[i].getPosition() == "88" && chessArray[i].constructor.name == "Rook" && chessArray[i].type == "white") {
                 isRookDefault = chessArray[i].default;
             }
         }
-    }
-    isKingAndRookDefault = isKingDefault && isRookDefault;
+        isKingAndRookDefault = isKingDefault && isRookDefault;
     
-    // isSpaceFree
-    isSpaceFree = document.getElementById("86").src == "" && document.getElementById("87").src == "";
+        // isSpaceFree
+        isSpaceFree = document.getElementById("86").src == "" && document.getElementById("87").src == "";
+        
+    } else if (piece.type == "black" && piece.constructor.name == "King") {
+        // isKingAndRookDefault
+        isKingDefault = piece.default;
+        for (let i = 0; i < chessArray.length; i++) {
+            if (chessArray[i].getPosition() == "18" && chessArray[i].constructor.name == "Rook" && chessArray[i].type == "black") {
+                isRookDefault = chessArray[i].default;
+            }
+        }
+        isKingAndRookDefault = isKingDefault && isRookDefault;
+    
+        // isSpaceFree
+        isSpaceFree = document.getElementById("16").src == "" && document.getElementById("17").src == "";
+    }
+    
 
     return isKingAndRookDefault && isPathNotBlocked && isKingNotInCheck && isSpaceFree;
 }
