@@ -5,6 +5,7 @@ class Piece {
         this.type = type;
         this.default = true;
         this.validMoves = new Array();
+        this.NextMove = new Array()
     }
     getPosition() {
         return this.position;
