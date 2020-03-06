@@ -135,7 +135,7 @@ function canCastle(piece) {
     let nextMoveArray = piece.getNextValidMoves(piece);
     console.log(isCheckCastle(nextMoveArray,piece.type));
 
-    isPathNotBlocked = isCheckCastle(nextMoveArray,piece.type);
+    isPathNotBlocked = !isCheckCastle(nextMoveArray,piece.type);
 
     if (piece.type == "white" && piece.constructor.name == "King") {
         // isKingAndRookDefault
