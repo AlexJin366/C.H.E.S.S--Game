@@ -10,6 +10,8 @@ let newChildId = null;
 let globalBoard = null;	
 let boardObj;	
 let socket;	
+let myturn;
+let myname;
 
 var script = document.createElement('script');	
 script.src = 'https://code.jquery.com/jquery-3.4.1.min.js';	
@@ -27,12 +29,19 @@ $(document).ready(function () {
             cb();	
     });	
     socket.on('my_response1', function (msg, cb) {	
-        test(msg);	
+        myturn = !myturn;
+		test(msg);	
         if (cb) {	
             cb();	
         }	
     });	
 });		
+
+function setturn(turn,name){
+	myturn = turn;
+	myname = name;
+	console.log(name);
+}
 
 function createObject(object, i){	
     let position = object.position;	
@@ -69,8 +78,8 @@ function updateBoard(oldPosition, newPosition, board) {
         }else if (chessArray[i].position == newPosition){	
             newSrc = chessArray[i];	
             piece = chessArray[i];	
-        }	
-    }	
+        }
+	}	
     	
     document.getElementById(oldPosition).removeAttribute("src");	
     if(!captured){	
@@ -105,7 +114,7 @@ function test(msg){
     updateBoard(oldPos, newPos, globalBoard);	
 }	
 let joined = false;	
-function sendData(oldPosition, newPosition, chessArray){		
+function sendData(oldPosition, newPosition, chessArray){
     let data = [oldPosition, newPosition, chessArray]	
     socket.emit('my_room_event', { room: '1' , "data" : data});	
 }
@@ -158,7 +167,6 @@ function movePiece(element, childId) {
     }else{
         document.getElementById(childId).src = oldPiece.source;
     }
-    
     clearMoveMade();
     piece.position = childId;
     piece.default = false;
@@ -167,16 +175,22 @@ function movePiece(element, childId) {
 }
 
 
-	function makeMove(element) {	
-    let old = childId;	
-    childId = parseFloat(element.childNodes[0].id);	
-    if (moveOptions.includes(childId)) {	
-        movePiece(element, childId.toString());	
-        moveOptions = new Array();	
-        if(old && childId){	
-            sendData(old, childId.toString(), chessArray);	
-        }	
-    }	
+function makeMove(element) {
+
+	if (myturn==true){
+		let old = childId;	
+		childId = parseFloat(element.childNodes[0].id);	
+		if(piece.getType() == name){
+			if (moveOptions.includes(childId)) {	
+				movePiece(element, childId.toString());	
+				moveOptions = new Array();	
+				if(old && childId){	
+					
+					sendData(old, childId.toString(), chessArray);	
+				}	
+			}
+		}
+	}
 }
 
 function load() {
@@ -221,8 +235,7 @@ function load() {
 
     let whiteQueen1 = new Queen("84", "Pieces/White/wQ.png", "white");
 
-    let blackKing1 = new King("15", "Pieces/Black/bK.png", "black"
-    );
+    let blackKing1 = new King("15", "Pieces/Black/bK.png", "black");
 
     let whiteKing1 = new King("85", "Pieces/White/wK.png", "white");
 
@@ -277,29 +290,32 @@ function load() {
 let first = true;
 
 function select(position) {
-    let found = false;
-    captured = false;
-    for (let i = 0; i < chessArray.length; i++) {
-        if(first){
-            if (chessArray[i].getPosition() == position) {
-                piece = chessArray[i];
-                first = false;
-                found = true;
-                break;
-            }
-        }else if(!first){
-            if (chessArray[i].getPosition() == position) {
-                oldPiece = piece;
-                piece = chessArray[i];
-            }
-        }
-        
-    }
+    if(myturn){
+		let found = false;
+		captured = false;
+		for (let i = 0; i < chessArray.length; i++) {
+			if(first){
+				if (chessArray[i].getPosition() == position) {
+					piece = chessArray[i];
+					first = false;
+					found = true;
+					break;
+				}
+			}else if(!first){
+				if (chessArray[i].getPosition() == position) {
+					oldPiece = piece;
+					piece = chessArray[i];
+				}
+			}
+		}
 
-    if(oldPiece != null){
-        captured = capture();
-    }
-    if(!captured){
-        piece.getValidMoves();
-    }
+		if(oldPiece != null){
+			captured = capture();
+		}
+		if(!captured){
+			if(piece.getType() == name){
+				piece.getValidMoves();
+			}
+		}	
+	}
 }

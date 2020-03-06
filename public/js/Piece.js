@@ -27,6 +27,10 @@ class Piece {
         return this.validMoves;
     }
 
+	getType(){
+		return this.type;
+	}
+
     clean() {
         this.validMoves = new Array();
     }
