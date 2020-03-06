@@ -40,7 +40,6 @@ $(document).ready(function () {
 function setturn(turn,name){
 	myturn = turn;
 	myname = name;
-	console.log(name);
 }
 
 function createObject(object, i){
