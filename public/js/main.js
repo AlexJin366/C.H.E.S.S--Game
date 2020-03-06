@@ -110,6 +110,33 @@ function sendData(oldPosition, newPosition, chessArray){
     socket.emit('my_room_event', { room: '1' , "data" : data});	
 }
 
+function canCastle() {
+    let isKingAndRookDefault = true;
+    let isPathNotBlocked = true;
+    let isKingNotInCheck = true;
+    let isSpaceFree = true;
+    if (isKingAndRookDefault && isPathNotBlocked && isKingNotInCheck && isSpaceFree) {
+        console.log("castling works");
+        castle(piece);
+    }
+}
+
+function castle(piece) {
+    if (piece.constructor.name == "King") {
+        if (piece.type == "white") {
+            movePiece(piece,"87", true);
+            piece = chessArray[19];
+            movePiece(piece,"86", true);
+  
+        } else {
+            movePiece(piece,"17", true);
+            piece = chessArray[17];
+            movePiece(piece,"16", true);
+        }
+        
+    }
+}
+
 function clearValidMoves() {
     for (let i = 0; i < chessArray.length; i++) {
         if (chessArray[i].getPosition() == oldSelectedPiece) {
@@ -151,8 +178,14 @@ function clearMoveMade() {
     }
 }
 
-function movePiece(element, childId) {
+function movePiece(element, childId, castle = false) {
+    if (castle) {
+        piece = element;   
+    }
+    // clearing old picture
     document.getElementById(piece.position).removeAttribute("src");
+
+    // adding new picture 
     if(!captured){
         document.getElementById(childId).src = piece.source;
     }else{
@@ -160,14 +193,17 @@ function movePiece(element, childId) {
     }
     
     clearMoveMade();
+    // updating position
     piece.position = childId;
     piece.default = false;
     piece.clean();
     moveOptions = new Array();
 }
 
+// pass in div
+// child = element id
 
-	function makeMove(element) {	
+function makeMove(element) {
     let old = childId;	
     childId = parseFloat(element.childNodes[0].id);	
     if (moveOptions.includes(childId)) {	
@@ -221,8 +257,7 @@ function load() {
 
     let whiteQueen1 = new Queen("84", "Pieces/White/wQ.png", "white");
 
-    let blackKing1 = new King("15", "Pieces/Black/bK.png", "black"
-    );
+    let blackKing1 = new King("15", "Pieces/Black/bK.png", "black");
 
     let whiteKing1 = new King("85", "Pieces/White/wK.png", "white");
 
@@ -295,11 +330,11 @@ function select(position) {
         }
         
     }
-
     if(oldPiece != null){
         captured = capture();
     }
     if(!captured){
         piece.getValidMoves();
     }
+    canCastle();
 }
