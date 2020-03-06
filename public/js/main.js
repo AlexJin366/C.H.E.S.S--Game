@@ -190,7 +190,12 @@ function movePiece(element, childId) {
                     var potentialCheck = chessArray[i].allThePossible(chessArray[i]);
                     var KingCurrentPosition = chessArray[i].position;
                     
-                    console.log("here:  "+isCheckHelper(potentialCheck, KingCurrentPosition));
+                    if(isCheckHelper(potentialCheck, KingCurrentPosition)){
+                        swal({
+                            icon: 'error',
+                            title: 'Check!'
+                        });
+                    }
                 }
             }
            
