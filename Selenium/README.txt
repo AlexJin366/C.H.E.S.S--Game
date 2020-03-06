@@ -1,1 +1,0 @@
-Selenium for testing purposes
