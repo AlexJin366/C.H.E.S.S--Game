@@ -110,6 +110,17 @@ function sendData(oldPosition, newPosition, chessArray){
     socket.emit('my_room_event', { room: '1' , "data" : data});	
 }
 
+function isCheckCastle(nextMoveArray,type) {
+    for (var j = 0; j < nextMoveArray.length; j++) {
+        for (var i = 0; i < chessArray.length; i++) {
+            if ("86" == nextMoveArray[j].toString()&&type=="black") {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 function canCastle(piece) {
     let isKingDefault = false;
     let isRookDefault = false;
@@ -118,6 +129,9 @@ function canCastle(piece) {
     let isKingNotInCheck = true;
     let isSpaceFree = false;
 
+
+    let nextMoveArray = piece.getNextValidMoves(piece);
+    console.log(isCheckCastle(nextMoveArray,piece.type));
     // isKingAndRookDefault
     if (piece.type == "white" && piece.constructor.name == "King") {
         isKingDefault = piece.default;
@@ -249,6 +263,7 @@ function makeMove(element) {
                     }
                 }
             }
+            canCastle(piece);
            
 
             sendData(old, childId.toString(), chessArray);	
@@ -406,8 +421,8 @@ function select(position) {
     if(!captured){
         piece.getValidMoves();
     }
-    if (canCastle(piece)) {
-        console.log("castling works");
-        castle(piece);
-    }
+    // if (canCastle(piece)) {
+    //     console.log("castling works");
+    //     castle(piece);
+    // }
 }
