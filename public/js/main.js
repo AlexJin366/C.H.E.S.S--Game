@@ -110,15 +110,30 @@ function sendData(oldPosition, newPosition, chessArray){
     socket.emit('my_room_event', { room: '1' , "data" : data});	
 }
 
-function canCastle() {
-    let isKingAndRookDefault = true;
+function canCastle(piece) {
+    let isKingDefault = false;
+    let isRookDefault = false;
+    let isKingAndRookDefault = false;
     let isPathNotBlocked = true;
     let isKingNotInCheck = true;
-    let isSpaceFree = true;
-    if (isKingAndRookDefault && isPathNotBlocked && isKingNotInCheck && isSpaceFree) {
-        console.log("castling works");
-        castle(piece);
+    let isSpaceFree = false;
+
+    // isKingAndRookDefault
+    if (piece.type == "white" && piece.constructor.name == "King") {
+        isKingDefault = piece.default;
+        
+        for (let i = 0; i < chessArray.length; i++) {
+            if (chessArray[i].getPosition() == "88" && chessArray[i].constructor.name == "Rook" && chessArray[i].type == "white") {
+                isRookDefault = chessArray[i].default;
+            }
+        }
     }
+    isKingAndRookDefault = isKingDefault && isRookDefault;
+    
+    // isSpaceFree
+    isSpaceFree = document.getElementById("86").src == "" && document.getElementById("87").src == "";
+
+    return isKingAndRookDefault && isPathNotBlocked && isKingNotInCheck && isSpaceFree;
 }
 
 function castle(piece) {
@@ -336,5 +351,8 @@ function select(position) {
     if(!captured){
         piece.getValidMoves();
     }
-    canCastle();
+    if (canCastle(piece)) {
+        console.log("castling works");
+        castle(piece);
+    }
 }
