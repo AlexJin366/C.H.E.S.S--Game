@@ -224,10 +224,65 @@ function makeMove(element) {
     if (moveOptions.includes(childId)) {	
         movePiece(element, childId.toString());	
         moveOptions = new Array();	
-        if(old && childId){	
+        if(old && childId){
+            for(var i=0; i < chessArray.length;i++){
+                if(chessArray[i].position == childId.toString()){
+                    let nextMoveArray = chessArray[i].getNextValidMoves(chessArray[i]);
+                    if(isCheck(nextMoveArray)){
+                        swal({
+                            icon: 'error',
+                            title: 'Check!'
+                        });
+                    }
+                }
+            }
+            for (var i = 0; i < chessArray.length; i++) {
+                if (chessArray[i].constructor.name == "King") {
+                    var potentialCheck = chessArray[i].allThePossible(chessArray[i]);
+                    var KingCurrentPosition = chessArray[i].position;
+                    
+                    if(isCheckHelper(potentialCheck, KingCurrentPosition)){
+                        swal({
+                            icon: 'error',
+                            title: 'Check!'
+                        });
+                    }
+                }
+            }
+           
+
             sendData(old, childId.toString(), chessArray);	
         }	
     }	
+}
+
+
+function isCheckHelper(potentialCheck, KingCurrentPosition){
+    for (var j = 0; j < potentialCheck.length; j++) {
+        for (var i = 0; i < chessArray.length; i++) {
+            if (chessArray[i].position == potentialCheck[j].toString()) {
+                if ((Number(chessArray[i].position) - KingCurrentPosition) % 10 == 0 && (chessArray[i].constructor.name == "Rook" || chessArray[i].constructor.name == "Pawn") ){
+                    return true;
+                } else if ((Number(chessArray[i].position) - KingCurrentPosition) % 10 != 0 && (chessArray[i].constructor.name == "Bishop")){
+                    return true;
+                } else if (((Number(chessArray[i].position) - KingCurrentPosition) % 10 != 0 || Number(chessArray[i].position) - KingCurrentPosition % 10 == 0) && (chessArray[i].constructor.name == "Queen")) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function isCheck(nextMoveArray){
+    for(var j = 0; j<nextMoveArray.length;j++){
+        for (var i = 0; i < chessArray.length; i++) {
+            if (chessArray[i].position == nextMoveArray[j].toString() && chessArray[i].constructor.name == 'King') {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 function load() {
