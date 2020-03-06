@@ -80,8 +80,6 @@ def send_room_message(message):
     global PlayerA
     global PlayerB
     if PlayerA!=0 and PlayerB!=0:
-        print(PlayerA.ismove)
-        print(PlayerB.ismove)
         PlayerA.ismove = not PlayerA.ismove
         PlayerB.ismove = not PlayerB.ismove
         

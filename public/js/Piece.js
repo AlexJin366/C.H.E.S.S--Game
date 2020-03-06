@@ -13,6 +13,10 @@ class Piece {
     setPosition(newPos) {
         this.position = newPos;
     }
+	
+	setDefault(bool){
+		this.default = bool;
+	}
 
     getSource() {
         return this.source

@@ -29,7 +29,7 @@ $(document).ready(function () {
             cb();	
     });	
     socket.on('my_response1', function (msg, cb) {	
-        myturn = !myturn;
+		myturn = !myturn;
 		test(msg);	
         if (cb) {	
             cb();	
@@ -43,32 +43,39 @@ function setturn(turn,name){
 	console.log(name);
 }
 
-function createObject(object, i){	
+function createObject(object, i){
     let position = object.position;	
     let src = object.source;	
     let type = object.type;	
+	let defaultPlace = object.default;
     switch (src.substring(src.length-5, src.length)){	
         case "B.png":	
-            chessArray[i] = new Bishop(position, src, type)	
+            chessArray[i] = new Bishop(position, src, type);
+			chessArray[i].setDefault(defaultPlace);
             break;	
         case "K.png":	
-            chessArray[i] = new King(position, src, type)	
+            chessArray[i] = new King(position, src, type);
+			chessArray[i].setDefault(defaultPlace);
             break;	
         case "N.png":	
-            chessArray[i] = new Knight(position, src, type)	
+            chessArray[i] = new Knight(position, src, type);
+			chessArray[i].setDefault(defaultPlace);
             break;	
         case "P.png":	
-            chessArray[i] = new Pawn(position, src, type)	
+            chessArray[i] = new Pawn(position, src, type);	
+			chessArray[i].setDefault(defaultPlace);
             break;	
         case "Q.png":	
-            chessArray[i] = new Queen(position, src, type)	
+            chessArray[i] = new Queen(position, src, type);	
+			chessArray[i].setDefault(defaultPlace);
             break;	
         case "R.png":	
-            chessArray[i] = new Rook(position, src, type)	
+            chessArray[i] = new Rook(position, src, type);
+			chessArray[i].setDefault(defaultPlace);			
             break;	
     }	
 }	
-function updateBoard(oldPosition, newPosition, board) {	
+function updateBoard(oldPosition, newPosition, board) {
     let oldSrc;	
     let newSrc;	
     for (let i = 0; i < chessArray.length; i++) {	
@@ -176,19 +183,15 @@ function movePiece(element, childId) {
 
 
 function makeMove(element) {
-
-	if (myturn==true){
+	if (myturn && piece.getType() == name){
 		let old = childId;	
 		childId = parseFloat(element.childNodes[0].id);	
-		if(piece.getType() == name){
-			if (moveOptions.includes(childId)) {	
-				movePiece(element, childId.toString());	
-				moveOptions = new Array();	
-				if(old && childId){	
-					
-					sendData(old, childId.toString(), chessArray);	
-				}	
-			}
+		if (moveOptions.includes(childId)) {	
+			movePiece(element, childId.toString());	
+			moveOptions = new Array();	
+			if(old && childId){	
+				sendData(old, childId.toString(), chessArray);	
+			}	
 		}
 	}
 }
@@ -309,13 +312,15 @@ function select(position) {
 			}
 		}
 
-		if(oldPiece != null){
+		if(oldPiece != null && oldPiece.type != piece.type){
 			captured = capture();
 		}
+		
 		if(!captured){
 			if(piece.getType() == name){
 				piece.getValidMoves();
 			}
 		}	
+		
 	}
 }
