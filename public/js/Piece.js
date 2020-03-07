@@ -14,6 +14,10 @@ class Piece {
     setPosition(newPos) {
         this.position = newPos;
     }
+	
+	setDefault(bool){
+		this.default = bool;
+	}
 
     getSource() {
         return this.source
@@ -27,6 +31,10 @@ class Piece {
     getMoveArray() {
         return this.validMoves;
     }
+
+	getType(){
+		return this.type;
+	}
 
     clean() {
         this.validMoves = new Array();
