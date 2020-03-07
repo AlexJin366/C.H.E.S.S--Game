@@ -36,7 +36,10 @@ $(document).ready(function () {
         }	
     });	
 });		
-
+function skipTurn(){
+	myturn = !myturn;
+	console.log("SDF");
+}
 function setturn(turn,name){
 	myturn = turn;
 	myname = name;
