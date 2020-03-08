@@ -102,11 +102,7 @@ def pawnMovement():
 
     return
 
-
-
 def knightMovement():
-    #driver.get("http://127.0.0.1:5000/") #tested in combination with scrapy   
-    #driver.refresh()
     print("KnightCheck")
     menu = driver.find_element_by_id("87")
     menu.click()
@@ -117,12 +113,10 @@ def knightMovement():
     actions.click(try1)
     actions.perform()
 
-    if(try1.get_attribute('src') != None):
+    if(try1.get_attribute('src') == "Pieces/White/wN.png"):
         print("passed")
     else:
         print("failed")
-    
-
     
     try1 = driver.find_element_by_id("77")
     actions = ActionChains(driver)
@@ -130,12 +124,10 @@ def knightMovement():
     actions.click(try1)
     actions.perform()
 
-    if(try1.get_attribute('src') != None):
+    if(try1.get_attribute('src')== "Pieces/White/wN.png"):
         print("passed")
     else:
         print("failed")
-
-  
 
     try1 = driver.find_element_by_id("78")
     actions = ActionChains(driver)
@@ -143,11 +135,11 @@ def knightMovement():
     actions.click(try1)
     actions.perform()
 
-    if(try1.get_attribute('src') != None):
+    if(try1.get_attribute('src') == "Pieces/White/wN.png"):
         print("passed")
     else:
         print("failed")
-    
+
 
     try1 = driver.find_element_by_id("67")
     actions = ActionChains(driver)
@@ -155,13 +147,82 @@ def knightMovement():
     actions.click(try1)
     actions.perform()
 
-    if(try1.get_attribute('src') != None):
+    if(try1.get_attribute('src') == "Pieces/White/wN.png"):
+        print("passed")
+    else:
+        print("failed")
+
+    #implement Valid moves
+    print("passing Case")
+    menu = driver.find_element_by_id("87")
+    try1 = driver.find_element_by_id("87")
+    actions = ActionChains(driver)
+    actions.move_to_element(menu)
+    actions.click(try1)
+    actions.perform()
+
+    if(try1.get_attribute('src')== "Pieces/White/wN.png"):
+        print(try1.get_attribute('src'))
+        print("passed")
+    else:
+        print("failed")
+    
+    try1 = driver.find_element_by_id("66")
+    actions = ActionChains(driver)
+    actions.move_to_element(menu)
+    actions.click(try1)
+    actions.perform()
+
+    if(try1.get_attribute('src') == "http://127.0.0.1:5000/Pieces/White/wN.png"):
+        print(try1.get_attribute('src'))
         print("passed")
     else:
         print("failed")
 
     return
 
+def bishopMovement():
+    print("bishopCheck")
+    menu = driver.find_element_by_id("86")
+    menu.click()
+
+    #implement wrong moves
+    try1 = driver.find_element_by_id("75")
+    actions = ActionChains(driver)
+    actions.move_to_element(menu)
+    actions.click(try1)
+    actions.perform()
+
+    if(try1.get_attribute('src')  == "http://127.0.0.1:5000/Pieces/White/wB.png"):
+        print("passed")
+    else:
+        print("failed")
+    
+
+    try1 = driver.find_element_by_id("76")
+    actions = ActionChains(driver)
+    actions.move_to_element(menu)
+    actions.click(try1)
+    actions.perform()
+
+    if(try1.get_attribute('src') == "http://127.0.0.1:5000/Pieces/White/wB.png"):
+        print("passed")
+    else:
+        print("failed")
+    
+    
+    try1 = driver.find_element_by_id("77")
+    actions = ActionChains(driver)
+    actions.move_to_element(menu)
+    actions.click(try1)
+    actions.perform()
+
+    if(try1.get_attribute('src')  == "http://127.0.0.1:5000/Pieces/White/wB.png"):
+        print("passed")
+    else:
+        print("failed")
+
 joingame()
-pawnMovement()
-knightMovement()
+#pawnMovement()
+#knightMovement()
+bishopMovement()
