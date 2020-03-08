@@ -1,6 +1,6 @@
-class Knight extends Piece{
+class Knight extends Piece {
     constructor(position, source, type) {
-        super(position,source,type);
+        super(position, source, type);
     }
 
     getValidMoves() {
@@ -29,9 +29,9 @@ class Knight extends Piece{
                 if (option % 10 == 0 || option % 10 == 9) {
                     continue;
                 }
-                if(document.getElementById(option.toString()).src == ""){
+                if (document.getElementById(option.toString()).src == "") {
                     this.getMoveArray().push(option);
-                }else{
+                } else {
                     this.checkCapture(option);
                 }
             }

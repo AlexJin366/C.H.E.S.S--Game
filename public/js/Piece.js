@@ -13,10 +13,10 @@ class Piece {
     setPosition(newPos) {
         this.position = newPos;
     }
-	
-	setDefault(bool){
-		this.default = bool;
-	}
+
+    setDefault(bool) {
+        this.default = bool;
+    }
 
     getSource() {
         return this.source
@@ -31,28 +31,28 @@ class Piece {
         return this.validMoves;
     }
 
-	getType(){
-		return this.type;
-	}
+    getType() {
+        return this.type;
+    }
 
     clean() {
         this.validMoves = new Array();
     }
 
-    checkCapture(position){
+    checkCapture(position) {
         var imgSrc = document.getElementById(position.toString()).src;
-        switch(this.type){
+        switch (this.type) {
             case "black":
-                if(imgSrc.includes("Pieces/White/")){
+                if (imgSrc.includes("Pieces/White/")) {
                     this.getMoveArray().push(position);
                 }
                 break;
             case "white":
-                if(imgSrc.includes("Pieces/Black/")){
+                if (imgSrc.includes("Pieces/Black/")) {
                     this.getMoveArray().push(position);
                 }
                 break;
         }
     }
-    
+
 }

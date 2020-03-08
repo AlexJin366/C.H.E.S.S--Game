@@ -1,9 +1,9 @@
-class Pawn extends Piece{
+class Pawn extends Piece {
     constructor(position, source, type) {
-        super(position,source,type);
+        super(position, source, type);
     }
 
-    checkCapture(){
+    checkCapture() {
         let currentPos = Number(this.position);
         if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
@@ -11,25 +11,25 @@ class Pawn extends Piece{
             clearValidMoves();
             this.clean();
         }
-        if(this.type == "black"){
-            if(((currentPos + 9) < (Math.floor((currentPos+10) / 10) * 10 + 9)) && (currentPos + 9) > (Math.floor((currentPos+10) / 10) * 10)){
-                if(document.getElementById((currentPos + 9).toString()).src != "" && document.getElementById((currentPos + 9).toString()).src.includes("/Pieces/White/")){
+        if (this.type == "black") {
+            if (((currentPos + 9) < (Math.floor((currentPos + 10) / 10) * 10 + 9)) && (currentPos + 9) > (Math.floor((currentPos + 10) / 10) * 10)) {
+                if (document.getElementById((currentPos + 9).toString()).src != "" && document.getElementById((currentPos + 9).toString()).src.includes("/Pieces/White/")) {
                     this.getMoveArray().push(currentPos + 9);
                 }
             }
-            if(((currentPos + 11) < (Math.floor((currentPos+10) / 10) * 10 + 9)) && (currentPos + 11) > (Math.floor((currentPos+10) / 10) * 10)){
-                if(document.getElementById(currentPos + 11).toString().src != "" && document.getElementById((currentPos + 11).toString()).src.includes("/Pieces/White/")){
+            if (((currentPos + 11) < (Math.floor((currentPos + 10) / 10) * 10 + 9)) && (currentPos + 11) > (Math.floor((currentPos + 10) / 10) * 10)) {
+                if (document.getElementById(currentPos + 11).toString().src != "" && document.getElementById((currentPos + 11).toString()).src.includes("/Pieces/White/")) {
                     this.getMoveArray().push(currentPos + 11);
                 }
             }
-        }else{
-            if(((currentPos - 9) < (Math.floor((currentPos-10) / 10) * 10 + 9)) && (currentPos - 9) > (Math.floor((currentPos-10) / 10) * 10)){
-                if(document.getElementById((currentPos - 9).toString()).src != "" && document.getElementById((currentPos - 9).toString()).src.includes("/Pieces/Black/")){
+        } else {
+            if (((currentPos - 9) < (Math.floor((currentPos - 10) / 10) * 10 + 9)) && (currentPos - 9) > (Math.floor((currentPos - 10) / 10) * 10)) {
+                if (document.getElementById((currentPos - 9).toString()).src != "" && document.getElementById((currentPos - 9).toString()).src.includes("/Pieces/Black/")) {
                     this.getMoveArray().push(currentPos - 9);
                 }
             }
-            if(((currentPos - 11) < (Math.floor((currentPos-10) / 10) * 10 + 9)) && (currentPos - 11) > (Math.floor((currentPos-10) / 10) * 10)){
-                if(document.getElementById(currentPos - 11).toString().src != "" && document.getElementById((currentPos - 11).toString()).src.includes("/Pieces/Black/")){
+            if (((currentPos - 11) < (Math.floor((currentPos - 10) / 10) * 10 + 9)) && (currentPos - 11) > (Math.floor((currentPos - 10) / 10) * 10)) {
+                if (document.getElementById(currentPos - 11).toString().src != "" && document.getElementById((currentPos - 11).toString()).src.includes("/Pieces/Black/")) {
                     this.getMoveArray().push(currentPos - 11);
                 }
             }

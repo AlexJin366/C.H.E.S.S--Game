@@ -2,7 +2,7 @@ class King extends Piece {
     constructor(position, source, type) {
         super(position, source, type);
     }
-    
+
     getValidMoves() {
         let currentPos = Number(this.position);
         if (selectedPiece != this.position) {
@@ -20,11 +20,11 @@ class King extends Piece {
                 if (option % 10 == 0 || option % 10 == 9) {
                     continue;
                 }
-                
+
                 var isSquareEmpty = document.getElementById(option.toString()).src == "";
-                if(isSquareEmpty){
+                if (isSquareEmpty) {
                     this.getMoveArray().push(option);
-                }else{
+                } else {
                     this.checkCapture(option);
                 }
             }

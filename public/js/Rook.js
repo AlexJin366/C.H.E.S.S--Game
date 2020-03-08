@@ -1,10 +1,10 @@
-class Rook extends Piece{
+class Rook extends Piece {
     constructor(position, source, type) {
-        super(position,source,type);
+        super(position, source, type);
     }
 
     getValidMoves() {
-        
+
         let currentPos = Number(this.position);
         if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
@@ -18,7 +18,7 @@ class Rook extends Piece{
         //moves down
         for (let i = 10; i < movesUp; i += 10) {
             let option = currentPos + i;
-            if (document.getElementById(option.toString()).src != ""){
+            if (document.getElementById(option.toString()).src != "") {
                 this.checkCapture(option);
                 break;
             }
@@ -31,7 +31,7 @@ class Rook extends Piece{
             let option = currentPos - i;
             if (option > 10 && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > 10 && document.getElementById(option.toString()).src != ""){
+            if (option > 10 && document.getElementById(option.toString()).src != "") {
                 this.checkCapture(option);
                 break;
             }
@@ -44,7 +44,7 @@ class Rook extends Piece{
             let mathRequirement2 = (Math.floor(currentPos / 10) * 10);
             if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != ""){
+            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != "") {
                 this.checkCapture(option);
                 break;
             }
@@ -57,7 +57,7 @@ class Rook extends Piece{
             let mathRequirement2 = (Math.floor(currentPos / 10) * 10);
             if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != ""){
+            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != "") {
                 this.checkCapture(option);
                 break
             }
@@ -65,6 +65,6 @@ class Rook extends Piece{
 
         moveOptions = this.getMoveArray();
         this.highlightMoves(this.getMoveArray());
-        
+
     }
 }

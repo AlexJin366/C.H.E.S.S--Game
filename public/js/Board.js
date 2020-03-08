@@ -96,7 +96,7 @@ class Board {
         }
     }
 
-    update(board){
+    update(board) {
         this.boardHTML = board;
         document.getElementsByClassName("Board_div")[0].innerHTML = this.boardHTML;
         for (let i = 0; i < this.pieces.length; i++) {

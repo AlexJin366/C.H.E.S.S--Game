@@ -5,124 +5,131 @@ let selectedPiece = null;
 let piece;
 let oldPiece = null;
 let captured = false;
-let childId = null;	
-let newChildId = null;	
-let globalBoard = null;	
-let boardObj;	
-let socket;	
+let childId = null;
+let newChildId = null;
+let globalBoard = null;
+let boardObj;
+let socket;
 let myturn;
 let myname;
 
-var script = document.createElement('script');	
-script.src = 'https://code.jquery.com/jquery-3.4.1.min.js';	
-script.type = 'text/javascript';	
+let script = document.createElement('script');
+script.src = 'https://code.jquery.com/jquery-3.4.1.min.js';
+script.type = 'text/javascript';
 document.getElementsByTagName('head')[0].appendChild(script);
 
-$(document).ready(function () {	
-    namespace = '/test';	
-    socket = io(namespace);	
-    socket.on('connect', function () {	
-        socket.emit('my_event', { data: 'I\'m connected!' });	
-    });	
-    socket.on('my_response', function (msg, cb) {	
-        if (cb)	
-            cb();	
-    });	
-    socket.on('my_response1', function (msg, cb) {	
-		myturn = !myturn;
-		test(msg);	
-        if (cb) {	
-            cb();	
-        }	
-    });	
-});		
+$(document).ready(function () {
+    namespace = '/test';
+    socket = io(namespace);
+    socket.on('connect', function () {
+        socket.emit('my_event', {
+            data: 'I\'m connected!'
+        });
+    });
+    socket.on('my_response', function (msg, cb) {
+        if (cb) {
+            cb();
+        }
+    });
+    socket.on('my_response1', function (msg, cb) {
+        myturn = !myturn;
+        test(msg);
+        if (cb) {
+            cb();
+        }
+    });
+});
 
-function setturn(turn,name){
-	myturn = turn;
-	myname = name;
+function setturn(turn, name) {
+    myturn = turn;
+    myname = name;
 }
 
-function createObject(object, i){
-    let position = object.position;	
-    let src = object.source;	
-    let type = object.type;	
-	let defaultPlace = object.default;
-    switch (src.substring(src.length-5, src.length)){	
-        case "B.png":	
+function createObject(object, i) {
+    let position = object.position;
+    let src = object.source;
+    let type = object.type;
+    let defaultPlace = object.default;
+    switch (src.substring(src.length - 5, src.length)) {
+        case "B.png":
             chessArray[i] = new Bishop(position, src, type);
-			chessArray[i].setDefault(defaultPlace);
-            break;	
-        case "K.png":	
+            chessArray[i].setDefault(defaultPlace);
+            break;
+        case "K.png":
             chessArray[i] = new King(position, src, type);
-			chessArray[i].setDefault(defaultPlace);
-            break;	
-        case "N.png":	
+            chessArray[i].setDefault(defaultPlace);
+            break;
+        case "N.png":
             chessArray[i] = new Knight(position, src, type);
-			chessArray[i].setDefault(defaultPlace);
-            break;	
-        case "P.png":	
-            chessArray[i] = new Pawn(position, src, type);	
-			chessArray[i].setDefault(defaultPlace);
-            break;	
-        case "Q.png":	
-            chessArray[i] = new Queen(position, src, type);	
-			chessArray[i].setDefault(defaultPlace);
-            break;	
-        case "R.png":	
+            chessArray[i].setDefault(defaultPlace);
+            break;
+        case "P.png":
+            chessArray[i] = new Pawn(position, src, type);
+            chessArray[i].setDefault(defaultPlace);
+            break;
+        case "Q.png":
+            chessArray[i] = new Queen(position, src, type);
+            chessArray[i].setDefault(defaultPlace);
+            break;
+        case "R.png":
             chessArray[i] = new Rook(position, src, type);
-			chessArray[i].setDefault(defaultPlace);			
-            break;	
-    }	
-}	
+            chessArray[i].setDefault(defaultPlace);
+            break;
+    }
+}
+
 function updateBoard(oldPosition, newPosition, board) {
-    let oldSrc;	
-    let newSrc;	
-    for (let i = 0; i < chessArray.length; i++) {	
-        if (chessArray[i].position == oldPosition) {	
-            oldSrc = chessArray[i];	
-            piece = chessArray[i];	
-        }else if (chessArray[i].position == newPosition){	
-            newSrc = chessArray[i];	
-            piece = chessArray[i];	
+    let oldSrc;
+    let newSrc;
+    for (let i = 0; i < chessArray.length; i++) {
+        if (chessArray[i].position == oldPosition) {
+            oldSrc = chessArray[i];
+            piece = chessArray[i];
+        } else if (chessArray[i].position == newPosition) {
+            newSrc = chessArray[i];
+            piece = chessArray[i];
         }
-	}	
-    	
-    document.getElementById(oldPosition).removeAttribute("src");	
-    if(!captured){	
-        if(newSrc){	
-            document.getElementById(newPosition).src = newSrc.source;	
-        }	
-        else{	
-            document.getElementById(newPosition).src = oldSrc.source;	
-        }	
-    }else{	
-        if(newSrc){	
-            document.getElementById(newPosition).src = newSrc.source;	
-        }	
-        else{	
-            document.getElementById(newPosition).src = oldSrc.source;	
-        }	
-    }	
-    	
-    clearMoveMade();	
-    piece.position = newPosition;	
-    piece.default = false;	
-    piece.validMoves = new Array();	
-    moveOptions = new Array();	
-}	
-function test(msg){	
-    let oldPos = msg.data[0];	
-    let newPos = msg.data[1];	
-    chessArray = msg.data[2];	
-    for(let i  = 0; i < chessArray.length; i++){	
-        createObject(chessArray[i], i);	
-    }	
-    updateBoard(oldPos, newPos, globalBoard);	
-}	
-let joined = false;	
-function sendData(oldPosition, newPosition, chessArray){
-    let data = [oldPosition, newPosition, chessArray]	
-    socket.emit('my_room_event', { room: '1' , "data" : data});	
+    }
+
+    document.getElementById(oldPosition).removeAttribute("src");
+    if (!captured) {
+        if (newSrc) {
+            document.getElementById(newPosition).src = newSrc.source;
+        } else {
+            document.getElementById(newPosition).src = oldSrc.source;
+        }
+    } else {
+        if (newSrc) {
+            document.getElementById(newPosition).src = newSrc.source;
+        } else {
+            document.getElementById(newPosition).src = oldSrc.source;
+        }
+    }
+
+    clearMoveMade();
+    piece.position = newPosition;
+    piece.default = false;
+    piece.validMoves = new Array();
+    moveOptions = new Array();
+}
+
+function test(msg) {
+    let oldPos = msg.data[0];
+    let newPos = msg.data[1];
+    chessArray = msg.data[2];
+    for (let i = 0; i < chessArray.length; i++) {
+        createObject(chessArray[i], i);
+    }
+    updateBoard(oldPos, newPos, globalBoard);
+}
+let joined = false;
+
+function sendData(oldPosition, newPosition, chessArray) {
+    let data = [oldPosition, newPosition, chessArray]
+    socket.emit('my_room_event', {
+        room: '1',
+        "data": data
+    });
 }
 
 function clearValidMoves() {
@@ -142,8 +149,8 @@ function clearValidMoves() {
     piece.validMoves = new Array();
 }
 
-function capture(){
-    if(moveOptions.includes(parseInt(piece.position, 10))){
+function capture() {
+    if (moveOptions.includes(parseInt(piece.position, 10))) {
         document.getElementById(piece.position).removeAttribute("src");
         document.getElementById(oldPiece.position).removeAttribute("src");
         document.getElementById(piece.position).src = oldPiece.source;
@@ -168,9 +175,9 @@ function clearMoveMade() {
 
 function movePiece(element, childId) {
     document.getElementById(piece.position).removeAttribute("src");
-    if(!captured){
+    if (!captured) {
         document.getElementById(childId).src = piece.source;
-    }else{
+    } else {
         document.getElementById(childId).src = oldPiece.source;
     }
     clearMoveMade();
@@ -180,7 +187,7 @@ function movePiece(element, childId) {
     moveOptions = new Array();
 }
 
-function checkPawnPromotion(childId){
+function checkPawnPromotion(childId) {
     let promotedPiece = null
     let index;
     let sourcePromoted;
@@ -192,26 +199,26 @@ function checkPawnPromotion(childId){
         }
     }
 
-    promotedPieceType = promotedPiece.source.substring(promotedPiece.source.length-6, promotedPiece.source.length);
+    promotedPieceType = promotedPiece.source.substring(promotedPiece.source.length - 6, promotedPiece.source.length);
     // console.log(promotedPieceType);
     promotedPiecePosition = promotedPiece.position;
     // console.log(promotedPiecePosition);
-    if(promotedPieceType.includes("P.png")){
-        switch(promotedPieceType[0]){
+    if (promotedPieceType.includes("P.png")) {
+        switch (promotedPieceType[0]) {
             case "b":
-                if(promotedPiecePosition > 80 && promotedPiecePosition < 90){
+                if (promotedPiecePosition > 80 && promotedPiecePosition < 90) {
                     let pieceType = "black";
                     // console.log("can promote");
                     var choice = prompt("What do you want to promote to?");
                     if (choice == null || choice == "" || !promotionChoice.includes(choice.toLowerCase())) {
                         console.log("User cancelled the prompt.");
                     } else {
-                        switch(choice.toLowerCase()){
+                        switch (choice.toLowerCase()) {
                             case "queen":
                                 sourcePromoted = "Pieces/Black/bQ.png"
                                 document.getElementById(promotedPiecePosition).removeAttribute("src");
                                 document.getElementById(promotedPiecePosition).src = sourcePromoted;
-                                chessArray[index] = new Queen(promotedPiecePosition, sourcePromoted, pieceType);	
+                                chessArray[index] = new Queen(promotedPiecePosition, sourcePromoted, pieceType);
                                 break;
                             case "knight":
                                 sourcePromoted = "Pieces/Black/bN.png"
@@ -236,19 +243,19 @@ function checkPawnPromotion(childId){
                 }
                 break;
             case "w":
-                if(promotedPiecePosition > 10 && promotedPiecePosition < 20){
+                if (promotedPiecePosition > 10 && promotedPiecePosition < 20) {
                     let pieceType = "white";
                     // console.log("can promote");
                     var choice = prompt("What do you want to promote to?");
                     if (choice == null || choice == "" || !promotionChoice.includes(choice.toLowerCase())) {
                         console.log("User cancelled the prompt.");
                     } else {
-                        switch(choice.toLowerCase()){
+                        switch (choice.toLowerCase()) {
                             case "queen":
                                 sourcePromoted = "Pieces/White/wQ.png"
                                 document.getElementById(promotedPiecePosition).removeAttribute("src");
                                 document.getElementById(promotedPiecePosition).src = sourcePromoted;
-                                chessArray[index] = new Queen(promotedPiecePosition, sourcePromoted, pieceType);	
+                                chessArray[index] = new Queen(promotedPiecePosition, sourcePromoted, pieceType);
                                 break;
                             case "knight":
                                 sourcePromoted = "Pieces/White/wN.png"
@@ -278,18 +285,18 @@ function checkPawnPromotion(childId){
 
 
 function makeMove(element) {
-	if (myturn && piece.getType() == name){
-		let old = childId;	
-		childId = parseFloat(element.childNodes[0].id);	
-		if (moveOptions.includes(childId)) {	
-            movePiece(element, childId.toString());	
+    if (myturn && piece.getType() == name) {
+        let old = childId;
+        childId = parseFloat(element.childNodes[0].id);
+        if (moveOptions.includes(childId)) {
+            movePiece(element, childId.toString());
             checkPawnPromotion(childId);
-			moveOptions = new Array();	
-			if(old && childId){	
-				sendData(old, childId.toString(), chessArray);	
-			}	
-		}
-	}
+            moveOptions = new Array();
+            if (old && childId) {
+                sendData(old, childId.toString(), chessArray);
+            }
+        }
+    }
 }
 
 function load() {
@@ -382,41 +389,41 @@ function load() {
 
     chessArray.push(whiteQueen1);
 
-    boardObj = new Board(chessArray);	
-    boardObj.renderBoard();	
+    boardObj = new Board(chessArray);
+    boardObj.renderBoard();
     globalBoard = boardObj.boardHTML;
 }
 let first = true;
 
 function select(position) {
-    if(myturn){
-		let found = false;
-		captured = false;
-		for (let i = 0; i < chessArray.length; i++) {
-			if(first){
-				if (chessArray[i].getPosition() == position) {
-					piece = chessArray[i];
-					first = false;
-					found = true;
-					break;
-				}
-			}else if(!first){
-				if (chessArray[i].getPosition() == position) {
-					oldPiece = piece;
-					piece = chessArray[i];
-				}
-			}
-		}
+    if (myturn) {
+        let found = false;
+        captured = false;
+        for (let i = 0; i < chessArray.length; i++) {
+            if (first) {
+                if (chessArray[i].getPosition() == position) {
+                    piece = chessArray[i];
+                    first = false;
+                    found = true;
+                    break;
+                }
+            } else if (!first) {
+                if (chessArray[i].getPosition() == position) {
+                    oldPiece = piece;
+                    piece = chessArray[i];
+                }
+            }
+        }
 
-		if(oldPiece != null && oldPiece.type != piece.type){
-			captured = capture();
-		}
-		
-		if(!captured){
-			if(piece.getType() == name){
-				piece.getValidMoves();
-			}
-		}	
-		
-	}
+        if (oldPiece != null && oldPiece.type != piece.type) {
+            captured = capture();
+        }
+
+        if (!captured) {
+            if (piece.getType() == name) {
+                piece.getValidMoves();
+            }
+        }
+
+    }
 }

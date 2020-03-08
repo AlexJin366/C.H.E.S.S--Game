@@ -2,11 +2,11 @@ class Queen extends Piece {
     boardcheck(number) {
         if (number > 88 || number < 11) {
             return false;
-        }
-        else if (number % 10 > 8 || number % 10 == 0) {
+        } else if (number % 10 > 8 || number % 10 == 0) {
             return false;
+        } else {
+            return true;
         }
-        else { return true; }
     }
 
     getValidMoves() {
@@ -23,7 +23,7 @@ class Queen extends Piece {
         // Moves Down
         for (let i = 10; i < movesUp; i += 10) {
             let option = currentPos + i;
-            if (document.getElementById(option.toString()).src != ""){
+            if (document.getElementById(option.toString()).src != "") {
                 this.checkCapture(option);
                 break;
             }
@@ -36,7 +36,7 @@ class Queen extends Piece {
             let option = currentPos - i;
             if (option > 10 && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > 10 && document.getElementById(option.toString()).src != ""){
+            if (option > 10 && document.getElementById(option.toString()).src != "") {
                 this.checkCapture(option);
                 break;
             }
@@ -47,7 +47,7 @@ class Queen extends Piece {
             let option = currentPos - i;
             if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != "") {
                 this.checkCapture(option);
                 break;
             }
@@ -58,7 +58,7 @@ class Queen extends Piece {
             let option = currentPos + i;
             if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src == "")
                 this.getMoveArray().push(option);
-            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != ""){
+            if (option > (Math.floor(currentPos / 10) * 10) && option < (Math.floor(currentPos / 10) * 10 + 9) && document.getElementById(option.toString()).src != "") {
                 this.checkCapture(option);
                 break
             }
@@ -71,12 +71,14 @@ class Queen extends Piece {
             option += bishopMoves[i];
 
             var check = this.boardcheck(option);
-            if (!check) { continue; }
+            if (!check) {
+                continue;
+            }
 
             do {
-                if (document.getElementById(option.toString()).src == ""){
+                if (document.getElementById(option.toString()).src == "") {
                     this.getMoveArray().push(option);
-                }else{
+                } else {
                     this.checkCapture(option);
                     break;
                 }

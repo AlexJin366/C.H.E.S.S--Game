@@ -2,11 +2,11 @@ class Bishop extends Piece {
     boardcheck(number) {
         if (number > 88 || number < 11) {
             return false;
-        }
-        else if (number % 10 > 8 || number % 10 == 0) {
+        } else if (number % 10 > 8 || number % 10 == 0) {
             return false;
+        } else {
+            return true;
         }
-        else { return true; }
     }
 
     getValidMoves() {
@@ -25,13 +25,15 @@ class Bishop extends Piece {
             option += bishopMoves[i];
 
             var check = this.boardcheck(option);
-            if (!check) { continue; }
+            if (!check) {
+                continue;
+            }
 
             do {
                 var isEmptySquare = document.getElementById(option.toString()).src == "";
-                if (isEmptySquare){
+                if (isEmptySquare) {
                     this.getMoveArray().push(option);
-                }else{
+                } else {
                     this.checkCapture(option);
                     break;
                 }

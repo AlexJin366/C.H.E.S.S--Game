@@ -14,7 +14,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 thread_lock = Lock()
-
+numberofplayer=0
 
 def background_thread():
     """Example of how to send server generated events to clients."""
