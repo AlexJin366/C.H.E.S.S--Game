@@ -318,13 +318,9 @@ function makeMove(element) {
 
 
 function isCheckHelper(potentialCheck, KingCurrentPosition){
-     var oponentType = "black";
-     if (piece.type == "black") {
-       oponentType = "white";
-     }
     for (var j = 0; j < potentialCheck.length; j++) {
         for (var i = 0; i < chessArray.length; i++) {
-            if (chessArray[i].position == potentialCheck[j].toString() && piece.type != oponentType) {
+            if (chessArray[i].position == potentialCheck[j].toString()) {
                 if ((Number(chessArray[i].position) - KingCurrentPosition) % 10 == 0 && (chessArray[i].constructor.name == "Rook" || chessArray[i].constructor.name == "Pawn") ){
                     return true;
                 } else if ((Number(chessArray[i].position) - KingCurrentPosition) % 10 != 0 && (chessArray[i].constructor.name == "Bishop")){
@@ -339,13 +335,9 @@ function isCheckHelper(potentialCheck, KingCurrentPosition){
 }
 
 function isCheck(nextMoveArray){
-    var oponentType = "black";
-    if(piece.type == "black"){
-        oponentType = "white";
-    }
     for(var j = 0; j<nextMoveArray.length;j++){
         for (var i = 0; i < chessArray.length; i++) {
-            if (chessArray[i].position == nextMoveArray[j].toString() && chessArray[i].constructor.name == 'King' && piece.type != oponentType) {
+            if (chessArray[i].position == nextMoveArray[j].toString() && chessArray[i].constructor.name == 'King') {
                 return true;
             }
         }
