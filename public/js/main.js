@@ -8,7 +8,9 @@ let captured = false;
 let childId = null;	
 let newChildId = null;	
 let globalBoard = null;	
-let boardObj;	
+let boardObj
+let isOnCheck
+let isOnCheckHelper;	
 let socket;	
 let myturn;
 let myname;
@@ -289,7 +291,11 @@ function makeMove(element) {
                 for(var i=0; i < chessArray.length;i++){
                     if(chessArray[i].position == childId.toString()){
                         let nextMoveArray = chessArray[i].getNextValidMoves(chessArray[i]);
-                        if(isCheck(nextMoveArray)){
+                        let potentialCheck = chessArray[i].allThePossible(chessArray[i]);
+                        let KingCurrentPosition = chessArray[i].position;
+                        isOnCheckHelper =  isCheckHelper(potentialCheck, KingCurrentPosition);
+                        isOnCheck = isCheck(nextMoveArray)
+                        if(isOnCheckHelper||isOnCheck){
                             swal({
                                 icon: 'error',
                                 title: 'Check!'
@@ -297,19 +303,19 @@ function makeMove(element) {
                         }
                     }
                 }
-                for (var i = 0; i < chessArray.length; i++) {
-                    if (chessArray[i].constructor.name == "King") {
-                        var potentialCheck = chessArray[i].allThePossible(chessArray[i]);
-                        var KingCurrentPosition = chessArray[i].position;
+                // for (var i = 0; i < chessArray.length; i++) {
+                //     if (chessArray[i].constructor.name == "King") {
+                //         var potentialCheck = chessArray[i].allThePossible(chessArray[i]);
+                //         var KingCurrentPosition = chessArray[i].position;
                         
-                        if(isCheckHelper(potentialCheck, KingCurrentPosition)){
-                            swal({
-                                icon: 'error',
-                                title: 'Check!'
-                            });
-                        }
-                    }
-                }
+                //         if(isCheckHelper(potentialCheck, KingCurrentPosition)){
+                //             swal({
+                //                 icon: 'error',
+                //                 title: 'Check!'
+                //             });
+                //         }
+                //     }
+                // }
 				sendData(old, childId.toString(), chessArray);	
 			}	
 		}
@@ -318,10 +324,14 @@ function makeMove(element) {
 
 
 function isCheckHelper(potentialCheck, KingCurrentPosition){
+    var oponentType = "black";
+    if (piece.type == "black") {
+        oponentType = "white";
+    }
     for (var j = 0; j < potentialCheck.length; j++) {
         for (var i = 0; i < chessArray.length; i++) {
-            if (chessArray[i].position == potentialCheck[j].toString()) {
-                if ((Number(chessArray[i].position) - KingCurrentPosition) % 10 == 0 && (chessArray[i].constructor.name == "Rook" || chessArray[i].constructor.name == "Pawn") ){
+            if (chessArray[i].position == potentialCheck[j].toString() && piece.type != oponentType) {
+                if ((Number(chessArray[i].position) - KingCurrentPosition) % 10 == 0 && (chessArray[i].constructor.name == "Rook" ) ){
                     return true;
                 } else if ((Number(chessArray[i].position) - KingCurrentPosition) % 10 != 0 && (chessArray[i].constructor.name == "Bishop")){
                     return true;
@@ -335,9 +345,13 @@ function isCheckHelper(potentialCheck, KingCurrentPosition){
 }
 
 function isCheck(nextMoveArray){
+    var oponentType = "black";
+    if (piece.type == "black") {
+        oponentType = "white";
+    }
     for(var j = 0; j<nextMoveArray.length;j++){
         for (var i = 0; i < chessArray.length; i++) {
-            if (chessArray[i].position == nextMoveArray[j].toString() && chessArray[i].constructor.name == 'King') {
+            if (chessArray[i].position == nextMoveArray[j].toString() && chessArray[i].constructor.name == 'King' && piece.type != oponentType) {
                 return true;
             }
         }
