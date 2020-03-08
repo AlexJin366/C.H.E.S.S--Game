@@ -10,8 +10,8 @@ let newChildId = null;
 let globalBoard = null;	
 let boardObj;	
 let socket;	
-let myturn;
-let myname;
+//let myturn;
+//let myname;
 
 var script = document.createElement('script');	
 script.src = 'https://code.jquery.com/jquery-3.4.1.min.js';	
@@ -29,7 +29,7 @@ $(document).ready(function () {
             cb();	
     });	
     socket.on('my_response1', function (msg, cb) {	
-		myturn = !myturn;
+		//myturn = !myturn;
 		test(msg);	
         if (cb) {	
             cb();	
@@ -37,10 +37,10 @@ $(document).ready(function () {
     });	
 });		
 
-function setturn(turn,name){
-	myturn = turn;
-	myname = name;
-}
+//function setturn(turn,name){
+	//myturn = turn;
+	//myname = name;
+//}
 
 function createObject(object, i){
     let position = object.position;	
@@ -278,7 +278,7 @@ function checkPawnPromotion(childId){
 
 
 function makeMove(element) {
-	if (myturn && piece.getType() == name){
+	//if (myturn && piece.getType() == myname){
 		let old = childId;	
 		childId = parseFloat(element.childNodes[0].id);	
 		if (moveOptions.includes(childId)) {	
@@ -289,7 +289,7 @@ function makeMove(element) {
 				sendData(old, childId.toString(), chessArray);	
 			}	
 		}
-	}
+	//}
 }
 
 function load() {
@@ -389,7 +389,7 @@ function load() {
 let first = true;
 
 function select(position) {
-    if(myturn){
+    //if(myturn){
 		let found = false;
 		captured = false;
 		for (let i = 0; i < chessArray.length; i++) {
@@ -413,10 +413,10 @@ function select(position) {
 		}
 		
 		if(!captured){
-			if(piece.getType() == name){
+			//if(piece.getType() == myname){
 				piece.getValidMoves();
-			}
+			//}
 		}	
 		
-	}
+	//}
 }
