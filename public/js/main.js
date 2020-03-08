@@ -37,12 +37,17 @@ $(document).ready(function () {
     });	
 });		
 function skipTurn(){
-	myturn = !myturn;
+	if (myname == "black"){
+		myname = "white";
+	}else{myname = "black";}
+	setturn(true,myname);
+	console.log(myname);
 	console.log("SDF");
 }
 function setturn(turn,name){
 	myturn = turn;
 	myname = name;
+	console.log(myname);
 }
 
 function createObject(object, i){
@@ -185,7 +190,7 @@ function movePiece(element, childId) {
 
 
 function makeMove(element) {
-	if (myturn && piece.getType() == name){
+	if (myturn && piece.getType() == myname){
 		let old = childId;	
 		childId = parseFloat(element.childNodes[0].id);	
 		if (moveOptions.includes(childId)) {	
@@ -295,6 +300,7 @@ function load() {
 let first = true;
 
 function select(position) {
+	console.log(myname);
     if(myturn){
 		let found = false;
 		captured = false;
@@ -319,7 +325,7 @@ function select(position) {
 		}
 		
 		if(!captured){
-			if(piece.getType() == name){
+			if(piece.getType() == myname){
 				piece.getValidMoves();
 			}
 		}	
