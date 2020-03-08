@@ -282,7 +282,8 @@ function makeMove(element) {
 		let old = childId;	
 		childId = parseFloat(element.childNodes[0].id);	
 		if (moveOptions.includes(childId)) {	
-			movePiece(element, childId.toString());	
+            movePiece(element, childId.toString());	
+            checkPawnPromotion(childId);
 			moveOptions = new Array();	
 			if(old && childId){	
 				sendData(old, childId.toString(), chessArray);	
