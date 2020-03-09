@@ -40,16 +40,19 @@ $(document).ready(function () {
     });	
 });		
 function skipTurn(){
+
 	if (myname == "black"){
 		myname = "white";
-	}else{myname = "black";}
-	setturn(true,myname);
+	}else if(myname == "white"){
+		myname = "black";
+	}
 	console.log(myname);
 }
 
 function setturn(turn,name){
 	myturn = turn;
 	myname = name;
+
 }
 
 function createObject(object, i){
@@ -295,7 +298,7 @@ function checkPawnPromotion(childId){
 
 
 function makeMove(element) {
-    if (myturn && piece.getType() == name){
+    if (myturn && piece.getType() == myname){
         let old = childId;	
         childId = parseFloat(element.childNodes[0].id);	
         if (moveOptions.includes(childId)) {	
@@ -457,7 +460,7 @@ function load() {
 let first = true;
 
 function select(position) {
-	console.log(myname);
+	//console.log(myname);
     if(myturn){
 		let found = false;
 		captured = false;
