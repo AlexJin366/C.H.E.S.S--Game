@@ -42,12 +42,11 @@ function skipTurn(){
 	}else{myname = "black";}
 	setturn(true,myname);
 	console.log(myname);
-	console.log("SDF");
 }
+
 function setturn(turn,name){
 	myturn = turn;
 	myname = name;
-	console.log(myname);
 }
 
 function createObject(object, i){
