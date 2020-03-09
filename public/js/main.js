@@ -38,7 +38,10 @@ $(document).ready(function () {
             cb();	
     });	
     socket.on('my_response1', function (msg, cb) {	
-		myturn = !myturn;
+        console.log("SFSDAF")
+        console.log(myturn)
+        myturn = !myturn;
+        console.log(myturn)
 		test(msg);	
         if (cb) {	
             cb();	
@@ -159,6 +162,88 @@ function sendData(oldPosition, newPosition, chessArray ,realCheck,checkarray,che
     socket.emit('my_room_event', { room: '1' , "data" : data});	
 }
 
+function isCheckCastle(nextMoveArray,type) {
+    for (var j = 0; j < nextMoveArray.length; j++) {
+        for (var i = 0; i < chessArray.length; i++) {
+            if (type == "black") {
+                return "86" == nextMoveArray[j].toString() || "87" == nextMoveArray[j].toString();
+            }
+            if (type == "white") {
+                return "16" == nextMoveArray[j].toString() || "17" == nextMoveArray[j].toString();
+            }
+        }
+    }
+    return false;
+}
+
+function canCastle(piece) {
+    let isKingDefault = false;
+    let isRookDefault = false;
+    let isKingAndRookDefault = false;
+    let isPathNotBlocked = true;
+    let isKingNotInCheck = true;
+    let isSpaceFree = false;
+
+    let nextMoveArray = piece.getNextValidMoves(piece);
+    //console.log(isCheckCastle(nextMoveArray,piece.type));
+
+    isPathNotBlocked = !isCheckCastle(nextMoveArray,piece.type);
+
+    if (piece.type == "white" && piece.constructor.name == "King") {
+        // isKingAndRookDefault
+        isKingDefault = piece.default;
+        for (let i = 0; i < chessArray.length; i++) {
+            if (chessArray[i].getPosition() == "88" && chessArray[i].constructor.name == "Rook" && chessArray[i].type == "white") {
+                isRookDefault = chessArray[i].default;
+            }
+        }
+        isKingAndRookDefault = isKingDefault && isRookDefault;
+    
+        // isSpaceFree
+        isSpaceFree = document.getElementById("86").src == "" && document.getElementById("87").src == "";
+        
+    } else if (piece.type == "black" && piece.constructor.name == "King") {
+        // isKingAndRookDefault
+        isKingDefault = piece.default;
+        for (let i = 0; i < chessArray.length; i++) {
+            if (chessArray[i].getPosition() == "18" && chessArray[i].constructor.name == "Rook" && chessArray[i].type == "black") {
+                isRookDefault = chessArray[i].default;
+            }
+        }
+        isKingAndRookDefault = isKingDefault && isRookDefault;
+    
+        // isSpaceFree
+        isSpaceFree = document.getElementById("16").src == "" && document.getElementById("17").src == "";
+    }
+    
+
+    return isKingAndRookDefault && isPathNotBlocked && isKingNotInCheck && isSpaceFree;
+}
+
+function castle(piece) {
+    if (piece.constructor.name == "King") {
+        if (piece.type == "white") {
+            sendData(piece.position, "87", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
+            movePiece(piece,"87", true);
+            piece = chessArray[19];
+            
+            sendData(piece.position, "86", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
+            sendData(piece.position, "86", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
+            movePiece(piece,"86", true);
+        } else {
+            sendData(piece.position, "17", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
+            movePiece(piece,"17", true);
+            piece = chessArray[17];
+            
+            sendData(piece.position, "16", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
+            sendData(piece.position, "16", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
+            movePiece(piece,"16", true);
+
+        }
+        
+    }
+}
+
 function clearValidMoves() {
     for (let i = 0; i < chessArray.length; i++) {
         if (chessArray[i].getPosition() == oldSelectedPiece) {
@@ -200,8 +285,14 @@ function clearMoveMade() {
     }
 }
 
-function movePiece(element, childId) {
+function movePiece(element, childId, castle = false) {
+    if (castle) {
+        piece = element;   
+    }
+    // clearing old picture
     document.getElementById(piece.position).removeAttribute("src");
+
+    // adding new picture 
     if(!captured){
         document.getElementById(childId).src = piece.source;
     }else{
@@ -209,6 +300,7 @@ function movePiece(element, childId) {
     }
     
     clearMoveMade();
+    // updating position
     piece.position = childId;
     piece.default = false;
     moveOptions = new Array();
@@ -653,4 +745,19 @@ function select(position) {
 			}           
         }
     }   
+        
+    
+    if(oldPiece != null){
+        captured = capture();
+    }
+    if(!captured){
+        piece.getValidMoves();
+    }
+    if (canCastle(piece)) {
+        console.log("castling works");
+        castle(piece);
+        //myturn = !myturn
+    } else {
+        console.log("castle fail");
+    }
 }
