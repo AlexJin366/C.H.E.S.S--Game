@@ -275,11 +275,11 @@ knightMovement('82','63')
 
 skipturn()
 #Black turn
-rookMovement('47','87')
+# rookMovement('47','87')
 
 #DOesnt pop up check!!!
 
-rookMovement('87','77')
+rookMovement('47','77')
 
 skipturn()
 #White turn
@@ -317,12 +317,29 @@ skipturn()
 #Black turn
 rookMovement('73','71')
 
+
 rookMovement('71','73')
-bishopMovement('61','52')
+bishopMovement('61','43')
 pawnMovement('51','61')
 pawnMovement('61','71')
+
+skipturn()
+#White turn
+knightMovement("63","82")
+
+skipturn()
+#Black turn
+
 pawnMovement('71','81')
-pawnpromotion('queen')
+pawnpromotion('rook')
+
+rookMovement('81','82')
+
+
+# skipturn()
+# #Black turn
+# rookMovement('81','82')
+# skipturn()
 
 #should be checkmate
 

@@ -97,7 +97,6 @@ class Bishop extends Piece {
         let moves = this.getValidMoves();
         // console.log(moves);
         for(var i = 0; i<moves.length;i++){
-            
              if(checkarray.includes(moves[i])){
                  validcheckmove.push(moves[i]);
              }

@@ -87,7 +87,7 @@ class Knight extends Piece{
     getCheckValidMoves(checkarray,checkopponentpos){
         let validcheckmove = new Array();
         let moves = this.getValidMoves();
-        // console.log(moves);
+        
         for(var i = 0; i<moves.length;i++){
             
              if(checkarray.includes(moves[i])){
@@ -95,7 +95,6 @@ class Knight extends Piece{
              }
         }
         if(checkarray.includes(checkopponentpos)){validcheckmove.push(checkopponentpos)}
-        console.log(validcheckmove);
         return validcheckmove
     }
     
