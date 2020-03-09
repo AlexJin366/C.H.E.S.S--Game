@@ -74,4 +74,42 @@ class Pawn extends Piece{
         moveOptions = this.getMoveArray();
         this.highlightMoves(this.getMoveArray());
     }
+
+
+    getNextValidMoves(Pawn) {
+       
+        let NextMoveArray = new Array();
+        let currentPos = Number(Pawn.position);
+        if (selectedPiece != Pawn.position) {
+            oldSelectedPiece = selectedPiece;
+            selectedPiece = Pawn.position;
+            clearValidMoves();
+            this.clean();
+        }
+        if (Pawn.type == "black") {
+            if (((currentPos + 9) < (Math.floor((currentPos + 10) / 10) * 10 + 9)) && (currentPos + 9) > (Math.floor((currentPos + 10) / 10) * 10)) {
+                if (document.getElementById((currentPos + 9).toString()).src != "" && document.getElementById((currentPos + 9).toString()).src.includes("/Pieces/White/")) {
+                    NextMoveArray.push(currentPos + 9);
+                }
+            }
+            if (((currentPos + 11) < (Math.floor((currentPos + 10) / 10) * 10 + 9)) && (currentPos + 11) > (Math.floor((currentPos + 10) / 10) * 10)) {
+                if (document.getElementById(currentPos + 11).toString().src != "" && document.getElementById((currentPos + 11).toString()).src.includes("/Pieces/White/")) {
+                    NextMoveArray.push(currentPos + 11);
+                }
+            }
+        } else {
+            if (((currentPos - 9) < (Math.floor((currentPos - 10) / 10) * 10 + 9)) && (currentPos - 9) > (Math.floor((currentPos - 10) / 10) * 10)) {
+                if (document.getElementById((currentPos - 9).toString()).src != "" && document.getElementById((currentPos - 9).toString()).src.includes("/Pieces/Black/")) {
+                    NextMoveArray.push(currentPos - 9);
+                }
+            }
+            if (((currentPos - 11) < (Math.floor((currentPos - 10) / 10) * 10 + 9)) && (currentPos - 11) > (Math.floor((currentPos - 10) / 10) * 10)) {
+                if (document.getElementById(currentPos - 11).toString().src != "" && document.getElementById((currentPos - 11).toString()).src.includes("/Pieces/Black/")) {
+                    NextMoveArray.push(currentPos - 11);
+                }
+            }
+        }
+        this.NextMove = NextMoveArray;
+        return NextMoveArray;
+    }
 }
