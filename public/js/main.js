@@ -8,8 +8,13 @@ let captured = false;
 let childId = null;	
 let newChildId = null;	
 let globalBoard = null;	
-let boardObj;	
+let boardObj;
+let isOnCheck;
+let realCheck;
+let isOnCheckHelper;	
 let socket;	
+let myturn;
+let myname;
 
 var script = document.createElement('script');	
 script.src = 'https://code.jquery.com/jquery-3.4.1.min.js';	
@@ -27,39 +32,52 @@ $(document).ready(function () {
             cb();	
     });	
     socket.on('my_response1', function (msg, cb) {	
-        test(msg);	
+		myturn = !myturn;
+		test(msg);	
         if (cb) {	
             cb();	
         }	
     });	
 });		
 
-function createObject(object, i){	
+function setturn(turn,name){
+	myturn = turn;
+	myname = name;
+}
+
+function createObject(object, i){
     let position = object.position;	
     let src = object.source;	
     let type = object.type;	
+	let defaultPlace = object.default;
     switch (src.substring(src.length-5, src.length)){	
         case "B.png":	
-            chessArray[i] = new Bishop(position, src, type)	
+            chessArray[i] = new Bishop(position, src, type);
+			chessArray[i].setDefault(defaultPlace);
             break;	
         case "K.png":	
-            chessArray[i] = new King(position, src, type)	
+            chessArray[i] = new King(position, src, type);
+			chessArray[i].setDefault(defaultPlace);
             break;	
         case "N.png":	
-            chessArray[i] = new Knight(position, src, type)	
+            chessArray[i] = new Knight(position, src, type);
+			chessArray[i].setDefault(defaultPlace);
             break;	
         case "P.png":	
-            chessArray[i] = new Pawn(position, src, type)	
+            chessArray[i] = new Pawn(position, src, type);	
+			chessArray[i].setDefault(defaultPlace);
             break;	
         case "Q.png":	
-            chessArray[i] = new Queen(position, src, type)	
+            chessArray[i] = new Queen(position, src, type);	
+			chessArray[i].setDefault(defaultPlace);
             break;	
         case "R.png":	
-            chessArray[i] = new Rook(position, src, type)	
+            chessArray[i] = new Rook(position, src, type);
+			chessArray[i].setDefault(defaultPlace);			
             break;	
     }	
 }	
-function updateBoard(oldPosition, newPosition, board) {	
+function updateBoard(oldPosition, newPosition, board) {
     let oldSrc;	
     let newSrc;	
     for (let i = 0; i < chessArray.length; i++) {	
@@ -69,8 +87,8 @@ function updateBoard(oldPosition, newPosition, board) {
         }else if (chessArray[i].position == newPosition){	
             newSrc = chessArray[i];	
             piece = chessArray[i];	
-        }	
-    }	
+        }
+	}	
     	
     document.getElementById(oldPosition).removeAttribute("src");	
     if(!captured){	
@@ -98,15 +116,22 @@ function updateBoard(oldPosition, newPosition, board) {
 function test(msg){	
     let oldPos = msg.data[0];	
     let newPos = msg.data[1];	
-    chessArray = msg.data[2];	
+    chessArray = msg.data[2];
+    realCheck = msg.data[3];
     for(let i  = 0; i < chessArray.length; i++){	
         createObject(chessArray[i], i);	
-    }	
+    }
+    if(realCheck){
+        swal({
+            icon: 'error',
+            title: 'Check!'
+        });
+    }
     updateBoard(oldPos, newPos, globalBoard);	
 }	
 let joined = false;	
-function sendData(oldPosition, newPosition, chessArray){		
-    let data = [oldPosition, newPosition, chessArray]	
+function sendData(oldPosition, newPosition, chessArray ,realCheck){
+    let data = [oldPosition, newPosition, chessArray, realCheck]	
     socket.emit('my_room_event', { room: '1' , "data" : data});	
 }
 
@@ -238,7 +263,6 @@ function movePiece(element, childId, castle = false) {
     }else{
         document.getElementById(childId).src = oldPiece.source;
     }
-    
     clearMoveMade();
     // updating position
     piece.position = childId;
@@ -247,53 +271,142 @@ function movePiece(element, childId, castle = false) {
     moveOptions = new Array();
 }
 
-// pass in div
-// child = element id
+function checkPawnPromotion(childId){
+    let promotedPiece = null
+    let index;
+    let sourcePromoted;
+    let promotionChoice = ["queen", "knight", "rook", "bishop"]
+    for (let i = 0; i < chessArray.length; i++) {
+        if (chessArray[i].getPosition() == childId) {
+            promotedPiece = chessArray[i];
+            index = i;
+        }
+    }
+
+    promotedPieceType = promotedPiece.source.substring(promotedPiece.source.length-6, promotedPiece.source.length);
+    // console.log(promotedPieceType);
+    promotedPiecePosition = promotedPiece.position;
+    // console.log(promotedPiecePosition);
+    if(promotedPieceType.includes("P.png")){
+        switch(promotedPieceType[0]){
+            case "b":
+                if(promotedPiecePosition > 80 && promotedPiecePosition < 90){
+                    let pieceType = "black";
+                    // console.log("can promote");
+                    var choice = prompt("What do you want to promote to?");
+                    if (choice == null || choice == "" || !promotionChoice.includes(choice.toLowerCase())) {
+                        console.log("User cancelled the prompt.");
+                    } else {
+                        switch(choice.toLowerCase()){
+                            case "queen":
+                                sourcePromoted = "Pieces/Black/bQ.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Queen(promotedPiecePosition, sourcePromoted, pieceType);	
+                                break;
+                            case "knight":
+                                sourcePromoted = "Pieces/Black/bN.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Knight(promotedPiecePosition, sourcePromoted, pieceType);
+                                break;
+                            case "rook":
+                                sourcePromoted = "Pieces/Black/bR.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Rook(promotedPiecePosition, sourcePromoted, pieceType);
+                                break;
+                            case "bishop":
+                                sourcePromoted = "Pieces/Black/bB.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Bishop(promotedPiecePosition, sourcePromoted, pieceType);
+                                break;
+                        }
+                    }
+                }
+                break;
+            case "w":
+                if(promotedPiecePosition > 10 && promotedPiecePosition < 20){
+                    let pieceType = "white";
+                    // console.log("can promote");
+                    var choice = prompt("What do you want to promote to?");
+                    if (choice == null || choice == "" || !promotionChoice.includes(choice.toLowerCase())) {
+                        console.log("User cancelled the prompt.");
+                    } else {
+                        switch(choice.toLowerCase()){
+                            case "queen":
+                                sourcePromoted = "Pieces/White/wQ.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Queen(promotedPiecePosition, sourcePromoted, pieceType);	
+                                break;
+                            case "knight":
+                                sourcePromoted = "Pieces/White/wN.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Knight(promotedPiecePosition, sourcePromoted, pieceType);
+                                break;
+                            case "rook":
+                                sourcePromoted = "Pieces/White/wR.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Rook(promotedPiecePosition, sourcePromoted, pieceType);
+                                break;
+                            case "bishop":
+                                sourcePromoted = "Pieces/White/wB.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Bishop(promotedPiecePosition, sourcePromoted, pieceType);
+                                break;
+                        }
+                    }
+                }
+                break;
+        }
+    }
+}
+
 
 function makeMove(element) {
-    let old = childId;	
-    childId = parseFloat(element.childNodes[0].id);	
-    if (moveOptions.includes(childId)) {	
-        movePiece(element, childId.toString());	
-        moveOptions = new Array();	
-        if(old && childId){
-            for(var i=0; i < chessArray.length;i++){
-                if(chessArray[i].position == childId.toString()){
-                    let nextMoveArray = chessArray[i].getNextValidMoves(chessArray[i]);
-                    if(isCheck(nextMoveArray)){
-                        swal({
-                            icon: 'error',
-                            title: 'Check!'
-                        });
+    if (myturn && piece.getType() == name){
+        let old = childId;	
+        childId = parseFloat(element.childNodes[0].id);	
+        if (moveOptions.includes(childId)) {	
+            movePiece(element, childId.toString());	
+            checkPawnPromotion(childId);
+            moveOptions = new Array();	
+            if(old && childId ){	
+                for(var i=0; i < chessArray.length;i++){
+                    if(chessArray[i].position == childId.toString()){
+                        let nextMoveArray = chessArray[i].getNextValidMoves(chessArray[i])         
+                        isOnCheck = isCheck(nextMoveArray);
                     }
                 }
-            }
-            for (var i = 0; i < chessArray.length; i++) {
-                if (chessArray[i].constructor.name == "King") {
-                    var potentialCheck = chessArray[i].allThePossible(chessArray[i]);
-                    var KingCurrentPosition = chessArray[i].position;
-                    
-                    if(isCheckHelper(potentialCheck, KingCurrentPosition)){
-                        swal({
-                            icon: 'error',
-                            title: 'Check!'
-                        });
+                for (var i = 0; i < chessArray.length; i++) {
+                    if (chessArray[i].constructor.name == "King") {
+                        var potentialCheck = chessArray[i].allThePossible(chessArray[i]);
+                        var KingCurrentPosition = chessArray[i].position;
+                        isOnCheckHelper = isCheckHelper(potentialCheck, KingCurrentPosition);
                     }
                 }
-            }
-           
-
-            sendData(old, childId.toString(), chessArray);	
-        }	
-    }	
+                realCheck = isOnCheck || isOnCheckHelper;
+                sendData(old, childId.toString(), chessArray, realCheck);	
+            }	
+        }
+    }
 }
 
 
 function isCheckHelper(potentialCheck, KingCurrentPosition){
+    var oponentType = "black";
+    if (piece.type == "black") {
+        oponentType = "white";
+    }
     for (var j = 0; j < potentialCheck.length; j++) {
         for (var i = 0; i < chessArray.length; i++) {
-            if (chessArray[i].position == potentialCheck[j].toString()) {
-                if ((Number(chessArray[i].position) - KingCurrentPosition) % 10 == 0 && (chessArray[i].constructor.name == "Rook" || chessArray[i].constructor.name == "Pawn") ){
+            if (chessArray[i].position == potentialCheck[j].toString() && piece.type != oponentType) {
+                if ((Number(chessArray[i].position) - KingCurrentPosition) % 10 == 0 && (chessArray[i].constructor.name == "Rook" ) ){
                     return true;
                 } else if ((Number(chessArray[i].position) - KingCurrentPosition) % 10 != 0 && (chessArray[i].constructor.name == "Bishop")){
                     return true;
@@ -307,9 +420,13 @@ function isCheckHelper(potentialCheck, KingCurrentPosition){
 }
 
 function isCheck(nextMoveArray){
+    var oponentType = "black";
+    if (piece.type == "black") {
+        oponentType = "white";
+    }
     for(var j = 0; j<nextMoveArray.length;j++){
         for (var i = 0; i < chessArray.length; i++) {
-            if (chessArray[i].position == nextMoveArray[j].toString() && chessArray[i].constructor.name == 'King') {
+            if (chessArray[i].position == nextMoveArray[j].toString() && chessArray[i].constructor.name == 'King' && piece.type != oponentType) {
                 return true;
             }
         }
@@ -414,21 +531,33 @@ function load() {
 let first = true;
 
 function select(position) {
-    let found = false;
-    captured = false;
-    for (let i = 0; i < chessArray.length; i++) {
-        if(first){
-            if (chessArray[i].getPosition() == position) {
-                piece = chessArray[i];
-                first = false;
-                found = true;
-                break;
-            }
-        }else if(!first){
-            if (chessArray[i].getPosition() == position) {
-                oldPiece = piece;
-                piece = chessArray[i];
-            }
+    if(myturn){
+		let found = false;
+		captured = false;
+		for (let i = 0; i < chessArray.length; i++) {
+			if(first){
+				if (chessArray[i].getPosition() == position) {
+					piece = chessArray[i];
+					first = false;
+					found = true;
+					break;
+				}
+			}else if(!first){
+				if (chessArray[i].getPosition() == position) {
+					oldPiece = piece;
+					piece = chessArray[i];
+				}
+			}
+		}
+
+		if(oldPiece != null && oldPiece.type != piece.type){
+			captured = capture();
+		}
+		
+		if(!captured){
+			if(piece.getType() == name){
+				piece.getValidMoves();
+			}
         }
         
     }
