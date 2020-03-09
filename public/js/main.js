@@ -366,21 +366,22 @@ function checkkingmove(){
     let potentialCheckPiece;
     for (var i = 0; i< chessArray.length; i++){
         if(chessArray[i].getType() == checked && chessArray[i].constructor.name == "King"){
-            // console.log(chessArray[i])
+
             kingnextmoves = chessArray[i].validMoves;
-            // console.log("ADSFADF");
-            // console.log(kingnextmoves);
+
         }
     }
-    // console.log(kingnextmoves);
     for (var i = 0; i< chessArray.length; i++){
-        // console.log(checked)
-        // console.log(checker)
+
         if(chessArray[i].getType()!=checked){
             chessArray[i].clean();
-            // console.log(chessArray[i])
-            potentialCheckPiece = chessArray[i].getValidMoves();
-            console.log(potentialCheckPiece);
+            if(chessArray[i].constructor.name =="Rook"){
+                potentialCheckPiece = chessArray[i].getNextCheckValidMoves(chessArray[i])
+                console.log("SDFSSDFS");
+                console.log(potentialCheckPiece);
+            }else{
+                potentialCheckPiece = chessArray[i].getValidMoves();
+            }
             for (var j = 0; j< potentialCheckPiece.length; j++){
                 if(kingnextmoves.includes(potentialCheckPiece[j])){
                     let index = kingnextmoves.indexOf(potentialCheckPiece[j]);

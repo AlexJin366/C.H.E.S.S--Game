@@ -200,13 +200,14 @@ class Rook extends Piece{
             let option = currentPos + i;
             let mathRequirement1 = (Math.floor(currentPos / 10) * 10 + 9);
             let mathRequirement2 = (Math.floor(currentPos / 10) * 10);
-            if (option > mathRequirement2 && option < mathRequirement1 && (document.getElementById(option.toString()).src == "" || document.getElementById(option.toString()).src == "Pieces/White/wK.png" || document.getElementById(option.toString()).src == "Pieces/Black/bK.png"))
+            if (option > mathRequirement2 && option < mathRequirement1 && (document.getElementById(option.toString()).src == "" || document.getElementById(option.toString()).src == "http://127.0.0.1:5000/Pieces/White/wK.png" || document.getElementById(option.toString()).src == "http://127.0.0.1:5000/Pieces/Black/bK.png"))
                 NextMoveArray.push(option);
-            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != "") {
+            else if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != "") {
                 this.checkCapture(option);
                 break
             }
         }
+        console.log(NextMoveArray);
 
         moveOptions = this.getMoveArray();
         var returnArray = NextMoveArray.concat(moveOptions);

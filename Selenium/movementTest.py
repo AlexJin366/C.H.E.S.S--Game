@@ -11,9 +11,9 @@ driver.get("http://127.0.0.1:5000/")
 
 def pawnpromotion(promote):
     obj = driver.switch_to.alert
-    time.sleep(2)
+    time.sleep(1)
     obj.send_keys(promote)
-    time.sleep(2)
+    time.sleep(1)
     obj.accept()
     print(promote)
 
