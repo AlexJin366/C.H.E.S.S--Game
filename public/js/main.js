@@ -8,7 +8,10 @@ let captured = false;
 let childId = null;	
 let newChildId = null;	
 let globalBoard = null;	
-let boardObj;	
+let boardObj;
+let isOnCheck;
+let realCheck;
+let isOnCheckHelper;	
 let socket;	
 let myturn;
 let myname;
@@ -113,15 +116,22 @@ function updateBoard(oldPosition, newPosition, board) {
 function test(msg){	
     let oldPos = msg.data[0];	
     let newPos = msg.data[1];	
-    chessArray = msg.data[2];	
+    chessArray = msg.data[2];
+    realCheck = msg.data[3];
     for(let i  = 0; i < chessArray.length; i++){	
         createObject(chessArray[i], i);	
-    }	
+    }
+    if(realCheck){
+        swal({
+            icon: 'error',
+            title: 'Check!'
+        });
+    }
     updateBoard(oldPos, newPos, globalBoard);	
 }	
 let joined = false;	
-function sendData(oldPosition, newPosition, chessArray){
-    let data = [oldPosition, newPosition, chessArray]	
+function sendData(oldPosition, newPosition, chessArray ,realCheck){
+    let data = [oldPosition, newPosition, chessArray, realCheck]	
     socket.emit('my_room_event', { room: '1' , "data" : data});	
 }
 
@@ -278,18 +288,69 @@ function checkPawnPromotion(childId){
 
 
 function makeMove(element) {
-	if (myturn && piece.getType() == name){
-		let old = childId;	
-		childId = parseFloat(element.childNodes[0].id);	
-		if (moveOptions.includes(childId)) {	
+    if (myturn && piece.getType() == name){
+        let old = childId;	
+        childId = parseFloat(element.childNodes[0].id);	
+        if (moveOptions.includes(childId)) {	
             movePiece(element, childId.toString());	
             checkPawnPromotion(childId);
-			moveOptions = new Array();	
-			if(old && childId){	
-				sendData(old, childId.toString(), chessArray);	
-			}	
-		}
-	}
+            moveOptions = new Array();	
+            if(old && childId ){	
+                for(var i=0; i < chessArray.length;i++){
+                    if(chessArray[i].position == childId.toString()){
+                        let nextMoveArray = chessArray[i].getNextValidMoves(chessArray[i])         
+                        isOnCheck = isCheck(nextMoveArray);
+                    }
+                }
+                for (var i = 0; i < chessArray.length; i++) {
+                    if (chessArray[i].constructor.name == "King") {
+                        var potentialCheck = chessArray[i].allThePossible(chessArray[i]);
+                        var KingCurrentPosition = chessArray[i].position;
+                        isOnCheckHelper = isCheckHelper(potentialCheck, KingCurrentPosition);
+                    }
+                }
+                realCheck = isOnCheck || isOnCheckHelper;
+                sendData(old, childId.toString(), chessArray, realCheck);	
+            }	
+        }
+    }
+}
+
+
+function isCheckHelper(potentialCheck, KingCurrentPosition){
+    var oponentType = "black";
+    if (piece.type == "black") {
+        oponentType = "white";
+    }
+    for (var j = 0; j < potentialCheck.length; j++) {
+        for (var i = 0; i < chessArray.length; i++) {
+            if (chessArray[i].position == potentialCheck[j].toString() && piece.type != oponentType) {
+                if ((Number(chessArray[i].position) - KingCurrentPosition) % 10 == 0 && (chessArray[i].constructor.name == "Rook" ) ){
+                    return true;
+                } else if ((Number(chessArray[i].position) - KingCurrentPosition) % 10 != 0 && (chessArray[i].constructor.name == "Bishop")){
+                    return true;
+                } else if (((Number(chessArray[i].position) - KingCurrentPosition) % 10 != 0 || Number(chessArray[i].position) - KingCurrentPosition % 10 == 0) && (chessArray[i].constructor.name == "Queen")) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function isCheck(nextMoveArray){
+    var oponentType = "black";
+    if (piece.type == "black") {
+        oponentType = "white";
+    }
+    for(var j = 0; j<nextMoveArray.length;j++){
+        for (var i = 0; i < chessArray.length; i++) {
+            if (chessArray[i].position == nextMoveArray[j].toString() && chessArray[i].constructor.name == 'King' && piece.type != oponentType) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 function load() {
@@ -416,7 +477,6 @@ function select(position) {
 			if(piece.getType() == name){
 				piece.getValidMoves();
 			}
-		}	
-		
-	}
+        }
+    }   
 }
