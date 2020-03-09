@@ -8,10 +8,19 @@ let captured = false;
 let childId = null;	
 let newChildId = null;	
 let globalBoard = null;	
-let boardObj;	
+let boardObj;
+let isOnCheck;
+let realCheck = false;
+let isOnCheckHelper;	
 let socket;	
 let myturn;
 let myname;
+let checkarray = new Array();
+let checkopponentpos;
+let checker;
+let checked;
+let moves = new Array();
+let cansacrifice = false;
 
 var script = document.createElement('script');	
 script.src = 'https://code.jquery.com/jquery-3.4.1.min.js';	
@@ -36,10 +45,20 @@ $(document).ready(function () {
         }	
     });	
 });		
+function skipTurn(){
+
+	if (myname == "black"){
+		myname = "white";
+	}else if(myname == "white"){
+		myname = "black";
+	}
+	// console.log(myname);
+}
 
 function setturn(turn,name){
 	myturn = turn;
 	myname = name;
+
 }
 
 function createObject(object, i){
@@ -113,15 +132,30 @@ function updateBoard(oldPosition, newPosition, board) {
 function test(msg){	
     let oldPos = msg.data[0];	
     let newPos = msg.data[1];	
-    chessArray = msg.data[2];	
+    chessArray = msg.data[2];
+    realCheck = msg.data[3];
+    checkarray = msg.data[4];
+    checkopponentpos = msg.data[5];
+    checker = msg.data[6];
+    checked = msg.data[7];
+    // console.log("TEST");
+    // console.log(msg.data)
+    
     for(let i  = 0; i < chessArray.length; i++){	
         createObject(chessArray[i], i);	
-    }	
+    }
+    if(realCheck){
+        swal({
+            icon: 'error',
+            title: 'Check!'
+        });
+    }
     updateBoard(oldPos, newPos, globalBoard);	
 }	
 let joined = false;	
-function sendData(oldPosition, newPosition, chessArray){
-    let data = [oldPosition, newPosition, chessArray]	
+function sendData(oldPosition, newPosition, chessArray ,realCheck,checkarray,checkopponentpos,checker,checked){
+    let data = [oldPosition, newPosition, chessArray, realCheck,checkarray,checkopponentpos,checker,checked]
+    // console.log(checkarray);	
     socket.emit('my_room_event', { room: '1' , "data" : data});	
 }
 
@@ -173,26 +207,316 @@ function movePiece(element, childId) {
     }else{
         document.getElementById(childId).src = oldPiece.source;
     }
+    
     clearMoveMade();
     piece.position = childId;
     piece.default = false;
-    piece.clean();
     moveOptions = new Array();
 }
 
+function checkPawnPromotion(childId){
+    let promotedPiece = null
+    let index;
+    let sourcePromoted;
+    let promotionChoice = ["queen", "knight", "rook", "bishop"]
+    for (let i = 0; i < chessArray.length; i++) {
+        if (chessArray[i].getPosition() == childId) {
+            promotedPiece = chessArray[i];
+            index = i;
+        }
+    }
+
+    promotedPieceType = promotedPiece.source.substring(promotedPiece.source.length-6, promotedPiece.source.length);
+    // console.log(promotedPieceType);
+    promotedPiecePosition = promotedPiece.position;
+    // console.log(promotedPiecePosition);
+    if(promotedPieceType.includes("P.png")){
+        switch(promotedPieceType[0]){
+            case "b":
+                if(promotedPiecePosition > 80 && promotedPiecePosition < 90){
+                    let pieceType = "black";
+                    // console.log("can promote");
+                    var choice = prompt("What do you want to promote to?");
+                    if (choice == null || choice == "" || !promotionChoice.includes(choice.toLowerCase())) {
+                        console.log("User cancelled the prompt.");
+                    } else {
+                        switch(choice.toLowerCase()){
+                            case "queen":
+                                sourcePromoted = "Pieces/Black/bQ.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Queen(promotedPiecePosition, sourcePromoted, pieceType);	
+                                break;
+                            case "knight":
+                                sourcePromoted = "Pieces/Black/bN.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Knight(promotedPiecePosition, sourcePromoted, pieceType);
+                                break;
+                            case "rook":
+                                sourcePromoted = "Pieces/Black/bR.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Rook(promotedPiecePosition, sourcePromoted, pieceType);
+                                break;
+                            case "bishop":
+                                sourcePromoted = "Pieces/Black/bB.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Bishop(promotedPiecePosition, sourcePromoted, pieceType);
+                                break;
+                        }
+                    }
+                }
+                break;
+            case "w":
+                if(promotedPiecePosition > 10 && promotedPiecePosition < 20){
+                    let pieceType = "white";
+                    // console.log("can promote");
+                    var choice = prompt("What do you want to promote to?");
+                    if (choice == null || choice == "" || !promotionChoice.includes(choice.toLowerCase())) {
+                        console.log("User cancelled the prompt.");
+                    } else {
+                        switch(choice.toLowerCase()){
+                            case "queen":
+                                sourcePromoted = "Pieces/White/wQ.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Queen(promotedPiecePosition, sourcePromoted, pieceType);	
+                                break;
+                            case "knight":
+                                sourcePromoted = "Pieces/White/wN.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Knight(promotedPiecePosition, sourcePromoted, pieceType);
+                                break;
+                            case "rook":
+                                sourcePromoted = "Pieces/White/wR.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Rook(promotedPiecePosition, sourcePromoted, pieceType);
+                                break;
+                            case "bishop":
+                                sourcePromoted = "Pieces/White/wB.png"
+                                document.getElementById(promotedPiecePosition).removeAttribute("src");
+                                document.getElementById(promotedPiecePosition).src = sourcePromoted;
+                                chessArray[index] = new Bishop(promotedPiecePosition, sourcePromoted, pieceType);
+                                break;
+                        }
+                    }
+                }
+                break;
+        }
+    }
+}
+function checkMakeMove(element){
+    if (myturn && piece.getType() == myname){
+        let old = childId;
+        childId = parseFloat(element.childNodes[0].id);
+        if (moves.includes(childId)){       //Moves is an array from next check move (from piece class)
+            movePiece(element, childId.toString());
+            checkPawnPromotion(childId);
+            moves = new Array();
+            if(old && childId ){	
+                for(var i=0; i < chessArray.length;i++){
+                    if(chessArray[i].position == childId.toString()){
+                        let nextMoveArray = chessArray[i].getNextValidMoves(chessArray[i])      
+                        
+                        isOnCheck = isCheck(nextMoveArray);
+                    }
+                }
+                for (var i = 0; i < chessArray.length; i++) {
+                    if (chessArray[i].constructor.name == "King") {
+                        var potentialCheck = chessArray[i].allThePossible(chessArray[i]);
+                        var KingCurrentPosition = chessArray[i].position;
+                        isOnCheckHelper = isCheckHelper(potentialCheck, KingCurrentPosition);
+                    }
+                }
+                realCheck = isOnCheck || isOnCheckHelper;
+                if (realCheck){
+                    for (var i = 0; i<chessArray.length;i++){
+                        if (chessArray[i].position == childId.toString()){
+                            checkarray = chessArray[i].getNextValidMoves(chessArray[i]);        //only get moves in direction of king Queen gets all directions
+                            //^ BUG getting ids from same direction of the opponent piece
+                            checkarray.push(childId);
+                        }
+                    }
+                    checker = myname;
+                    if(myname == 'black'){
+                        checked = 'white';
+                    }else{checked='black'}
+                }
+                else if(realCheck == false){
+                    checkarray = new Array();
+                    checkopponentpos = 0;
+                    checked = 0;
+                    checker = 0;
+                }
+
+                sendData(old, childId.toString(), chessArray, realCheck,checkarray,checker,checked);	
+                }
+        }
+
+    }
+}
+
+function checkkingmove(){
+
+    let kingnextmoves;
+    let potentialCheckPiece;
+    for (var i = 0; i< chessArray.length; i++){
+        if(chessArray[i].getType() == checked && chessArray[i].constructor.name == "King"){
+            // console.log(chessArray[i])
+            kingnextmoves = chessArray[i].validMoves;
+            // console.log("ADSFADF");
+            // console.log(kingnextmoves);
+        }
+    }
+    // console.log(kingnextmoves);
+    for (var i = 0; i< chessArray.length; i++){
+        // console.log(checked)
+        // console.log(checker)
+        if(chessArray[i].getType()!=checked){
+            chessArray[i].clean();
+            // console.log(chessArray[i])
+            potentialCheckPiece = chessArray[i].getValidMoves();
+            console.log(potentialCheckPiece);
+            for (var j = 0; j< potentialCheckPiece.length; j++){
+                if(kingnextmoves.includes(potentialCheckPiece[j])){
+                    let index = kingnextmoves.indexOf(potentialCheckPiece[j]);
+                    kingnextmoves.splice(index,1);
+                }
+            }
+        }
+    }
+    console.log(kingnextmoves)
+    
+    if(kingnextmoves.length>0){
+        return true
+    } else {return false}
+}
+
+function ischeckmate(){
+    //Checks if there is any piece that can do capture during check
+    for (var i = 0; i< chessArray.length; i++){
+        if(chessArray[i].getType()==checked && chessArray[i].getValidMoves().includes(checkopponentpos)){
+            return false
+        }
+    }
+    // console.log(checked);
+    //Check for sacrifice (pieces that get between king and check piece)
+    //Need array of next move only at the direction of king!
+    for (var i = 0; i< chessArray.length; i++){
+        // console.log(chessArray[i].constructor.name)
+        if(chessArray[i].getType()==checked && chessArray[i].constructor.name != "King"){
+            chessArray[i].clean();
+            let sacrificemoves = chessArray[i].getValidMoves()
+            
+            for (var j = 0; j< sacrificemoves.length; j++){
+                if(checkarray.includes(sacrificemoves[j])){         //Same bug of valid moves not in line of check
+                    realCheck = false;
+                    return false
+                }
+            }
+        }
+    }
+    // console.log("CHECK KING");
+    //Check for king possible moves
+    if(checkkingmove()){return false}
+
+    
+    return true;
+}
 
 function makeMove(element) {
-	if (myturn && piece.getType() == name){
-		let old = childId;	
-		childId = parseFloat(element.childNodes[0].id);	
-		if (moveOptions.includes(childId)) {	
-			movePiece(element, childId.toString());	
-			moveOptions = new Array();	
-			if(old && childId){	
-				sendData(old, childId.toString(), chessArray);	
-			}	
-		}
-	}
+    if (realCheck){checkMakeMove(element)}
+    if (myturn && piece.getType() == myname && realCheck == false){
+        let old = childId;	
+        childId = parseFloat(element.childNodes[0].id);	
+        if (moveOptions.includes(childId)) {	
+            movePiece(element, childId.toString());	
+            checkPawnPromotion(childId);
+            moveOptions = new Array();	
+            if(old && childId ){	
+                for(var i=0; i < chessArray.length;i++){
+                    if(chessArray[i].position == childId.toString()){
+                        let nextMoveArray = chessArray[i].getNextValidMoves(chessArray[i]);
+                        isOnCheck = isCheck(nextMoveArray);
+                    }
+                }
+                for (var i = 0; i < chessArray.length; i++) {
+                    if (chessArray[i].constructor.name == "King") {
+                        var potentialCheck = chessArray[i].allThePossible(chessArray[i]);
+                        var KingCurrentPosition = chessArray[i].position;
+                        isOnCheckHelper = isCheckHelper(potentialCheck, KingCurrentPosition);
+                    }
+                }
+                realCheck = isOnCheck || isOnCheckHelper;
+                if (realCheck){
+                    for (var i = 0; i<chessArray.length;i++){
+                        if (chessArray[i].position == childId.toString()){
+                            checkarray = new Array();
+                            checkarray = chessArray[i].getNextValidMoves(chessArray[i]);        //only get moves in direction of king
+                            checkopponentpos = childId;
+                        }
+                    }
+                    if(myname == 'black'){
+                        checked = 'white';
+                    }else{checked='black'}
+
+                }else if(realCheck == false){
+                    checkarray = new Array();
+                    checkopponentpos = 0;
+                    checked = 0;
+                    checker = 0;
+                }
+                if (realCheck){
+                    if (ischeckmate()){                         //Send to back end
+                        swal({title:"CheckMate", icon:"success"});
+                    }
+                }
+                // King moves and puts itself in check 
+                sendData(old, childId.toString(), chessArray, realCheck,checkarray,checkopponentpos,checked,checker);	
+            }	
+        }
+    }
+}
+
+
+function isCheckHelper(potentialCheck, KingCurrentPosition){
+    var oponentType = "black";
+    if (piece.type == "black") {
+        oponentType = "white";
+    }
+    for (var j = 0; j < potentialCheck.length; j++) {
+        for (var i = 0; i < chessArray.length; i++) {
+            if (chessArray[i].position == potentialCheck[j].toString() && piece.type != oponentType) {
+                if ((Number(chessArray[i].position) - KingCurrentPosition) % 10 == 0 && (chessArray[i].constructor.name == "Rook" ) ){
+                    return true;
+                } else if ((Number(chessArray[i].position) - KingCurrentPosition) % 10 != 0 && (chessArray[i].constructor.name == "Bishop")){
+                    return true;
+                } else if (((Number(chessArray[i].position) - KingCurrentPosition) % 10 != 0 || Number(chessArray[i].position) - KingCurrentPosition % 10 == 0) && (chessArray[i].constructor.name == "Queen")) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function isCheck(nextMoveArray){
+    var oponentType = "black";
+    if (piece.type == "black") {
+        oponentType = "white";
+    }
+    for(var j = 0; j<nextMoveArray.length;j++){
+        for (var i = 0; i < chessArray.length; i++) {
+            if (chessArray[i].position == nextMoveArray[j].toString() && chessArray[i].constructor.name == 'King' && piece.type != oponentType) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 function load() {
@@ -315,11 +639,17 @@ function select(position) {
 			captured = capture();
 		}
 		
-		if(!captured){
-			if(piece.getType() == name){
-				piece.getValidMoves();
+		if(!captured && realCheck == false){
+			if(piece.getType() == myname){
+                moves = piece.getValidMoves();
+                piece.highlightMoves(moves);
 			}
-		}	
-		
-	}
+        }
+        else if(realCheck){
+            if(piece.getType() == myname){
+                moves = piece.getCheckValidMoves(checkarray,checkopponentpos);
+                piece.highlightMoves(moves);
+			}           
+        }
+    }   
 }
