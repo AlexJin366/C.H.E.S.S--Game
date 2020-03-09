@@ -41,7 +41,8 @@ class King extends Piece {
         }
 
         moveOptions = this.getMoveArray();
-        this.highlightMoves(this.getMoveArray());
+        return this.getMoveArray();
+        // this.highlightMoves(this.getMoveArray());
 
     }
 
@@ -132,5 +133,23 @@ class King extends Piece {
         var returnArray = NextMoveArray.concat(moveOptions);
         this.NextMove = returnArray;
         return returnArray;
+    }
+
+
+    getCheckValidMoves(checkarray,checkopponentpos){
+        // this.clean();
+        let moves = this.getValidMoves();
+        this.clean();
+        console.log(checkarray);
+        for(var i = 0; i<moves.length;i++){
+            console.log("SDF");
+            if(!(checkarray.includes(moves[i]))){
+                this.validMoves.push(moves[i]);
+            }
+       }
+       if(checkarray.includes(checkopponentpos)){this.validMoves.push(checkopponentpos)}
+
+        moveOptions = this.validMoves;
+        return this.validMoves;
     }
 }

@@ -64,7 +64,8 @@ class Rook extends Piece{
         }
 
         moveOptions = this.getMoveArray();
-        this.highlightMoves(this.getMoveArray());
+        return this.getMoveArray();
+        // this.highlightMoves(this.getMoveArray());
         
     }
 
@@ -132,5 +133,18 @@ class Rook extends Piece{
         var returnArray = NextMoveArray.concat(moveOptions);
         this.NextMove = returnArray;
         return returnArray;
+    }
+    getCheckValidMoves(checkarray,checkopponentpos){
+        let validcheckmove = new Array();
+        let moves = this.getValidMoves();
+        // console.log(moves);
+        for(var i = 0; i<moves.length;i++){
+            
+             if(checkarray.includes(moves[i])){
+                 validcheckmove.push(moves[i]);
+             }
+        }
+        if(checkarray.includes(checkopponentpos)){validcheckmove.push(checkopponentpos)}
+        return validcheckmove
     }
 }

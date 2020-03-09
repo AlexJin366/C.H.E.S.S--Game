@@ -10,11 +10,14 @@ let newChildId = null;
 let globalBoard = null;	
 let boardObj;
 let isOnCheck;
-let realCheck;
+let realCheck = false;
 let isOnCheckHelper;	
 let socket;	
 let myturn;
 let myname;
+let checkarray;
+let checkopponentpos;
+let moves = new Array();
 
 var script = document.createElement('script');	
 script.src = 'https://code.jquery.com/jquery-3.4.1.min.js';	
@@ -128,6 +131,11 @@ function test(msg){
     let newPos = msg.data[1];	
     chessArray = msg.data[2];
     realCheck = msg.data[3];
+    checkarray = msg.data[4];
+    checkopponentpos = msg.data[5];
+    // console.log("TEST");
+    // console.log(msg.data)
+    
     for(let i  = 0; i < chessArray.length; i++){	
         createObject(chessArray[i], i);	
     }
@@ -140,8 +148,9 @@ function test(msg){
     updateBoard(oldPos, newPos, globalBoard);	
 }	
 let joined = false;	
-function sendData(oldPosition, newPosition, chessArray ,realCheck){
-    let data = [oldPosition, newPosition, chessArray, realCheck]	
+function sendData(oldPosition, newPosition, chessArray ,realCheck,checkarray,checkopponentpos){
+    let data = [oldPosition, newPosition, chessArray, realCheck,checkarray,checkopponentpos]
+    console.log(checkarray);	
     socket.emit('my_room_event', { room: '1' , "data" : data});	
 }
 
@@ -193,10 +202,10 @@ function movePiece(element, childId) {
     }else{
         document.getElementById(childId).src = oldPiece.source;
     }
+    
     clearMoveMade();
     piece.position = childId;
     piece.default = false;
-    piece.clean();
     moveOptions = new Array();
 }
 
@@ -295,20 +304,19 @@ function checkPawnPromotion(childId){
         }
     }
 }
-
-
-function makeMove(element) {
+function checkMakeMove(element){
     if (myturn && piece.getType() == myname){
-        let old = childId;	
-        childId = parseFloat(element.childNodes[0].id);	
-        if (moveOptions.includes(childId)) {	
-            movePiece(element, childId.toString());	
+        let old = childId;
+        childId = parseFloat(element.childNodes[0].id);
+        if (moves.includes(childId)){       //Moves is an array from next check move (from piece class)
+            movePiece(element, childId.toString());
             checkPawnPromotion(childId);
-            moveOptions = new Array();	
+            moves = new Array();
             if(old && childId ){	
                 for(var i=0; i < chessArray.length;i++){
                     if(chessArray[i].position == childId.toString()){
-                        let nextMoveArray = chessArray[i].getNextValidMoves(chessArray[i])         
+                        let nextMoveArray = chessArray[i].getNextValidMoves(chessArray[i])      
+                        
                         isOnCheck = isCheck(nextMoveArray);
                     }
                 }
@@ -320,7 +328,62 @@ function makeMove(element) {
                     }
                 }
                 realCheck = isOnCheck || isOnCheckHelper;
-                sendData(old, childId.toString(), chessArray, realCheck);	
+                if (realCheck){
+                    for (var i = 0; i<chessArray.length;i++){
+                        if (chessArray[i].position == childId.toString()){
+                            checkarray = chessArray[i].getNextValidMoves(chessArray[i]);        //only get moves in direction of king Queen gets all directions
+                            //^BUG getting ids from same direction of the opponent piece
+                            checkarray.push(childId);
+                        }
+                    }
+                }
+                else if(realCheck == false){
+                    checkarray = new Array();
+                }
+                sendData(old, childId.toString(), chessArray, realCheck,checkarray);	
+                }
+        }
+
+    }
+}
+
+function makeMove(element) {
+    if (realCheck){checkMakeMove(element)}
+    if (myturn && piece.getType() == myname && realCheck == false){
+        let old = childId;	
+        childId = parseFloat(element.childNodes[0].id);	
+        if (moveOptions.includes(childId)) {	
+            movePiece(element, childId.toString());	
+            checkPawnPromotion(childId);
+            moveOptions = new Array();	
+            if(old && childId ){	
+                for(var i=0; i < chessArray.length;i++){
+                    if(chessArray[i].position == childId.toString()){
+                        let nextMoveArray = chessArray[i].getNextValidMoves(chessArray[i]);
+                        isOnCheck = isCheck(nextMoveArray);
+                    }
+                }
+                for (var i = 0; i < chessArray.length; i++) {
+                    if (chessArray[i].constructor.name == "King") {
+                        var potentialCheck = chessArray[i].allThePossible(chessArray[i]);
+                        var KingCurrentPosition = chessArray[i].position;
+                        isOnCheckHelper = isCheckHelper(potentialCheck, KingCurrentPosition);
+                    }
+                }
+                realCheck = isOnCheck || isOnCheckHelper;
+                if (realCheck){
+                    for (var i = 0; i<chessArray.length;i++){
+                        if (chessArray[i].position == childId.toString()){
+                            checkarray = chessArray[i].getNextValidMoves(chessArray[i]);        //only get moves in direction of king
+                            checkopponentpos = childId;
+                        }
+                    }
+                }else if(realCheck == false){
+                    checkarray = new Array();
+                    checkopponentpos = 0;
+                }
+                // King moves and puts itself in check 
+                sendData(old, childId.toString(), chessArray, realCheck,checkarray,checkopponentpos);	
             }	
         }
     }
@@ -484,10 +547,17 @@ function select(position) {
 			captured = capture();
 		}
 		
-		if(!captured){
+		if(!captured && realCheck == false){
 			if(piece.getType() == myname){
-				piece.getValidMoves();
+                moves = piece.getValidMoves();
+                piece.highlightMoves(moves);
 			}
+        }
+        else if(realCheck){
+            if(piece.getType() == myname){
+                moves = piece.getCheckValidMoves(checkarray,checkopponentpos);
+                piece.highlightMoves(moves);
+			}           
         }
     }   
 }
