@@ -45,13 +45,18 @@ class King extends Piece {
 
     }
 
-    allThePossible(Queen){
+    
+    getNextValidMoves(King) {
+        return [];
+    }
+
+    allThePossible(King){
         let NextMoveArray = new Array();
 
-        let currentPos = Number(Queen.position);
-        if (selectedPiece != Queen.position) {
+        let currentPos = Number(King.position);
+        if (selectedPiece != King.position) {
             oldSelectedPiece = selectedPiece;
-            selectedPiece = Queen.position;
+            selectedPiece = King.position;
             clearValidMoves();
             this.clean();
         }

@@ -8,8 +8,9 @@ let captured = false;
 let childId = null;	
 let newChildId = null;	
 let globalBoard = null;	
-let boardObj
-let isOnCheck
+let boardObj;
+let isOnCheck;
+let realCheck;
 let isOnCheckHelper;	
 let socket;	
 let myturn;
@@ -115,15 +116,22 @@ function updateBoard(oldPosition, newPosition, board) {
 function test(msg){	
     let oldPos = msg.data[0];	
     let newPos = msg.data[1];	
-    chessArray = msg.data[2];	
+    chessArray = msg.data[2];
+    realCheck = msg.data[3];
     for(let i  = 0; i < chessArray.length; i++){	
         createObject(chessArray[i], i);	
-    }	
+    }
+    if(realCheck){
+        swal({
+            icon: 'error',
+            title: 'Check!'
+        });
+    }
     updateBoard(oldPos, newPos, globalBoard);	
 }	
 let joined = false;	
-function sendData(oldPosition, newPosition, chessArray){
-    let data = [oldPosition, newPosition, chessArray]	
+function sendData(oldPosition, newPosition, chessArray ,realCheck){
+    let data = [oldPosition, newPosition, chessArray, realCheck]	
     socket.emit('my_room_event', { room: '1' , "data" : data});	
 }
 
@@ -280,46 +288,32 @@ function checkPawnPromotion(childId){
 
 
 function makeMove(element) {
-	if (myturn && piece.getType() == name){
-		let old = childId;	
-		childId = parseFloat(element.childNodes[0].id);	
-		if (moveOptions.includes(childId)) {	
+    if (myturn && piece.getType() == name){
+        let old = childId;	
+        childId = parseFloat(element.childNodes[0].id);	
+        if (moveOptions.includes(childId)) {	
             movePiece(element, childId.toString());	
             checkPawnPromotion(childId);
-			moveOptions = new Array();	
-			if(old && childId){	
+            moveOptions = new Array();	
+            if(old && childId ){	
                 for(var i=0; i < chessArray.length;i++){
                     if(chessArray[i].position == childId.toString()){
-                        let nextMoveArray = chessArray[i].getNextValidMoves(chessArray[i]);
-                        let potentialCheck = chessArray[i].allThePossible(chessArray[i]);
-                        let KingCurrentPosition = chessArray[i].position;
-                        isOnCheckHelper =  isCheckHelper(potentialCheck, KingCurrentPosition);
-                        isOnCheck = isCheck(nextMoveArray)
-                        if(isOnCheckHelper||isOnCheck){
-                            swal({
-                                icon: 'error',
-                                title: 'Check!'
-                            });
-                        }
+                        let nextMoveArray = chessArray[i].getNextValidMoves(chessArray[i])         
+                        isOnCheck = isCheck(nextMoveArray);
                     }
                 }
-                // for (var i = 0; i < chessArray.length; i++) {
-                //     if (chessArray[i].constructor.name == "King") {
-                //         var potentialCheck = chessArray[i].allThePossible(chessArray[i]);
-                //         var KingCurrentPosition = chessArray[i].position;
-                        
-                //         if(isCheckHelper(potentialCheck, KingCurrentPosition)){
-                //             swal({
-                //                 icon: 'error',
-                //                 title: 'Check!'
-                //             });
-                //         }
-                //     }
-                // }
-				sendData(old, childId.toString(), chessArray);	
-			}	
-		}
-	}
+                for (var i = 0; i < chessArray.length; i++) {
+                    if (chessArray[i].constructor.name == "King") {
+                        var potentialCheck = chessArray[i].allThePossible(chessArray[i]);
+                        var KingCurrentPosition = chessArray[i].position;
+                        isOnCheckHelper = isCheckHelper(potentialCheck, KingCurrentPosition);
+                    }
+                }
+                realCheck = isOnCheck || isOnCheckHelper;
+                sendData(old, childId.toString(), chessArray, realCheck);	
+            }	
+        }
+    }
 }
 
 
@@ -483,7 +477,6 @@ function select(position) {
 			if(piece.getType() == name){
 				piece.getValidMoves();
 			}
-		}	
-		
-	}
+        }
+    }   
 }
