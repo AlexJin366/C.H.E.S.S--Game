@@ -196,14 +196,18 @@ function canCastle(piece) {
 function castle(piece) {
     if (piece.constructor.name == "King") {
         if (piece.type == "white") {
+            sendData(piece.position, "87", chessArray, realCheck)
             movePiece(piece,"87", true);
             piece = chessArray[19];
+            sendData(piece.position, "86", chessArray, realCheck)
             movePiece(piece,"86", true);
-  
         } else {
+            sendData(piece.position, "17", chessArray, realCheck)
             movePiece(piece,"17", true);
             piece = chessArray[17];
+            sendData(piece.position, "16", chessArray, realCheck)
             movePiece(piece,"16", true);
+
         }
         
     }
