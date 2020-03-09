@@ -44,11 +44,6 @@ class King extends Piece {
     moveOptions = this.getMoveArray();
     this.highlightMoves(this.getMoveArray());
   }
-
-  getNextValidMoves(King){
-    return []
-  }
-
     
     getNextValidMoves(King) {
         return [];
