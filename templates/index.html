@@ -23,11 +23,9 @@
 	if (turn == 'true'){
 		turn = true;
 		setturn(turn,name);
-		
 	}else if (turn == 'false'){
 		turn = false;
 		setturn(turn,name);
-		
 	}
 
 	$(document).ready(function() {
@@ -42,13 +40,14 @@
 	
     </script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<script src="sweetalert2.all.min.js"></script>
 </head>
 <body onmouseover ='document.getElementById("joinSubmit").click();' onload="load()" style = "background-color:black">
 	<form id="join" method="POST" action="#">
         <input style="visibility: hidden" type="submit" value="Join Room" id="joinSubmit">	
     </form>
 	<div>	
-
+<input style="visibility: hidden" type="submit" value="skip turn" id="skipturn" onclick = "skipTurn()">	
     <div id="log"></div>
 	</div>
    	<div class="Board_div" style = "background-color:white">

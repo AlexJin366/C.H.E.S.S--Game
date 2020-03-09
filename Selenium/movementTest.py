@@ -2,713 +2,348 @@ from  selenium import webdriver
 import Convertor
 import sys
 from selenium.webdriver.common.action_chains import ActionChains
+import time 
 
-# sys.path.append(r"C:\Users\Owner\Documents\GitHub\C.H.E.S.S--Game\js")
-# print("\nPaths\n")
-# print(sys.path)
-# print("\n"):
-# import Bishop.js as Bishop
-# #Board,King,Knight,main,Pawn,Piece,Queen,Rook
-
-driver = webdriver.Chrome(executable_path=r'C:\Users\Owner\Documents\GitHub\C.H.E.S.S--Game\Selenium\drivers\chromedriver.exe')
+driver = webdriver.Chrome(executable_path=r'C:/Users/Harsh/Documents/GitHub/C.H.E.S.S--Game/Selenium/drivers/chromedriver.exe')
 driver.set_page_load_timeout(10)
-
-
 driver.get("http://127.0.0.1:5000/")
+
+
+def pawnpromotion(promote):
+    obj = driver.switch_to.alert
+    time.sleep(1)
+    obj.send_keys(promote)
+    time.sleep(1)
+    obj.accept()
+    print(promote)
+
 
 def joingame():
     driver.find_element_by_class_name("btn").click()
-    return
 
+def skipturn():
+    driver.find_element_by_id("skipturn").click()
 
-def pawnMovement():
-    print("PawnCheck")
-    menu = driver.find_element_by_id("76")
+def pawnMovement(id1,id2):
+    menu = driver.find_element_by_id(id1)
     menu.click()
 
-    #implement wrong moves
-    try1 = driver.find_element_by_id("55")
+    try1 = driver.find_element_by_id(id2)
     actions = ActionChains(driver)
     actions.move_to_element(menu)
     actions.click(try1)
     actions.perform()
 
-    if(try1.get_attribute('src') == None):
-        print("passed")
-    else:
-        print("failed")
-    
-    try1 = driver.find_element_by_id("65")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
+    # if(try1.get_attribute('src') == None):
+    #     print("passed")
+    # else:
+    #     print("failed")
 
-    if(try1.get_attribute('src') == None):
-        print("passed")
-    else:
-        print("failed")
-    
-    try1 = driver.find_element_by_id("57")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') == None):
-        print("passed")
-    else:
-        print("failed")
-    
-    try1 = driver.find_element_by_id("67")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') == None):
-        print("passed")
-    else:
-        print("failed")
-    
-    #implement Valid moves
-    try1 = driver.find_element_by_id("56")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != None):
-        print("passed")
-    else:
-        print("failed")
-    
-    menu = try1
-    menu.click()
-    try1 = driver.find_element_by_id("46")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != None):
-        print("passed")
-    else:
-        print("failed")
-
-    return
-
-def knightMovement():
+def knightMovement(id1,id2):
     print("KnightCheck")
-    menu = driver.find_element_by_id("87")
+    menu = driver.find_element_by_id(id1)
     menu.click()
 
-    try1 = driver.find_element_by_id("76")
+    try1 = driver.find_element_by_id(id2)
     actions = ActionChains(driver)
     actions.move_to_element(menu)
     actions.click(try1)
     actions.perform()
 
-    if(try1.get_attribute('src') != "Pieces/White/wN.png"):
-        print("passed")
-    else:
-        print("failed")
-    
-    try1 = driver.find_element_by_id("77")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
+    # if(try1.get_attribute('src') != "Pieces/White/wN.png"):
+    #     print("passed")
+    # else:
+    #     print("failed")
 
-    if(try1.get_attribute('src') != "Pieces/White/wN.png"):
-        print("passed")
-    else:
-        print("failed")
-
-    try1 = driver.find_element_by_id("78")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "Pieces/White/wN.png"):
-        print("passed")
-    else:
-        print("failed")
-
-
-    try1 = driver.find_element_by_id("67")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "Pieces/White/wN.png"):
-        print("passed")
-    else:
-        print("failed")
-
-    #implement Valid moves
-    print("passing Case")
-    menu = driver.find_element_by_id("87")
-    try1 = driver.find_element_by_id("87")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "Pieces/White/wN.png"):
-        #print(try1.get_attribute('src'))
-        print("passed")
-    else:
-        print("failed")
-    
-    try1 = driver.find_element_by_id("66")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') == "http://127.0.0.1:5000/Pieces/White/wN.png"):
-        #print(try1.get_attribute('src'))
-        print("passed")
-    else:
-        print("failed")
-
-    return
-
-def bishopMovement():
+def bishopMovement(id1,id2):
     print("BishopCheck")
-    menu = driver.find_element_by_id("86")
+    menu = driver.find_element_by_id(id1)
     menu.click()
 
-    try1 = driver.find_element_by_id("75")
+    try1 = driver.find_element_by_id(id2)
     actions = ActionChains(driver)
     actions.move_to_element(menu)
     actions.click(try1)
     actions.perform()
 
-    if(try1.get_attribute('src') != "http://127.0.0.1:5000/Pieces/White/wB.png"):
-        print("passed")
-    else:
-        print("failed")
-    
-    try1 = driver.find_element_by_id("76")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
+    # if(try1.get_attribute('src') != "http://127.0.0.1:5000/Pieces/White/wB.png"):
+    #     print("passed")
+    # else:
+    #     print("failed")
 
-    if(try1.get_attribute('src') != "http://127.0.0.1:5000/Pieces/White/wB.png"):
-        print("passed")
-    else:
-        print("failed")
-
-    try1 = driver.find_element_by_id("77")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "http://127.0.0.1:5000/Pieces/White/wB.png"):
-        print("passed")
-    else:
-        print("failed")
-    
-    #implement Valid moves
-    print("passing Case")
-    try1 = driver.find_element_by_id("57")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-    
-    try1 = driver.find_element_by_id("75")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    
-    try1 = driver.find_element_by_id("55")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "http://127.0.0.1:5000/Pieces/White/wN.png"):
-        #print(try1.get_attribute('src'))
-        print("passed")
-    else:
-        print("failed")
-    
-    #-----------------------------------
-    menu = driver.find_element_by_id("86")
-    try1 = driver.find_element_by_id("86")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "Pieces/White/wN.png"):
-        #print(try1.get_attribute('src'))
-        print("passed")
-    else:
-        print("failed")
-    
-    try1 = driver.find_element_by_id("53")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "http://127.0.0.1:5000/Pieces/White/wN.png"):
-        #print(try1.get_attribute('src'))
-        print("passed")
-    else:
-        print("failed")
-    
-    try1 = driver.find_element_by_id("86")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "http://127.0.0.1:5000/Pieces/White/wN.png"):
-        #print(try1.get_attribute('src'))
-        print("passed")
-    else:
-        print("failed")
-    
-    try1 = driver.find_element_by_id("68")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "http://127.0.0.1:5000/Pieces/White/wN.png"):
-        #print(try1.get_attribute('src'))
-        print("passed")
-    else:
-        print("failed")
-    return
-
-#------------------------
-def rookMovement():
+def rookMovement(id1,id2):
     print("Rook Test Cases")
 
-    # pre conditions
-    # move rook up
-    menu = driver.find_element_by_id("88")
+    menu = driver.find_element_by_id(id1)
     menu.click()
 
-    try1 = driver.find_element_by_id("78")
+    try1 = driver.find_element_by_id(id2)
     actions = ActionChains(driver)
     actions.move_to_element(menu)
     actions.click(try1)
     actions.perform()
 
-    if(try1.get_attribute('src') != ""):
-        print("passed")
-    else:
-        print("failed")
-
-    # move rook left
-    menu = driver.find_element_by_id("88")
-    menu.click()
-
-    try1 = driver.find_element_by_id("87")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != ""):
-        print("passed")
-    else:
-        print("failed")
-
-    ## post conditions
-    # move pawn
-    menu = driver.find_element_by_id("78")
-    menu.click()
-
-    try1 = driver.find_element_by_id("58")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    # move up
-    menu = driver.find_element_by_id("88")
-    menu.click()
-
-    try1 = driver.find_element_by_id("68")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    # move left
-    menu = driver.find_element_by_id("68")
-    menu.click()
-
-    try1 = driver.find_element_by_id("61")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    # move right
-    menu = driver.find_element_by_id("61")
-    menu.click()
-
-    try1 = driver.find_element_by_id("65")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    # capture
-    menu = driver.find_element_by_id("65")
-    menu.click()
-
-    try1 = driver.find_element_by_id("25")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    # escape
-    menu = driver.find_element_by_id("25")
-    menu.click()
-
-    try1 = driver.find_element_by_id("45")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') == "http://127.0.0.1:5000/Pieces/White/wR.png"):
-        print("passed")
-        return
-    else:
-        print("failed")
-
+    # if(try1.get_attribute('src') != ""):
+    #     print("passed")
+    # else:
+    #     print("failed")
     
-def kingMovement():
+def kingMovement(id1,id2):
     print("King Test Cases")
 
-    # pre conditions
-    # move rook up
-    menu = driver.find_element_by_id("85")
+    menu = driver.find_element_by_id(id1)
     menu.click()
 
-    try1 = driver.find_element_by_id("75")
+    try1 = driver.find_element_by_id(id2)
     actions = ActionChains(driver)
     actions.move_to_element(menu)
     actions.click(try1)
     actions.perform()
 
-    if(try1.get_attribute('src') != ""):
-        print("passed")
-    else:
-        print("failed")
+    # if(try1.get_attribute('src') != ""):
+    #     print("passed")
+    # else:
+    #     print("failed")
 
-
-    # move rook right diagonally
-    menu = driver.find_element_by_id("85")
-    menu.click()
-
-    try1 = driver.find_element_by_id("76")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != ""):
-        print("passed")
-    else:
-        print("failed")
-
-    # move left diagonally
-    menu = driver.find_element_by_id("85")
-    menu.click()
-
-    try1 = driver.find_element_by_id("74")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != ""):
-        print("passed")
-    else:
-        print("failed")
-
-
-    # move rook left
-    menu = driver.find_element_by_id("85")
-    menu.click()
-
-    try1 = driver.find_element_by_id("84")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != ""):
-        print("passed")
-    else:
-        print("failed")
-
-
-    # move rook right
-    menu = driver.find_element_by_id("85")
-    menu.click()
-
-    try1 = driver.find_element_by_id("86")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != ""):
-        print("passed")
-    else:
-        print("failed")
-
-
-    # move pawn
-    menu = driver.find_element_by_id("75")
-    menu.click()
-
-    try1 = driver.find_element_by_id("55")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-     # move rook up
-    menu = driver.find_element_by_id("85")
-    menu.click()
-
-    try1 = driver.find_element_by_id("75")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-     # move rook up
-    menu = driver.find_element_by_id("75")
-    menu.click()
-
-    try1 = driver.find_element_by_id("65")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    # move rook right diagonally
-    menu = driver.find_element_by_id("65")
-    menu.click()
-
-    try1 = driver.find_element_by_id("76")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    # move left diagonally
-    menu = driver.find_element_by_id("76")
-    menu.click()
-
-    try1 = driver.find_element_by_id("65")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    # move rook left
-    menu = driver.find_element_by_id("65")
-    menu.click()
-
-    try1 = driver.find_element_by_id("64")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    # move rook right
-    menu = driver.find_element_by_id("64")
-    menu.click()
-
-    try1 = driver.find_element_by_id("65")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-def queenMovement():
+def queenMovement(id1,id2):
     print("Queen Test Cases")
-    # pre conditions
-    # move up
-    menu = driver.find_element_by_id("84")
+
+    menu = driver.find_element_by_id(id1)
     menu.click()
 
-    try1 = driver.find_element_by_id("74")
+    try1 = driver.find_element_by_id(id2)
     actions = ActionChains(driver)
     actions.move_to_element(menu)
     actions.click(try1)
     actions.perform()
-
-    # move pawn up
-    menu = driver.find_element_by_id("74")
-    menu.click()
-
-    try1 = driver.find_element_by_id("64")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    # move queen up 
-    menu = driver.find_element_by_id("84")
-    menu.click()
-
-    try1 = driver.find_element_by_id("74")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    # move queen up right
-    menu = driver.find_element_by_id("74")
-    menu.click()
-
-    try1 = driver.find_element_by_id("52")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-def bishopMovement():
-    print("Bishop Test Cases")
-    menu = driver.find_element_by_id("86")
-    menu.click()
-
-    try1 = driver.find_element_by_id("75")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "http://127.0.0.1:5000/Pieces/White/wB.png"):
-        print("passed")
-    else:
-        print("failed")
-    
-    try1 = driver.find_element_by_id("76")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "http://127.0.0.1:5000/Pieces/White/wB.png"):
-        print("passed")
-    else:
-        print("failed")
-
-    try1 = driver.find_element_by_id("77")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "http://127.0.0.1:5000/Pieces/White/wB.png"):
-        print("passed")
-    else:
-        print("failed")
-    
-    #implement Valid moves
-    print("passing Case")
-    try1 = driver.find_element_by_id("57")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-    
-    try1 = driver.find_element_by_id("75")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    
-    try1 = driver.find_element_by_id("55")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "http://127.0.0.1:5000/Pieces/White/wN.png"):
-        #print(try1.get_attribute('src'))
-        print("passed")
-    else:
-        print("failed")
-    
-    #-----------------------------------
-    menu = driver.find_element_by_id("86")
-    try1 = driver.find_element_by_id("86")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "Pieces/White/wN.png"):
-        print("passed")
-    else:
-        print("failed")
-    
-    try1 = driver.find_element_by_id("53")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "http://127.0.0.1:5000/Pieces/White/wN.png"):
-        print("passed")
-    else:
-        print("failed")
-    
-    try1 = driver.find_element_by_id("86")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "http://127.0.0.1:5000/Pieces/White/wN.png"):
-        print("passed")
-    else:
-        print("failed")
-    
-    try1 = driver.find_element_by_id("68")
-    actions = ActionChains(driver)
-    actions.move_to_element(menu)
-    actions.click(try1)
-    actions.perform()
-
-    if(try1.get_attribute('src') != "http://127.0.0.1:5000/Pieces/White/wN.png"):
-        print("passed")
-    else:
-        print("failed")
-    return
-
 
 joingame()
-pawnMovement()
-knightMovement()
-rookMovement()
-kingMovement()
-queenMovement()
-bishopMovement()
+
+#White turn
+pawnMovement("76","56")
+skipturn()
+#Black turn
+pawnMovement("25","45")
+
+skipturn()
+#White turn
+pawnMovement("56","46")
+skipturn()
+#Black turn
+pawnMovement("27","37")
+
+
+
+skipturn()
+#White turn
+pawnMovement("46","37")         #Capture pawn
+
+skipturn()
+#Black turn
+pawnMovement("24","44")
+
+skipturn()
+#White turn
+knightMovement("87","66")
+
+skipturn()
+#Black turn
+pawnMovement("44","54")
+
+skipturn()
+#White turn
+knightMovement("66","45")           #Capture Pawn
+
+skipturn()
+#Black turn
+pawnMovement("54","64")
+
+skipturn()
+#White turn
+pawnMovement("75","65")
+
+skipturn()
+#Black turn
+pawnMovement("26","37")             #Capture white pawn
+
+skipturn()
+#White turn
+bishopMovement("86","64")           #Capture black pawn
+
+skipturn()
+#Black turn
+pawnMovement("37","47")
+
+skipturn()
+#White turn
+knightMovement("45","33")
+
+skipturn()
+#Black turn
+knightMovement("12","33")           #Capture white knight
+
+
+skipturn()
+#White turn
+bishopMovement("64","28")
+
+skipturn()
+#Black turn
+rookMovement("18","28")         #Capture white bishop
+
+skipturn()
+#White turn
+pawnMovement("77","57")
+
+skipturn()
+#Black turn
+bishopMovement("13","57")
+
+skipturn()
+#White turn
+queenMovement("84","57")    #caputre black bishop
+
+skipturn()
+#Black turn
+pawnMovement("21","41")
+
+skipturn()
+#White turn
+queenMovement("57","47")
+
+skipturn()
+#Black turn
+queenMovement("14","47")    #capture white queen
+
+skipturn()
+#White turn
+pawnMovement("74","64")
+
+skipturn()
+#Black turn
+#pawnMovement("41","51")     #BUGGGGG
+knightMovement("33","54")
+
+skipturn()
+#White turn
+bishopMovement("83","74")
+
+skipturn()
+#Black turn
+pawnMovement("41","51")
+
+skipturn()
+#White turn
+pawnMovement("65","54")
+
+skipturn()
+#Black turn
+rookMovement("11","41")
+
+skipturn()
+#White turn
+bishopMovement("74","41")
+
+skipturn()
+#Black turn
+rookMovement("28","48")
+
+skipturn()
+#White turn
+rookMovement("88","87")
+
+# time.sleep(1)
+skipturn()
+#Black turn
+# kingMovement("15","14")         #BUGGG
+bishopMovement("16","27")
+# # pawnMovement
+# # kingMovement("15","25")     #BUGGG  
+
+
+skipturn()
+#White turn
+rookMovement('87','47')
+
+skipturn()
+#Black turn
+rookMovement('48','47')
+
+skipturn()
+#White turn
+knightMovement('82','63')
+
+skipturn()
+#Black turn
+# rookMovement('47','87')
+
+#DOesnt pop up check!!!
+
+rookMovement('47','77')
+
+skipturn()
+#White turn
+pawnMovement('71','61')
+
+skipturn()
+#Black turn
+rookMovement('77','73')
+
+skipturn()
+#White turn
+rookMovement('81','71')
+
+skipturn()
+#Black turn
+bishopMovement('27','16')
+
+skipturn()
+#White turn
+bishopMovement('41','32')
+
+
+skipturn()
+#Black turn
+bishopMovement('16','61')
+
+##KING MOVE BUG HERE
+
+
+skipturn()
+#White turn
+pawnMovement('72','62')
+
+skipturn()
+#Black turn
+rookMovement('73','71')
+
+
+rookMovement('71','73')
+bishopMovement('61','43')
+pawnMovement('51','61')
+pawnMovement('61','71')
+
+skipturn()
+#White turn
+knightMovement("63","82")
+
+skipturn()
+#Black turn
+
+pawnMovement('71','81')
+pawnpromotion('rook')
+
+rookMovement('81','82')
+
+
+# skipturn()
+# #Black turn
+# rookMovement('81','82')
+# skipturn()
+
+#should be checkmate
+
+#BUG if you just click ok in pawn promotion
+
+# 3 BUGS/ 1) KING MOVE BUG WHERE KING CAN check each other, 2) no check pop up, cant test check, 3) not a bug, but pawn promotion doesnt require an input
+#bug 1 and 2 dont happen if the game is played between 2 players
