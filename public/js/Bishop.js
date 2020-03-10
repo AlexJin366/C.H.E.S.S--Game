@@ -1,4 +1,46 @@
-class Bishop extends Piece {
+class Bishop{
+    constructor(position, source, type) {
+        this.position = position;
+        this.source = source;
+        this.type = type;
+        this.default = true;
+        this.validMoves = new Array();
+        this.NextMove = new Array()
+    }
+    getPosition() {
+        return this.position;
+    }
+
+    setPosition(newPos) {
+        this.position = newPos;
+    }
+	
+	setDefault(bool){
+		this.default = bool;
+	}
+
+    getSource() {
+        return this.source
+    }
+
+    highlightMoves(validMoves) {
+        for (let i = 0; i < validMoves.length; i++)
+            // document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
+            $(validMoves[i]).parent().css("background", "bfbc9f" );
+    }
+
+    getMoveArray() {
+        return this.validMoves;
+    }
+
+	getType(){
+		return this.type;
+	}
+
+    clean() {
+        this.validMoves = new Array();
+    }
+
     boardcheck(number) {
         if (number > 88 || number < 11) {
             return false;
@@ -14,7 +56,6 @@ class Bishop extends Piece {
         if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
             selectedPiece = this.position;
-            clearValidMoves();
             this.clean();
         }
 
@@ -28,11 +69,11 @@ class Bishop extends Piece {
             if (!check) { continue; }
 
             do {
-                var isEmptySquare = document.getElementById(option.toString()).src == "";
+                var isEmptySquare = a == "";
                 if (isEmptySquare){
                     this.getMoveArray().push(option);
                 }else{
-                    this.checkCapture(option);
+                    // this.checkCapture(option);
                     break;
                 }
                 option += bishopMoves[i];
@@ -68,12 +109,12 @@ class Bishop extends Piece {
             if (!check) { continue; }
 
             do {
-                var isEmptySquare = document.getElementById(option.toString()).src == "";
+                var isEmptySquare = a == "";
                 var isKing; 
                 if (type =="White"){
-                    isKing= document.getElementById(option.toString()).src == "Pieces/White/wK.png";
+                    isKing= b == "Pieces/White/wK.png";
                 }else{
-                    isKing = document.getElementById(option.toString()).src == "Pieces/Black/bK.png";
+                    isKing = c == "Pieces/Black/bK.png";
                 }
 
                 if (isEmptySquare || isKing) {
@@ -104,4 +145,8 @@ class Bishop extends Piece {
         if(checkarray.includes(checkopponentpos)){validcheckmove.push(checkopponentpos)}
         return validcheckmove
     }
+}
+
+module.exports = {
+    Bishop
 }

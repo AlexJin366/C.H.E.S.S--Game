@@ -5,11 +5,11 @@ this.jsdom = require('jsdom-global')()
 global.$ = global.jQuery = require('jquery');
 chai.use(require('chai-jquery'))
 var sinon = require('sinon');
-var file = require('../public/js/Piece')
-var Piece = file.Piece;
+var file = require('../public/js/Bishop')
+var Bishop = file.Bishop;
 
-describe("Piece File Testing", function(){
-    var newObj = new Piece('12', 'testingSrc', 'black');
+describe("Bishop File Testing", function(){
+    var newObj = new Bishop('12', 'testingSrc', 'black');
     describe("constructor", function(){
         it('testing constructor', function(){
             assert.equal(newObj.position, '12');
@@ -78,15 +78,49 @@ describe("Piece File Testing", function(){
     })
 
     describe("checkCapture", function(){
-        var newObj2 = new Piece('11', 'Pieces/White/', 'black');
+        var newObj2 = new Bishop('11', 'Pieces/White/', 'black');
         it('checkCapture function', function(){
             expect(() => newObj2.checkCapture('11')).to.throw();
         })
 
-        var newObj3 = new Piece('11', 'Pieces/Black/', 'white');
+        var newObj3 = new Bishop('11', 'Pieces/Black/', 'white');
         it('checkCapture function', function(){
             expect(() => newObj3.checkCapture('11')).to.throw();
         })
     })
-    
+
+    describe("boardcheck", function(){
+        it('boardcheck function', function(){
+            newObj.boardcheck('90');
+            newObj.boardcheck('20');
+            newObj.boardcheck('12');
+        })
+    })
+
+    describe("getValidMoves", function() {
+            beforeEach(function() {
+              global.selectedPiece = "8";
+              global.oldSelectedPiece = "0";
+              global.clearValidMoves = [];
+              global.a = "public/img/Pices/Black/bB.png";
+              global.b = "Pieces/White/wK.png";
+              global.c = "Pieces/Black/bK.png";
+              global.moveOptions = [];
+            });
+        
+            it("getValidMoves function", function() {
+              newObj.getValidMoves();
+              // expect(sandbox.withArgs('11').parentElement.style.background).to.equal('bfbc9f');
+              newObj.validMoves;
+              newObj.getNextValidMoves(newObj);
+            });
+
+            it("getValidMoves function", function() {
+                  global.a = ""
+                  newObj.getValidMoves();
+                  // expect(sandbox.withArgs('11').parentElement.style.background).to.equal('bfbc9f');
+                  newObj.validMoves;
+                  newObj.getNextValidMoves(newObj);
+                });
+          });
 })

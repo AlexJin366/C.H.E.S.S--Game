@@ -1,6 +1,61 @@
-class Knight extends Piece{
+class Knight{
     constructor(position, source, type) {
-        super(position,source,type);
+        this.position = position;
+        this.source = source;
+        this.type = type;
+        this.default = true;
+        this.validMoves = new Array();
+        this.NextMove = new Array()
+    }
+    getPosition() {
+        return this.position;
+    }
+
+    setPosition(newPos) {
+        this.position = newPos;
+    }
+	
+	setDefault(bool){
+		this.default = bool;
+	}
+
+    getSource() {
+        return this.source
+    }
+
+    highlightMoves(validMoves) {
+        for (let i = 0; i < validMoves.length; i++)
+            // document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
+            $(validMoves[i]).parent().css("background", "bfbc9f" );
+    }
+
+    getMoveArray() {
+        return this.validMoves;
+    }
+
+	getType(){
+		return this.type;
+	}
+
+    clean() {
+        this.validMoves = new Array();
+    }
+
+    checkCapture(position){
+        // var imgSrc = document.getElementById(position.toString()).src;
+        var imgSrc = $('#'+position.toString()).attr('src');
+        switch(this.type){
+            case "black":
+                if(imgSrc.includes("Pieces/White/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+            case "white":
+                if(imgSrc.includes("Pieces/Black/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+        }
     }
 
     getValidMoves() {
@@ -8,7 +63,7 @@ class Knight extends Piece{
         if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
             selectedPiece = this.position;
-            clearValidMoves();
+            // clearValidMoves();
             this.clean();
         }
 
@@ -29,10 +84,10 @@ class Knight extends Piece{
                 if (option % 10 == 0 || option % 10 == 9) {
                     continue;
                 }
-                if(document.getElementById(option.toString()).src == ""){
+                if(a == ""){
                     this.getMoveArray().push(option);
                 }else{
-                    this.checkCapture(option);
+                    // this.checkCapture(option);
                 }
             }
         }
@@ -49,7 +104,7 @@ class Knight extends Piece{
         if (selectedPiece != Knight.position) {
             oldSelectedPiece = selectedPiece;
             selectedPiece = Knight.position;
-            clearValidMoves();
+            // clearValidMoves();
             this.clean();
         }
 
@@ -70,10 +125,10 @@ class Knight extends Piece{
                 if (option % 10 == 0 || option % 10 == 9) {
                     continue;
                 }
-                if (document.getElementById(option.toString()).src == "") {
+                if (a == "") {
                     NextMoveArray.push(option);
                 } else {
-                    this.checkCapture(option);
+                    // this.checkCapture(option);
                 }
             }
         }
@@ -84,6 +139,7 @@ class Knight extends Piece{
         this.NextMove = returnArray;
         return returnArray;
     }
+    
     getCheckValidMoves(checkarray,checkopponentpos){
         let validcheckmove = new Array();
         let moves = this.getValidMoves();
@@ -98,4 +154,8 @@ class Knight extends Piece{
         return validcheckmove
     }
     
+}
+
+module.exports = {
+    Knight
 }

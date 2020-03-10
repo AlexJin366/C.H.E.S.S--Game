@@ -1,6 +1,60 @@
-class Rook extends Piece{
+class Rook{
     constructor(position, source, type) {
-        super(position,source,type);
+        this.position = position;
+        this.source = source;
+        this.type = type;
+        this.default = true;
+        this.validMoves = new Array();
+        this.NextMove = new Array()
+    }
+    getPosition() {
+        return this.position;
+    }
+
+    setPosition(newPos) {
+        this.position = newPos;
+    }
+	
+	setDefault(bool){
+		this.default = bool;
+	}
+
+    getSource() {
+        return this.source
+    }
+
+    highlightMoves(validMoves) {
+        for (let i = 0; i < validMoves.length; i++)
+            // document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
+            $(validMoves[i]).parent().css("background", "bfbc9f" );
+    }
+
+    getMoveArray() {
+        return this.validMoves;
+    }
+
+	getType(){
+		return this.type;
+	}
+
+    clean() {
+        this.validMoves = new Array();
+    }
+
+    checkCapture(position){
+        var imgSrc = a;
+        switch(this.type){
+            case "black":
+                if(imgSrc.includes("Pieces/White/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+            case "white":
+                if(imgSrc.includes("Pieces/Black/")){
+                    this.getMoveArray().push(position);
+                }
+                break;
+        }
     }
 
     getValidMoves() {
@@ -9,7 +63,7 @@ class Rook extends Piece{
         if (selectedPiece != this.position) {
             oldSelectedPiece = selectedPiece;
             selectedPiece = this.position;
-            clearValidMoves();
+            // clearValidMoves();
             this.clean();
         }
 
@@ -18,7 +72,7 @@ class Rook extends Piece{
         //moves down
         for (let i = 10; i < movesUp; i += 10) {
             let option = currentPos + i;
-            if (document.getElementById(option.toString()).src != ""){
+            if (a != ""){
                 this.checkCapture(option);
                 break;
             }
@@ -29,9 +83,9 @@ class Rook extends Piece{
         //moves up
         for (let i = 10; i < 90; i += 10) {
             let option = currentPos - i;
-            if (option > 10 && document.getElementById(option.toString()).src == "")
+            if (option > 10 && a == "")
                 this.getMoveArray().push(option);
-            if (option > 10 && document.getElementById(option.toString()).src != ""){
+            if (option > 10 && a != ""){
                 this.checkCapture(option);
                 break;
             }
@@ -42,9 +96,9 @@ class Rook extends Piece{
             let option = currentPos - i;
             let mathRequirement1 = (Math.floor(currentPos / 10) * 10 + 9);
             let mathRequirement2 = (Math.floor(currentPos / 10) * 10);
-            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src == "")
+            if (option > mathRequirement2 && option < mathRequirement1 && a == "")
                 this.getMoveArray().push(option);
-            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != ""){
+            if (option > mathRequirement2 && option < mathRequirement1 && a!= ""){
                 this.checkCapture(option);
                 break;
             }
@@ -55,9 +109,9 @@ class Rook extends Piece{
             let option = currentPos + i;
             let mathRequirement1 = (Math.floor(currentPos / 10) * 10 + 9);
             let mathRequirement2 = (Math.floor(currentPos / 10) * 10);
-            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src == "")
+            if (option > mathRequirement2 && option < mathRequirement1 && a == "")
                 this.getMoveArray().push(option);
-            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != ""){
+            if (option > mathRequirement2 && option < mathRequirement1 && a != ""){
                 this.checkCapture(option);
                 break
             }
@@ -84,7 +138,7 @@ class Rook extends Piece{
         //moves down
         for (let i = 10; i < movesUp; i += 10) {
             let option = currentPos + i;
-            if (document.getElementById(option.toString()).src != "") {
+            if (a != "") {
                 this.checkCapture(option);
                 break;
             }
@@ -95,9 +149,9 @@ class Rook extends Piece{
         //moves up
         for (let i = 10; i < 90; i += 10) {
             let option = currentPos - i;
-            if (option > 10 && document.getElementById(option.toString()).src == "")
+            if (option > 10 && a == "")
                 NextMoveArray.push(option);
-            if (option > 10 && document.getElementById(option.toString()).src != "") {
+            if (option > 10 && a != "") {
                 this.checkCapture(option);
                 break;
             }
@@ -108,9 +162,9 @@ class Rook extends Piece{
             let option = currentPos - i;
             let mathRequirement1 = (Math.floor(currentPos / 10) * 10 + 9);
             let mathRequirement2 = (Math.floor(currentPos / 10) * 10);
-            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src == "")
+            if (option > mathRequirement2 && option < mathRequirement1 && a == "")
                 NextMoveArray.push(option);
-            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != "") {
+            if (option > mathRequirement2 && option < mathRequirement1 && a != "") {
                 this.checkCapture(option);
                 break;
             }
@@ -121,9 +175,9 @@ class Rook extends Piece{
             let option = currentPos + i;
             let mathRequirement1 = (Math.floor(currentPos / 10) * 10 + 9);
             let mathRequirement2 = (Math.floor(currentPos / 10) * 10);
-            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src == "")
+            if (option > mathRequirement2 && option < mathRequirement1 && a == "")
                 NextMoveArray.push(option);
-            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != "") {
+            if (option > mathRequirement2 && option < mathRequirement1 && a != "") {
                 this.checkCapture(option);
                 break
             }
@@ -134,6 +188,7 @@ class Rook extends Piece{
         this.NextMove = returnArray;
         return returnArray;
     }
+
     getCheckValidMoves(checkarray,checkopponentpos){
         let validcheckmove = new Array();
         let moves = this.getValidMoves();
@@ -163,7 +218,7 @@ class Rook extends Piece{
         //moves down
         for (let i = 10; i < movesUp; i += 10) {
             let option = currentPos + i;
-            if (document.getElementById(option.toString()).src != "") {
+            if (a != "") {
                 this.checkCapture(option);
                 break;
             }
@@ -174,9 +229,9 @@ class Rook extends Piece{
         //moves up
         for (let i = 10; i < 90; i += 10) {
             let option = currentPos - i;
-            if (option > 10 && (document.getElementById(option.toString()).src == "" || document.getElementById(option.toString()).src == "Pieces/White/wK.png" || document.getElementById(option.toString()).src == "Pieces/Black/bK.png"))
+            if (option > 10 && (a == "" || a == "Pieces/White/wK.png" || a == "Pieces/Black/bK.png"))
                 NextMoveArray.push(option);
-            if (option > 10 && document.getElementById(option.toString()).src != "") {
+            if (option > 10 && a != "") {
                 this.checkCapture(option);
                 break;
             }
@@ -187,9 +242,9 @@ class Rook extends Piece{
             let option = currentPos - i;
             let mathRequirement1 = (Math.floor(currentPos / 10) * 10 + 9);
             let mathRequirement2 = (Math.floor(currentPos / 10) * 10);
-            if (option > mathRequirement2 && option < mathRequirement1 && (document.getElementById(option.toString()).src == "" || document.getElementById(option.toString()).src == "Pieces/White/wK.png" || document.getElementById(option.toString()).src == "Pieces/Black/bK.png"))
+            if (option > mathRequirement2 && option < mathRequirement1 && (a == "" || a == "Pieces/White/wK.png" || a == "Pieces/Black/bK.png"))
                 NextMoveArray.push(option);
-            if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != "") {
+            if (option > mathRequirement2 && option < mathRequirement1 && a != "") {
                 this.checkCapture(option);
                 break;
             }
@@ -200,9 +255,9 @@ class Rook extends Piece{
             let option = currentPos + i;
             let mathRequirement1 = (Math.floor(currentPos / 10) * 10 + 9);
             let mathRequirement2 = (Math.floor(currentPos / 10) * 10);
-            if (option > mathRequirement2 && option < mathRequirement1 && (document.getElementById(option.toString()).src == "" || document.getElementById(option.toString()).src == "http://127.0.0.1:5000/Pieces/White/wK.png" || document.getElementById(option.toString()).src == "http://127.0.0.1:5000/Pieces/Black/bK.png"))
+            if (option > mathRequirement2 && option < mathRequirement1 && (a == "" || a == "http://127.0.0.1:5000/Pieces/White/wK.png" || a == "http://127.0.0.1:5000/Pieces/Black/bK.png"))
                 NextMoveArray.push(option);
-            else if (option > mathRequirement2 && option < mathRequirement1 && document.getElementById(option.toString()).src != "") {
+            else if (option > mathRequirement2 && option < mathRequirement1 && a != "") {
                 this.checkCapture(option);
                 break
             }
@@ -214,6 +269,7 @@ class Rook extends Piece{
         this.NextMove = returnArray;
         return returnArray;
     }
+    
     getCheckValidMoves(checkarray, checkopponentpos) {
         let validcheckmove = new Array();
         let moves = this.getValidMoves();
@@ -228,4 +284,8 @@ class Rook extends Piece{
         return validcheckmove
     }
 
+}
+
+module.exports = {
+    Rook
 }

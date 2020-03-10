@@ -42,7 +42,8 @@ class Piece {
     }
 
     checkCapture(position){
-        var imgSrc = document.getElementById(position.toString()).src;
+        // var imgSrc = document.getElementById(position.toString()).src;
+        var imgSrc = $('#'+position.toString()).attr('src');
         switch(this.type){
             case "black":
                 if(imgSrc.includes("Pieces/White/")){
