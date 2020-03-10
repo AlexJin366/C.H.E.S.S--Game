@@ -25,7 +25,8 @@ class Piece {
 
     highlightMoves(validMoves) {
         for (let i = 0; i < validMoves.length; i++)
-            document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
+            // document.getElementById(validMoves[i]).parentElement.style.background = "#bfbc9f";
+            $(validMoves[i]).parent().css("background", "bfbc9f" );
     }
 
     getMoveArray() {
@@ -56,4 +57,8 @@ class Piece {
         }
     }
     
+}
+
+module.exports = {
+    Piece
 }
