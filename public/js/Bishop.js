@@ -46,6 +46,48 @@ class Bishop extends Piece {
 
     }
 
+    getNextCheckValidMoves(Bishop) {
+        let NextMoveArray = new Array();
+        let currentPos = Number(Bishop.position);
+        if (selectedPiece != Bishop.position) {
+            oldSelectedPiece = selectedPiece;
+            selectedPiece = Bishop.position;
+            clearValidMoves();
+            this.clean();
+        }
+        let type = Bishop.type;
+
+        let bishopMoves = [9, -9, 11, -11];
+
+        for (let i = 0; i < bishopMoves.length; i++) {
+            let option = currentPos;
+            option += bishopMoves[i];
+
+            var check = this.boardcheck(option);
+            if (!check) { continue; }
+
+            do {
+                var isEmptySquare = document.getElementById(option.toString()).src == "";
+                var isKing;
+                
+                isKing = document.getElementById(option.toString()).src == "http://127.0.0.1:5000/Pieces/White/wK.png" || document.getElementById(option.toString()).src == "http://127.0.0.1:5000/Pieces/Black/bK.png";
+                
+                if (isEmptySquare || isKing) {
+                    NextMoveArray.push(option);
+                } else {
+                    this.checkCapture(option);
+                    break;
+                }
+                option += bishopMoves[i];
+            } while (this.boardcheck(option));
+
+        }
+
+        moveOptions = this.getMoveArray();
+        var returnArray = NextMoveArray.concat(moveOptions);
+        this.NextMove = returnArray;
+        return returnArray;
+    }
 
     getNextValidMoves(Bishop) {
         let NextMoveArray = new Array();
@@ -92,6 +134,7 @@ class Bishop extends Piece {
         this.NextMove = returnArray;
         return returnArray;
     }
+
     getCheckValidMoves(checkarray,checkopponentpos){
         let validcheckmove = new Array();
         let moves = this.getValidMoves();

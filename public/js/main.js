@@ -38,10 +38,7 @@ $(document).ready(function () {
             cb();	
     });	
     socket.on('my_response1', function (msg, cb) {	
-        console.log("SFSDAF")
-        console.log(myturn)
         myturn = !myturn;
-        console.log(myturn)
 		test(msg);	
         if (cb) {	
             cb();	
@@ -55,7 +52,6 @@ function skipTurn(){
 	}else if(myname == "white"){
 		myname = "black";
 	}
-	// console.log(myname);
 }
 
 function setturn(turn,name){
@@ -139,8 +135,8 @@ function test(msg){
     realCheck = msg.data[3];
     checkarray = msg.data[4];
     checkopponentpos = msg.data[5];
-    checker = msg.data[6];
-    checked = msg.data[7];
+    checked = msg.data[6];
+    checker = msg.data[7];
     // console.log("TEST");
     // console.log(msg.data)
     
@@ -148,10 +144,14 @@ function test(msg){
         createObject(chessArray[i], i);	
     }
     if(realCheck){
-        swal({
-            icon: 'error',
-            title: 'Check!'
-        });
+        if(ischeckmate()){
+            swal({title:"CheckMate", icon: "success"});
+        }else{
+            swal({
+                icon: 'error',
+                title: 'Check!'
+            });
+        }
     }
     updateBoard(oldPos, newPos, globalBoard);	
 }	
@@ -228,7 +228,7 @@ function castle(piece) {
             piece = chessArray[19];
             
             sendData(piece.position, "86", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
-            sendData(piece.position, "86", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
+            // sendData(piece.position, "86", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
             movePiece(piece,"86", true);
         } else {
             sendData(piece.position, "17", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
@@ -236,7 +236,7 @@ function castle(piece) {
             piece = chessArray[17];
             
             sendData(piece.position, "16", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
-            sendData(piece.position, "16", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
+            // sendData(piece.position, "16", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
             movePiece(piece,"16", true);
 
         }
@@ -426,6 +426,7 @@ function checkMakeMove(element){
                 }
                 realCheck = isOnCheck || isOnCheckHelper;
                 if (realCheck){
+                    sendData(old, childId.toString(), chessArray, realCheck, checkarray, checker, checked);
                     for (var i = 0; i<chessArray.length;i++){
                         if (chessArray[i].position == childId.toString()){
                             checkarray = chessArray[i].getNextValidMoves(chessArray[i]);        //only get moves in direction of king Queen gets all directions
@@ -452,6 +453,24 @@ function checkMakeMove(element){
     }
 }
 
+function filter(piceArray){
+    var KingArray;
+    var retrunArray = new Array();
+    for (var i = 0; i < chessArray.length; i++) {
+        if (chessArray[i].getType() == checked && chessArray[i].constructor.name == "King") {
+            KingArray = chessArray[i].allThePossible(chessArray[i]);
+        }
+    } 
+    for (var i = 0; i < KingArray.length; i++){
+        for(var j= 0; j< piceArray.length;j++){
+            if(KingArray[i]== piceArray[j]){
+                retrunArray.push(piceArray[j]);
+            }
+        }
+    }
+    return retrunArray;
+}
+
 function checkkingmove(){
 
     let kingnextmoves;
@@ -463,17 +482,23 @@ function checkkingmove(){
 
         }
     }
+    console.log(kingnextmoves)
     for (var i = 0; i< chessArray.length; i++){
 
         if(chessArray[i].getType()!=checked){
             chessArray[i].clean();
-            if(chessArray[i].constructor.name =="Rook"){
+            if (chessArray[i].constructor.name == "Rook"){
                 potentialCheckPiece = chessArray[i].getNextCheckValidMoves(chessArray[i])
                 console.log("SDFSSDFS");
-                console.log(potentialCheckPiece);
+                console.log(filter(potentialCheckPiece));
+            } else if (chessArray[i].constructor.name == "Bishop"){
+                console.log("Alex");
+                potentialCheckPiece = chessArray[i].getNextCheckValidMoves(chessArray[i])
+                console.log(filter(potentialCheckPiece));
             }else{
                 potentialCheckPiece = chessArray[i].getValidMoves();
             }
+            console.log(potentialCheckPiece);
             for (var j = 0; j< potentialCheckPiece.length; j++){
                 if(kingnextmoves.includes(potentialCheckPiece[j])){
                     let index = kingnextmoves.indexOf(potentialCheckPiece[j]);
@@ -490,6 +515,7 @@ function checkkingmove(){
 }
 
 function ischeckmate(){
+    if (checkkingmove()) { return false }
     //Checks if there is any piece that can do capture during check
     for (var i = 0; i< chessArray.length; i++){
         if(chessArray[i].getType()==checked && chessArray[i].getValidMoves().includes(checkopponentpos)){
@@ -515,7 +541,7 @@ function ischeckmate(){
     }
     // console.log("CHECK KING");
     //Check for king possible moves
-    if(checkkingmove()){return false}
+    
 
     
     return true;
@@ -563,11 +589,11 @@ function makeMove(element) {
                     checked = 0;
                     checker = 0;
                 }
-                if (realCheck){
-                    if (ischeckmate()){                         //Send to back end
-                        swal({title:"CheckMate", icon:"success"});
-                    }
-                }
+                // if (realCheck){
+                //     if (ischeckmate()){                         //Send to back end
+                //         swal({title:"CheckMate", icon:"success"});
+                //     }
+                // }
                 // King moves and puts itself in check 
                 sendData(old, childId.toString(), chessArray, realCheck,checkarray,checkopponentpos,checked,checker);	
             }	
