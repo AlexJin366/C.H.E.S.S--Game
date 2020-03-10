@@ -41,9 +41,9 @@ class King extends Piece {
       }
       
     }
-
+    
     moveOptions = this.getMoveArray();
-    return moveOptions
+    return this.getMoveArray()
     //#this.highlightMoves(this.getMoveArray());
   }
     
@@ -154,9 +154,9 @@ class King extends Piece {
 
     getCheckValidMoves(checkarray,checkopponentpos){
         // this.clean();
-        let moves = this.getValidMoves();
         this.clean();
-        console.log(checkarray);
+        let moves = this.getValidMoves();
+        console.log("SDFAASDFFFFF");
         for(var i = 0; i<moves.length;i++){
             if(!(checkarray.includes(moves[i]))){
                 this.validMoves.push(moves[i]);

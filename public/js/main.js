@@ -38,10 +38,8 @@ $(document).ready(function () {
             cb();	
     });	
     socket.on('my_response1', function (msg, cb) {	
-        console.log("SFSDAF")
-        console.log(myturn)
+        
         myturn = !myturn;
-        console.log(myturn)
 		test(msg);	
         if (cb) {	
             cb();	
@@ -49,13 +47,11 @@ $(document).ready(function () {
     });	
 });		
 function skipTurn(){
-
 	if (myname == "black"){
 		myname = "white";
 	}else if(myname == "white"){
 		myname = "black";
 	}
-	// console.log(myname);
 }
 
 function setturn(turn,name){
@@ -139,26 +135,29 @@ function test(msg){
     realCheck = msg.data[3];
     checkarray = msg.data[4];
     checkopponentpos = msg.data[5];
-    checker = msg.data[6];
-    checked = msg.data[7];
-    // console.log("TEST");
-    // console.log(msg.data)
+    checked = msg.data[6];
+    checker = msg.data[7];
     
     for(let i  = 0; i < chessArray.length; i++){	
         createObject(chessArray[i], i);	
     }
     if(realCheck){
-        swal({
+        if (ischeckmate()){                         //Send to back end
+            swal({title:"CheckMate", icon:"success"});
+        }
+        else{
+            swal({
             icon: 'error',
             title: 'Check!'
-        });
+            })
+        }; 
     }
     updateBoard(oldPos, newPos, globalBoard);	
 }	
 let joined = false;	
 function sendData(oldPosition, newPosition, chessArray ,realCheck,checkarray,checkopponentpos,checker,checked){
     let data = [oldPosition, newPosition, chessArray, realCheck,checkarray,checkopponentpos,checker,checked]
-    // console.log(checkarray);	
+   
     socket.emit('my_room_event', { room: '1' , "data" : data});	
 }
 
@@ -185,7 +184,6 @@ function canCastle(piece) {
     let isSpaceFree = false;
 
     let nextMoveArray = piece.getNextValidMoves(piece);
-    //console.log(isCheckCastle(nextMoveArray,piece.type));
 
     isPathNotBlocked = !isCheckCastle(nextMoveArray,piece.type);
 
@@ -228,7 +226,7 @@ function castle(piece) {
             piece = chessArray[19];
             
             sendData(piece.position, "86", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
-            sendData(piece.position, "86", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
+            // sendData(piece.position, "86", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
             movePiece(piece,"86", true);
         } else {
             sendData(piece.position, "17", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
@@ -236,7 +234,7 @@ function castle(piece) {
             piece = chessArray[17];
             
             sendData(piece.position, "16", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
-            sendData(piece.position, "16", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
+            // sendData(piece.position, "16", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
             movePiece(piece,"16", true);
 
         }
@@ -319,15 +317,15 @@ function checkPawnPromotion(childId){
     }
 
     promotedPieceType = promotedPiece.source.substring(promotedPiece.source.length-6, promotedPiece.source.length);
-    // console.log(promotedPieceType);
+
     promotedPiecePosition = promotedPiece.position;
-    // console.log(promotedPiecePosition);
+
     if(promotedPieceType.includes("P.png")){
         switch(promotedPieceType[0]){
             case "b":
                 if(promotedPiecePosition > 80 && promotedPiecePosition < 90){
                     let pieceType = "black";
-                    // console.log("can promote");
+
                     var choice = prompt("What do you want to promote to?");
                     if (choice == null || choice == "" || !promotionChoice.includes(choice.toLowerCase())) {
                         console.log("User cancelled the prompt.");
@@ -364,7 +362,7 @@ function checkPawnPromotion(childId){
             case "w":
                 if(promotedPiecePosition > 10 && promotedPiecePosition < 20){
                     let pieceType = "white";
-                    // console.log("can promote");
+
                     var choice = prompt("What do you want to promote to?");
                     if (choice == null || choice == "" || !promotionChoice.includes(choice.toLowerCase())) {
                         console.log("User cancelled the prompt.");
@@ -408,8 +406,10 @@ function checkMakeMove(element){
         if (moves.includes(childId)){       //Moves is an array from next check move (from piece class)
             movePiece(element, childId.toString());
             checkPawnPromotion(childId);
+            console.log("SDFSDdasdasdasFcankc")	
             moves = new Array();
-            if(old && childId ){	
+            if(old && childId ){
+                console.log("SDFSDFcankc")	
                 for(var i=0; i < chessArray.length;i++){
                     if(chessArray[i].position == childId.toString()){
                         let nextMoveArray = chessArray[i].getNextValidMoves(chessArray[i])      
@@ -417,6 +417,7 @@ function checkMakeMove(element){
                         isOnCheck = isCheck(nextMoveArray);
                     }
                 }
+                console.log("SDFSDFcanchekc")
                 for (var i = 0; i < chessArray.length; i++) {
                     if (chessArray[i].constructor.name == "King") {
                         var potentialCheck = chessArray[i].allThePossible(chessArray[i]);
@@ -424,7 +425,9 @@ function checkMakeMove(element){
                         isOnCheckHelper = isCheckHelper(potentialCheck, KingCurrentPosition);
                     }
                 }
+                console.log("SDFcanchekc")
                 realCheck = isOnCheck || isOnCheckHelper;
+
                 if (realCheck){
                     for (var i = 0; i<chessArray.length;i++){
                         if (chessArray[i].position == childId.toString()){
@@ -444,8 +447,7 @@ function checkMakeMove(element){
                     checked = 0;
                     checker = 0;
                 }
-
-                sendData(old, childId.toString(), chessArray, realCheck,checkarray,checker,checked);	
+                sendData(old, childId.toString(), chessArray, realCheck,checkarray,checker,checked);
                 }
         }
 
@@ -453,21 +455,19 @@ function checkMakeMove(element){
 }
 
 function checkkingmove(){
-
-    let kingnextmoves;
-    let potentialCheckPiece;
+    let kingnextmoves = new Array();
+    let potentialCheckPiece = new Array();
     for (var i = 0; i< chessArray.length; i++){
         if(chessArray[i].getType() == checked && chessArray[i].constructor.name == "King"){
-
             kingnextmoves = chessArray[i].validMoves;
-
         }
     }
+    console.log(kingnextmoves)
     for (var i = 0; i< chessArray.length; i++){
-
+        
         if(chessArray[i].getType()!=checked){
             chessArray[i].clean();
-            if(chessArray[i].constructor.name =="Rook"){
+            if(chessArray[i].constructor.name =="Rook" || chessArray[i].constructor.name =="Bishop"){
                 potentialCheckPiece = chessArray[i].getNextCheckValidMoves(chessArray[i])
                 console.log("SDFSSDFS");
                 console.log(potentialCheckPiece);
@@ -490,17 +490,18 @@ function checkkingmove(){
 }
 
 function ischeckmate(){
+
     //Checks if there is any piece that can do capture during check
     for (var i = 0; i< chessArray.length; i++){
         if(chessArray[i].getType()==checked && chessArray[i].getValidMoves().includes(checkopponentpos)){
             return false
         }
     }
-    // console.log(checked);
+
     //Check for sacrifice (pieces that get between king and check piece)
     //Need array of next move only at the direction of king!
     for (var i = 0; i< chessArray.length; i++){
-        // console.log(chessArray[i].constructor.name)
+
         if(chessArray[i].getType()==checked && chessArray[i].constructor.name != "King"){
             chessArray[i].clean();
             let sacrificemoves = chessArray[i].getValidMoves()
@@ -513,11 +514,8 @@ function ischeckmate(){
             }
         }
     }
-    // console.log("CHECK KING");
-    //Check for king possible moves
-    if(checkkingmove()){return false}
 
-    
+    if(checkkingmove()){return false}
     return true;
 }
 
@@ -545,6 +543,7 @@ function makeMove(element) {
                     }
                 }
                 realCheck = isOnCheck || isOnCheckHelper;
+                
                 if (realCheck){
                     for (var i = 0; i<chessArray.length;i++){
                         if (chessArray[i].position == childId.toString()){
@@ -563,11 +562,7 @@ function makeMove(element) {
                     checked = 0;
                     checker = 0;
                 }
-                if (realCheck){
-                    if (ischeckmate()){                         //Send to back end
-                        swal({title:"CheckMate", icon:"success"});
-                    }
-                }
+                
                 // King moves and puts itself in check 
                 sendData(old, childId.toString(), chessArray, realCheck,checkarray,checkopponentpos,checked,checker);	
             }	
@@ -754,9 +749,7 @@ function select(position) {
         piece.getValidMoves();
     }
     if (canCastle(piece)) {
-        console.log("castling works");
         castle(piece);
-        //myturn = !myturn
     } else {
         console.log("castle fail");
     }
