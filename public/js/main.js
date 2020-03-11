@@ -226,7 +226,7 @@ function castle(piece) {
             piece = chessArray[19];
             
             sendData(piece.position, "86", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
-            // sendData(piece.position, "86", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
+            sendData(piece.position, "86", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
             movePiece(piece,"86", true);
         } else {
             sendData(piece.position, "17", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
@@ -234,7 +234,7 @@ function castle(piece) {
             piece = chessArray[17];
             
             sendData(piece.position, "16", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
-            // sendData(piece.position, "16", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
+            sendData(piece.position, "16", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
             movePiece(piece,"16", true);
 
         }

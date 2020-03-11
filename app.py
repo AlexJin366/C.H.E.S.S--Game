@@ -108,4 +108,4 @@ if __name__ == '__main__':
     PlayerA = 0
     PlayerB = 0
     numberofplayer=0
-    socketio.run(app, debug=True)
+    socketio.run(app,host='10.250.56.140',port='8080', debug=True)
