@@ -1,101 +1,145 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Flask-SocketIO Test</title>
-	
+    <title>Chess Menu</title>
     <script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
     <link rel='stylesheet' type='text/css' media='screen' href='./css/main.css'>
-	<script type="text/javascript" charset="utf-8">
+    <link rel="icon" type="image/png" href="img/favicon.png" />  			<!-- CITATION: https://www.freefavicon.com/freefavicons/objects/iconinfo/chess-piece-silhouette---black-knight--caballo-negro-152-275297.html -->
+    <!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
+    <script src='https://www.google.com/recaptcha/api.js?onload=onJoin&render=explicit'async defer></script>
+    <script type="text/javascript" charset="utf-8">
         $(document).ready(function() {
             namespace = '/test';
-
             var socket = io(namespace);
-
-            socket.on('connect', function() {
-                socket.emit('my_event', {data: 'I\'m connected!'});
-            });
             socket.on('my_response', function(msg, cb) {				 
                 if (cb)
                     cb();
 					window.location = "/index";
             });
-			
 			socket.on('my_response1', function(msg, cb) {
                 if (cb)
                     cb();
             });
-            var ping_pong_times = [];
-            var start_time;
-            window.setInterval(function() {
-                start_time = (new Date).getTime();
-                socket.emit('my_ping');
-            }, 1000);
-            socket.on('my_pong', function() {
-                var latency = (new Date).getTime() - start_time;
-                ping_pong_times.push(latency);
-                ping_pong_times = ping_pong_times.slice(-30); // keep last 30 samples
-                var sum = 0;
-                for (var i = 0; i < ping_pong_times.length; i++)
-                    sum += ping_pong_times[i];
-                $('#ping-pong').text(Math.round(10 * sum / ping_pong_times.length) / 10);
-            });
-            
             $('form#join').submit(function(event) {
                 socket.emit('join', {room: '1'});
                 return false;
             });
-            $('form#emit').submit(function(event) {
-                socket.emit('my_event', {data: $('#emit_data').val()});
-                return false;
-            });
-            $('form#broadcast').submit(function(event) {
-                socket.emit('my_broadcast_event', {data: $('#broadcast_data').val()});
-                return false;
-            });
-			$('form#send_room').submit(function(event) {
-                socket.emit('my_room_event', {room: $('#room_name').val(), data: $('#room_data').val()});
-                return false;
-            });
-           $('form#leave').submit(function(event) {
-                socket.emit('leave', {room: $('#leave_room').val()});
-                return false;
-            });
-            $('form#close').submit(function(event) {
-                socket.emit('close_room', {room: $('#close_room').val()});
-                return false;
-            });
-            $('form#disconnect').submit(function(event) {
-                socket.emit('disconnect_request');
-                return false;
-            });
-            
         });
     </script>
+    <!-- <script>
+    grecaptcha.ready(function() {
+        grecaptcha.execute('_reCAPTCHA_site_key_', {action: 'homepage'}).then(function(token) {
+            console.log(token);
+        
+        });
+    });
+    </script> -->
+<script>
+		
+		function onJoin(){
+			grecaptcha.render(document.getElementById('join_room'), {
+					'sitekey' : '6Ld0pNwUAAAAANxyFZ7of78FkY2__fP6vHPPRpRX',
+					'size': 'invisible',
+					'theme':'dark',
+					'callback' : function(response) {
+						//Make this a function
+						checkcaptcha(response)
+	
+						//window.location = "/index";
+						//socket.emit('join', {room: '1'});
+					}
+                  }, true); 
+		}
+		function checkcaptcha(response){
+				//console.log("ASDF");
+				
+				//var postData = $('#form').serialize();
+				//postData[ 'g-recaptcha-response' ] = response;
+					//var response = grecaptcha.getResponse( captchaWidgetId );
+				//console.log(response);
+				
+				response = {'response':response};
+				res = JSON.parse(JSON.stringify(response));
+				console.log(res)
+				$.post( '/captcha',res,function(success) {
+					if(success){
+						window.location='/index';
+					}else{
+						//Create page for bots? XD
+					}
 
+				//	 were we successful?
+				});
+			}
+	</script>
+</script>
 </head>
 <body class="MenuBody">
+    <!---	CS 530 --->
+	<!-- <script src="https://www.google.com/recaptcha/api.js?render=_reCAPTCHA_site_key"></script> -->
+	<!-- <script src='https://www.google.com/recaptcha/api.js?onload=onJoin&render=explicit'></script> -->
+	<script>
+	
+		
+		// function onJoin(){
+
+		// 	grecaptcha.render(document.getElementById('join_room'), {
+                    
+		// 			'sitekey' : '6Ld0pNwUAAAAANxyFZ7of78FkY2__fP6vHPPRpRX',
+                    
+					
+		// 			'callback' : function() {
+		// 				window.location = "/index";
+		// 				socket.emit('join', {room: '1'});
+		// 			}
+        //           }, true); 
+        // }
+        // function onJoin(){
+        //     var response = grecaptcha.getResponse();
+        //     if(response.length == 0){
+        //         swal({	
+        //             icon: 'error',	
+        //             title: 'Retry!'
+        //         }); 
+        //     }
+        //     $.ajax({
+        //         type: "POST",
+        //         url: 'https://www.google.com/recaptcha/api/siteverify',
+        //         data: {"secret" : "(your-secret-key)", "response" : response},
+        //         success: function(data) { console.log(data); }
+        //     });
+        
+        // }
+	</script>	
+	
+	
+		<!---	CS 530--->
+	
+		
+        
+		
 	<div class="MenuHeading">
-		<h1 class="jumbotron">C.H.E.S.S.</h1>
+		<h1 class="jumbotron">CHESS Game</h1>
 	<img src="Pieces/Black/bK.png" height="150" width="150">
 	<img src="Pieces/White/wK.png" height="150" width="150">
-
 	</div>
-	<img >
-	<div class ="MenuDiv">
-		
+	<div class ="MenuDiv">	
 	<form action="?" method="POST">
     </form>
 	<form id="join" method="POST" action='#' >
+        
+        <input class="g-recaptcha btn" data-sitekey="6Ld0pNwUAAAAANxyFZ7of78FkY2__fP6vHPPRpRX" data-size="invisible" data-callback="onJoin" class="btn" href="/index" type="submit" id="join_room" value="Start Game">
+	
+        
+        <!-- <input class="g-recaptcha btn" data-sitekey="6Ld0pNwUAAAAANxyFZ7of78FkY2__fP6vHPPRpRX" data-size="invisible" data-callback="onJoin" class="btn" href="/index" type="submit" id="join_room" value="Start Game"> -->
+	    <!-- <input class="btn" type="submit" id="join_room" value="Start Game"> -->
+    </form>
 
-		<input class="btn" type="submit" id="join_room" value="Join Room">
-		
-	</form>
 	</div>
-
 	<div id="log"></div>
 </body>
 <footer>
-        <small style="color: azure;position: absolute;text-align: center;padding-left: 67%;bottom: 10px;">&copy; Copyright 2026, Drexel Univercity Version 1.0</small>
-    </footer>
+    <small style="color: azure;position: absolute;text-align: center;padding-left: 67%;bottom: 10px;">&copy; Copyright 2021, Drexel University Version 3.6</small>
+</footer>
 </html>

@@ -5,7 +5,9 @@ from flask import Flask, render_template, session, request, \
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
 import sys
+import requests
 import json
+
 from Player import Player
 async_mode = None
 
@@ -14,7 +16,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 thread_lock = Lock()
-
+# app.title("NOT FLASK")
 
 def background_thread():
     """Example of how to send server generated events to clients."""
@@ -26,54 +28,79 @@ def background_thread():
                       {'data': 'Server generated event', 'count': count},
                       namespace='/test')
 
-
 @app.route('/')
-def index():
+def game():
     return render_template('menu.html', async_mode=socketio.async_mode)
-
-app.route('/index')
-def game(name):
-    return render_template('index.html')
 
 @app.route('/<name>')
 def generic(name):
     global PlayerA
     global PlayerB
-    if name == "index":
-        
-        global numberofplayer
+    global winner,loser
+    global numberofplayer
+    if name == "menu":        
+        numberofplayer = 0
+        PlayerA = 0
+        PlayerB = 0
+        return render_template('menu.html', async_mode=socketio.async_mode)
+    elif name == "resign":
+        if numberofplayer == 2:
+            return render_template(name + '.html',winners = winner, losers = loser, players = 2)
+        elif numberofplayer ==1:
+            return render_template(name + '.html',winners = winner, losers = loser, players = 1) 
+        else:
+            return render_template(name+'.html')
+    elif name == "index":
         if numberofplayer<2:
-            numberofplayer+=1
             if PlayerA ==0:
                 PlayerA = Player("White",True)
+                numberofplayer=1
                 return render_template(name + '.html',turn='true',name='white')
             elif PlayerB == 0:
+                numberofplayer=2
                 PlayerB = Player("Black",False)
-                return render_template(name + '.html',turn='false',name='black')
-        else:
+                return render_template(name + '.html',turn='false',name='black',players=2)
+        elif numberofplayer >=2:
             return render_template('cannotplay.html')
     else:
         return render_template(name+'.html')
 
 @socketio.on('join', namespace='/test')
 def join(message):
-    join_room(message['room'])
+    join_room('1')
     session['receive_count'] = session.get('receive_count', 0) + 1  
     emit('my_response',
         {'data': 'In rooms: ' + ', '.join(rooms()),
         'count': session['receive_count']})
 
+@app.route('/captcha',methods=['POST'])
+def captchverify():
+    captcha_response = request.form['response']
+    secret = "6Ld0pNwUAAAAAKcGkORPEbPW9W1GcsFY6Y7tGUU0"
+    payload = {'response':captcha_response, 'secret':secret}
+    response = requests.post("https://www.google.com/recaptcha/api/siteverify", payload)
+    response_text = json.loads(response.text)
+    answer = response_text['success']
+    return json.dumps(answer)
+
 #May use for disconnecting player
-# @socketio.on('leave', namespace='/test')
-# def leave(message):
-#     leave_room(message['room'])
-#     session['receive_count'] = session.get('receive_count', 0) + 1
-#     emit('my_response1',
-#          {'data': 'In rooms: ' + ', '.join(rooms()),
-#           'count': session['receive_count']})
-# @socketio.on('disconnect', namespace='/test')
-# def test_disconnect():
-#     print('Client disconnected', request.sid)
+@socketio.on('resign', namespace='/test')
+def resign(message):
+    global numberofplayer, PlayerA,PlayerB,winner,loser
+    if message['player'] == 'white':
+        winner = 'black'
+        loser = 'white'
+    else:
+        loser = 'black'
+        winner = 'white'
+    PlayerA = 0
+    PlayerB = 0 
+    session['receive_count'] = session.get('receive_count', 0) -1
+    emit('my_response2',{'data': 'In rooms: ' + ', '.join(rooms()),'count': session['receive_count'],'loser':message['player'],'players':numberofplayer} ,room=message['room'])
+
+@socketio.on('updateplayers',namespace='/test')
+def updatetotalpalyers(message):
+    emit('my_response3',{'data': message['players']},room=message['room'])
 
 @socketio.on('my_room_event', namespace='/test')
 def send_room_message(message):
@@ -82,30 +109,15 @@ def send_room_message(message):
     if PlayerA!=0 and PlayerB!=0:
         PlayerA.ismove = not PlayerA.ismove
         PlayerB.ismove = not PlayerB.ismove
-        
         session['receive_count'] = session.get('receive_count', 0) + 1
-        
-        
         emit('my_response1',
              {'data': message['data'], 'count': session['receive_count']},
              room=message['room'])
 
-#USELESS
-#@socketio.on('my_ping', namespace='/test')
-#def ping_pong():
- #   emit('my_pong')
-    
-#@app.route('/postmethod', methods = ['POST'])
-#def get_post_javascript_data():
- #   if request.method == "POST":
-  #      jsdata = json.loads(request.form['javascript_data'])
-   # gamepiece = jsdata[0]['piece']
-    #current_loc = jsdata[0]['current_loc']
-    #new_loc = jsdata[0]['new_loc']
-    #return jsonify(gamepiece,current_loc,new_loc)
-
 if __name__ == '__main__':
     PlayerA = 0
     PlayerB = 0
+    winner=0
+    loser=0
     numberofplayer=0
-    socketio.run(app,host='10.250.56.140',port='8080', debug=True)
+    socketio.run(app,debug=True)

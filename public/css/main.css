@@ -1,15 +1,59 @@
-.Board_div{ /*DONE*/
+.Board_div{
 	position: fixed;
 	top: 50%;
 	left: 50%;
 /*	background: linear-gradient(to right, blue 50%, yellow 50%);*/
 	transform: translate(-50%, -50%);
 }
-.MenuBody {/*DONE*/
-  background-color: lightblue;			/*change color*/
+.MenuBody {
+	background-image: url('./../img/bg.gif');			/*	CITATION:	chess.com/gifs */
 }
 table, th , td{
     border: 1px solid black;
+}
+/* header {
+    background: #006298;
+} */
+
+
+.navbar {
+	overflow: hidden;
+	background-color: #006298;
+	font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  .navbar a {
+	float: left;
+	font-size: 16px;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+  }
+  
+  
+  .navbar a:hover{
+	color: red;
+	background-color: black;
+	cursor: pointer;
+  }
+
+.index{
+	background-image:url('./../img/gameplay.jpg');
+	background-position: center top;
+	background-size: 100% auto;
+}
+
+/* .navbar-expand-md .navbar-nav .nav-link {
+    padding-left: 1rem;
+    padding-right: 1rem;
+	color:#FFC600;
+} */
+
+.Resign{
+	text-align:center;
+	background-image: url('./../img/gameover3.png');			/*CITATION:  https://wallpapersafari.com/w/hbqkKi/ */
+	background-position: center top;
+	background-size: 100% auto;
 }
 
 .ChessBoard{
@@ -17,7 +61,7 @@ table, th , td{
     height: 100%;
     
 }
-.btn {	/*DONE*/
+.btn {	
     background: #696969;
     border-color: #406C39;
     color: #fff;
@@ -42,6 +86,7 @@ table, th , td{
 }
 
 .jumbotron{	/*DONE*/
+	text-align: center;
     padding: 1.5rem;
     background: 0;
 	font-size:70px;
@@ -50,11 +95,13 @@ table, th , td{
     background: #bfbc9f !important;
 }
 .CannotPlayMenu{	/*DONE*/
-	color:white;
 	top:30%;
 	left:50%;
 	text-align:center;
-	bottom:70%;
+	bottom:70%;	
+	background-image: url('./../img/cannotplay1.png');			/*CITATION: https://support.rockstargames.com/community/200063373/115008757248 */
+	background-position: top center;
+	background-size: 100% auto;
 }
 
 .CannotPlayPara{	/*DONE*/
@@ -67,12 +114,17 @@ table, th , td{
 }
 
 .BlackBlock{
-    height: 100%;
+    /* height: 100%;
     height: 80px;
-    width:  80px;
-    background: gray;
+    width:  80px;*/
 }
 
+.BlueBlock{
+	height: 100%;
+    height: 80px;
+	width:  80px;
+	background: #0000FF;
+}
 
 .BlockDimension{
 	height: 80px;
@@ -87,6 +139,17 @@ table, th , td{
 	background: gray;
 } 
 
+.ModernBlack{
+	height: 80px;
+	width:  80px;
+	background: #99ccff;
+}
+.ModernWhite{
+	height: 80px;
+	width:  80px;
+	background: #e6f7ff;
+}
+
 th,td{
     text-align: left;
 }
@@ -98,4 +161,16 @@ th,td{
 .BoardBlock{
     height: 80px;
 	width:  80px;
+}
+
+.ClassicWhite{
+	height: 80px;
+	width:  80px;
+	background: #FFB775;
+}
+
+.ClassicBlack{
+	height: 80px;
+	width:  80px;
+	background: #B5651D;
 }

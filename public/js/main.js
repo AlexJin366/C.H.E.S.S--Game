@@ -15,12 +15,20 @@ let isOnCheckHelper;
 let socket;	
 let myturn;
 let myname;
+let totalplayers;
+let loser;
+let winner;
 let checkarray = new Array();
 let checkopponentpos;
 let checker;
 let checked;
 let moves = new Array();
 let cansacrifice = false;
+let whitebg = "white";
+let blackbg = "gray";
+let clearvalidclass = "BlackDimension BlackBlock";
+let highlightvisible = true;
+let currentwhite = "BoardBlock";
 
 var script = document.createElement('script');	
 script.src = 'https://code.jquery.com/jquery-3.4.1.min.js';	
@@ -38,26 +46,143 @@ $(document).ready(function () {
             cb();	
     });	
     socket.on('my_response1', function (msg, cb) {	
-        
         myturn = !myturn;
+
 		test(msg);	
         if (cb) {	
             cb();	
         }	
     });	
+    socket.on('my_response2', function (msg, cb) {	
+        if (msg['loser']='black'){
+            loser = 'black'
+            winner = 'white'
+        }else{
+            winner = 'black'
+            loser='white'
+        }
+        totalplayers = msg['players']
+        window.location='/resign';
+    });	
+    socket.on('my_response3', function (msg) {	
+        setTimeout(function(){ 
+            totalplayers = msg['data']
+            if (totalplayers == "2"){
+                totalplayers = 2
+                swal({	
+                    icon: 'success',	
+                    title: 'You can play now!',
+                    text:"There are two players connected to the game!"	
+                });	
+            } 
+        }, 2000);
+    });
+    
 });		
 function skipTurn(){
 	if (myname == "black"){
 		myname = "white";
 	}else if(myname == "white"){
 		myname = "black";
-	}
+    }
+}
+
+function toggleDiff(){
+    highlightvisible = !highlightvisible;
+}
+
+function clearbg(){
+    var table = document.getElementById('chesstable');
+    var tablediv = $('#chesstable div');
+    for(let i =0;i<tablediv.length;i++){
+        tablediv.removeAttr("style");
+    }
+}
+
+function moderntheme(){
+    var newblackclass = 'ModernBlack';
+    let newwhiteclass = 'ModernWhite';
+    let currentblack=  clearvalidclass.split(" ")[0];
+    clearbg();
+    var tablediv = $('#chesstable div.'+CSS.escape(currentblack));
+
+    for(let i =0;i<tablediv.length;i++){
+        tablediv.removeClass(CSS.escape(currentblack));
+        tablediv.addClass(CSS.escape(newblackclass));  
+    }
+
+    var tablediv = $('#chesstable div.'+CSS.escape(currentwhite));
+
+    for(let i =0;i<tablediv.length;i++){
+        tablediv.removeClass(CSS.escape(currentwhite));
+        tablediv.addClass(CSS.escape(newwhiteclass));  
+    }
+    clearvalidclass = "ModernBlack BlackBlock";
+    currentwhite = newwhiteclass;
+    blackbg = '#99ccff';
+    whitebg= '#e6f7ff';    
+}
+
+function bwtheme(){
+    var newblackclass = 'BlackDimension';
+    let newwhiteclass = 'BoardBlock';
+    let currentblack=  clearvalidclass.split(" ")[0];
+    clearbg();
+    var tablediv = $('#chesstable div.'+CSS.escape(currentblack));
+
+    for(let i =0;i<tablediv.length;i++){
+        tablediv.removeClass(CSS.escape(currentblack));
+        tablediv.addClass(CSS.escape(newblackclass));  
+    }
+
+    var tablediv = $('#chesstable div.'+CSS.escape(currentwhite));
+
+    for(let i =0;i<tablediv.length;i++){
+        tablediv.removeClass(CSS.escape(currentwhite));
+        tablediv.addClass(CSS.escape(newwhiteclass));  
+    }
+    clearvalidclass = "BlackDimension BlackBlock";
+    currentwhite = newwhiteclass;
+    blackbg = 'gray';
+    whitebg= 'white';
+}
+
+function classictheme(){
+
+    var newblackclass = 'ClassicBlack';
+    let newwhiteclass = 'ClassicWhite';
+    let currentblack=  clearvalidclass.split(" ")[0];
+    clearbg();
+    var tablediv = $('#chesstable div.'+CSS.escape(currentblack));
+
+    for(let i =0;i<tablediv.length;i++){
+        tablediv.removeClass(CSS.escape(currentblack));
+        tablediv.addClass(CSS.escape(newblackclass));  
+    }
+
+    var tablediv = $('#chesstable div.'+CSS.escape(currentwhite));
+
+    for(let i =0;i<tablediv.length;i++){
+        tablediv.removeClass(CSS.escape(currentwhite));
+        tablediv.addClass(CSS.escape(newwhiteclass));  
+    }
+    clearvalidclass = "ClassicBlack BlackBlock";
+    currentwhite = newwhiteclass;
+    blackbg = '#B5651D';
+    whitebg= '#FFB775';
 }
 
 function setturn(turn,name){
 	myturn = turn;
-	myname = name;
-
+    myname = name;
+}
+function setturn2(turn,name,players){
+    myturn = turn;
+    myname=name;
+    totalplayers = players;
+    namespace = '/test';	
+    socket = io(namespace);
+    socket.emit('updateplayers', {players: '1'});
 }
 
 function createObject(object, i){
@@ -92,6 +217,7 @@ function createObject(object, i){
             break;	
     }	
 }	
+
 function updateBoard(oldPosition, newPosition, board) {
     let oldSrc;	
     let newSrc;	
@@ -128,6 +254,7 @@ function updateBoard(oldPosition, newPosition, board) {
     piece.validMoves = new Array();	
     moveOptions = new Array();	
 }	
+
 function test(msg){	
     let oldPos = msg.data[0];	
     let newPos = msg.data[1];	
@@ -141,23 +268,28 @@ function test(msg){
     for(let i  = 0; i < chessArray.length; i++){	
         createObject(chessArray[i], i);	
     }
-    if(realCheck){
-        if (ischeckmate()){                         //Send to back end
-            swal({title:"CheckMate", icon:"success"});
-        }
-        else{
-            swal({
-            icon: 'error',
-            title: 'Check!'
-            })
-        }; 
+    if(realCheck){	
+        swal({	
+            icon: 'error',	
+            title: 'Check!'	
+        });	
+        // let playerwinner;                //Potential checkmate code but doesnt completely work
+        // if(ischeckmate()){	
+        //     if (checker =='black'){
+        //         playerwinner = "Player 1"
+        //     }else{ playerwinner = "Player 2"}
+        //     swal({title:"CheckMate, " + playerwinner +" wins!", icon: "success"});	
+        //     setTimeout(function(){ window.location='/menu' }, 3000);
+        // }else{	
+            
+        // }	
     }
     updateBoard(oldPos, newPos, globalBoard);	
 }	
 let joined = false;	
 function sendData(oldPosition, newPosition, chessArray ,realCheck,checkarray,checkopponentpos,checker,checked){
     let data = [oldPosition, newPosition, chessArray, realCheck,checkarray,checkopponentpos,checker,checked]
-   
+ 
     socket.emit('my_room_event', { room: '1' , "data" : data});	
 }
 
@@ -226,7 +358,8 @@ function castle(piece) {
             piece = chessArray[19];
             
             sendData(piece.position, "86", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
-            sendData(piece.position, "86", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
+            setTimeout(function(){ sendData(piece.position, "86", chessArray, realCheck,checkarray,checkopponentpos,checker,checked),500});
+            
             movePiece(piece,"86", true);
         } else {
             sendData(piece.position, "17", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
@@ -234,7 +367,7 @@ function castle(piece) {
             piece = chessArray[17];
             
             sendData(piece.position, "16", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
-            sendData(piece.position, "16", chessArray, realCheck,checkarray,checkopponentpos,checker,checked)
+            setTimeout(function(){ sendData(piece.position, "16", chessArray, realCheck,checkarray,checkopponentpos,checker,checked),500});
             movePiece(piece,"16", true);
 
         }
@@ -247,11 +380,11 @@ function clearValidMoves() {
         if (chessArray[i].getPosition() == oldSelectedPiece) {
             let selectedPiece = chessArray[i].getMoveArray()
             for (let j = 0; j < selectedPiece.length; j++) {
-                if (document.getElementById(selectedPiece[j]).parentElement.className == "BlackDimension BlackBlock") {
-                    document.getElementById(selectedPiece[j]).parentElement.style.background = "gray";
-                } else {
-                    document.getElementById(selectedPiece[j]).parentElement.style.background = "white";
-                }
+                if ((document.getElementById(selectedPiece[j]).parentElement.className == "BlackBlock BlackDimension")||(document.getElementById(selectedPiece[j]).parentElement.className == "ModernBlack BlackBlock")||(document.getElementById(selectedPiece[j]).parentElement.className == "BlackBlock ModernBlack")||(document.getElementById(selectedPiece[j]).parentElement.className == "BlackDimension BlackBlock") || (document.getElementById(selectedPiece[j]).parentElement.className == "BlackBlock ClassicBlack")||(document.getElementById(selectedPiece[j]).parentElement.className == "ClassicBlack BlackBlock")) {
+                    document.getElementById(selectedPiece[j]).parentElement.style.background = blackbg;
+                } else if ((document.getElementById(selectedPiece[j]).parentElement.className == "ModernWhite") ||(document.getElementById(selectedPiece[j]).parentElement.className == "BoardBlock") || (document.getElementById(selectedPiece[j]).parentElement.className == "ClassicWhite")){
+                    document.getElementById(selectedPiece[j]).parentElement.style.background = whitebg;
+                } 
             }
         }
     }
@@ -275,10 +408,10 @@ function capture(){
 
 function clearMoveMade() {
     for (let i = 0; i < moveOptions.length; i++) {
-        if (document.getElementById(moveOptions[i].toString()).parentElement.className == "BlackDimension BlackBlock") {
-            document.getElementById(moveOptions[i].toString()).parentElement.style.background = "gray";
+        if ((document.getElementById(moveOptions[i].toString()).parentElement.className == "BlackBlock ModernBlack") || (document.getElementById(moveOptions[i].toString()).parentElement.className == "ModernBlack BlackBlock ")||(document.getElementById(moveOptions[i].toString()).parentElement.className == "BlackDimension BlackBlock")||(document.getElementById(moveOptions[i].toString()).parentElement.className == "BlackBlock BlackDimension") ||(document.getElementById(moveOptions[i].toString()).parentElement.className== "BlackBlock ClassicBlack")|| (document.getElementById(moveOptions[i].toString()).parentElement.className== "ClassicBlack BlackBlock")){
+            document.getElementById(moveOptions[i].toString()).parentElement.style.background = blackbg;
         } else {
-            document.getElementById(moveOptions[i].toString()).parentElement.style.background = "white";
+            document.getElementById(moveOptions[i].toString()).parentElement.style.background = whitebg;
         }
     }
 }
@@ -317,15 +450,13 @@ function checkPawnPromotion(childId){
     }
 
     promotedPieceType = promotedPiece.source.substring(promotedPiece.source.length-6, promotedPiece.source.length);
-
     promotedPiecePosition = promotedPiece.position;
-
+ 
     if(promotedPieceType.includes("P.png")){
         switch(promotedPieceType[0]){
             case "b":
                 if(promotedPiecePosition > 80 && promotedPiecePosition < 90){
                     let pieceType = "black";
-
                     var choice = prompt("What do you want to promote to?");
                     if (choice == null || choice == "" || !promotionChoice.includes(choice.toLowerCase())) {
                         console.log("User cancelled the prompt.");
@@ -362,7 +493,6 @@ function checkPawnPromotion(childId){
             case "w":
                 if(promotedPiecePosition > 10 && promotedPiecePosition < 20){
                     let pieceType = "white";
-
                     var choice = prompt("What do you want to promote to?");
                     if (choice == null || choice == "" || !promotionChoice.includes(choice.toLowerCase())) {
                         console.log("User cancelled the prompt.");
@@ -400,16 +530,14 @@ function checkPawnPromotion(childId){
     }
 }
 function checkMakeMove(element){
-    if (myturn && piece.getType() == myname){
+    if (myturn && piece.getType() == myname ){
         let old = childId;
         childId = parseFloat(element.childNodes[0].id);
         if (moves.includes(childId)){       //Moves is an array from next check move (from piece class)
             movePiece(element, childId.toString());
             checkPawnPromotion(childId);
-            console.log("SDFSDdasdasdasFcankc")	
             moves = new Array();
-            if(old && childId ){
-                console.log("SDFSDFcankc")	
+            if(old && childId ){	
                 for(var i=0; i < chessArray.length;i++){
                     if(chessArray[i].position == childId.toString()){
                         let nextMoveArray = chessArray[i].getNextValidMoves(chessArray[i])      
@@ -417,7 +545,6 @@ function checkMakeMove(element){
                         isOnCheck = isCheck(nextMoveArray);
                     }
                 }
-                console.log("SDFSDFcanchekc")
                 for (var i = 0; i < chessArray.length; i++) {
                     if (chessArray[i].constructor.name == "King") {
                         var potentialCheck = chessArray[i].allThePossible(chessArray[i]);
@@ -425,14 +552,12 @@ function checkMakeMove(element){
                         isOnCheckHelper = isCheckHelper(potentialCheck, KingCurrentPosition);
                     }
                 }
-                console.log("SDFcanchekc")
                 realCheck = isOnCheck || isOnCheckHelper;
-
                 if (realCheck){
+                    sendData(old, childId.toString(), chessArray, realCheck, checkarray, checker, checked);
                     for (var i = 0; i<chessArray.length;i++){
                         if (chessArray[i].position == childId.toString()){
-                            checkarray = chessArray[i].getNextValidMoves(chessArray[i]);        //only get moves in direction of king Queen gets all directions
-                            //^ BUG getting ids from same direction of the opponent piece
+                            checkarray = chessArray[i].getNextValidMoves(chessArray[i]);        
                             checkarray.push(childId);
                         }
                     }
@@ -447,7 +572,8 @@ function checkMakeMove(element){
                     checked = 0;
                     checker = 0;
                 }
-                sendData(old, childId.toString(), chessArray, realCheck,checkarray,checker,checked);
+
+                sendData(old, childId.toString(), chessArray, realCheck,checkarray,checker,checked);	
                 }
         }
 
@@ -455,22 +581,22 @@ function checkMakeMove(element){
 }
 
 function checkkingmove(){
-    let kingnextmoves = new Array();
-    let potentialCheckPiece = new Array();
+
+    let kingnextmoves;
+    let potentialCheckPiece;
     for (var i = 0; i< chessArray.length; i++){
         if(chessArray[i].getType() == checked && chessArray[i].constructor.name == "King"){
+
             kingnextmoves = chessArray[i].validMoves;
+
         }
     }
-    console.log(kingnextmoves)
     for (var i = 0; i< chessArray.length; i++){
-        
+
         if(chessArray[i].getType()!=checked){
             chessArray[i].clean();
-            if(chessArray[i].constructor.name =="Rook" || chessArray[i].constructor.name =="Bishop"){
+            if(chessArray[i].constructor.name =="Rook"){
                 potentialCheckPiece = chessArray[i].getNextCheckValidMoves(chessArray[i])
-                console.log("SDFSSDFS");
-                console.log(potentialCheckPiece);
             }else{
                 potentialCheckPiece = chessArray[i].getValidMoves();
             }
@@ -482,7 +608,6 @@ function checkkingmove(){
             }
         }
     }
-    console.log(kingnextmoves)
     
     if(kingnextmoves.length>0){
         return true
@@ -490,38 +615,42 @@ function checkkingmove(){
 }
 
 function ischeckmate(){
-
     //Checks if there is any piece that can do capture during check
     for (var i = 0; i< chessArray.length; i++){
-        if(chessArray[i].getType()==checked && chessArray[i].getValidMoves().includes(checkopponentpos)){
+        if(chessArray[i].getType()!=checked && chessArray[i].getValidMoves().includes(checkopponentpos)){
             return false
         }
     }
-
+    //
     //Check for sacrifice (pieces that get between king and check piece)
     //Need array of next move only at the direction of king!
-    for (var i = 0; i< chessArray.length; i++){
+    //
+    //
+//  doesnt run!
 
-        if(chessArray[i].getType()==checked && chessArray[i].constructor.name != "King"){
-            chessArray[i].clean();
-            let sacrificemoves = chessArray[i].getValidMoves()
+    // for (var i = 0; i< chessArray.length; i++){
+    //     
+    //     if(chessArray[i].getType()==checked && chessArray[i].constructor.name != "King"){
+    //         chessArray[i].clean();
+    //         let sacrificemoves = chessArray[i].getValidMoves()
             
-            for (var j = 0; j< sacrificemoves.length; j++){
-                if(checkarray.includes(sacrificemoves[j])){         //Same bug of valid moves not in line of check
-                    realCheck = false;
-                    return false
-                }
-            }
-        }
-    }
+    //         for (var j = 0; j< sacrificemoves.length; j++){
+    //             if(checkarray.includes(sacrificemoves[j])){         //Same bug of valid moves not in line of check
+    //                 realCheck = false;
+    //                 return false
+    //             }
+    //         }
+    //     }
+    // }
 
-    if(checkkingmove()){return false}
+    //Check for king possible moves
+    // if(checkkingmove()){return false}
     return true;
 }
 
 function makeMove(element) {
     if (realCheck){checkMakeMove(element)}
-    if (myturn && piece.getType() == myname && realCheck == false){
+    if (myturn && piece.getType() == myname && realCheck == false && (totalplayers ==2 || totalplayers=='2')){
         let old = childId;	
         childId = parseFloat(element.childNodes[0].id);	
         if (moveOptions.includes(childId)) {	
@@ -543,8 +672,8 @@ function makeMove(element) {
                     }
                 }
                 realCheck = isOnCheck || isOnCheckHelper;
-                
                 if (realCheck){
+	
                     for (var i = 0; i<chessArray.length;i++){
                         if (chessArray[i].position == childId.toString()){
                             checkarray = new Array();
@@ -562,8 +691,6 @@ function makeMove(element) {
                     checked = 0;
                     checker = 0;
                 }
-                
-                // King moves and puts itself in check 
                 sendData(old, childId.toString(), chessArray, realCheck,checkarray,checkopponentpos,checked,checker);	
             }	
         }
@@ -606,9 +733,12 @@ function isCheck(nextMoveArray){
     }
     return false;
 }
+function joinroom(){
+    socket.emit('join', {room: '1'});
+}
 
 function load() {
-
+    joinroom()
     let blackPawn0 = new Pawn("21", "Pieces/Black/bP.png", "black");
     let blackPawn1 = new Pawn("22", "Pieces/Black/bP.png", "black");
     let blackPawn2 = new Pawn("23", "Pieces/Black/bP.png", "black");
@@ -700,11 +830,12 @@ function load() {
     boardObj = new Board(chessArray);	
     boardObj.renderBoard();	
     globalBoard = boardObj.boardHTML;
+    
 }
 let first = true;
 
 function select(position) {
-    if(myturn){
+    if(myturn && (totalplayers ==2 || totalplayers=='2')){
 		let found = false;
 		captured = false;
 		for (let i = 0; i < chessArray.length; i++) {
@@ -730,13 +861,17 @@ function select(position) {
 		if(!captured && realCheck == false){
 			if(piece.getType() == myname){
                 moves = piece.getValidMoves();
-                piece.highlightMoves(moves);
+                if(highlightvisible == true){
+                    piece.highlightMoves(moves);
+                }else{piece.highlightfake(moves);}
 			}
         }
         else if(realCheck){
             if(piece.getType() == myname){
                 moves = piece.getCheckValidMoves(checkarray,checkopponentpos);
-                piece.highlightMoves(moves);
+                if(highlightvisible == true){
+                    piece.highlightMoves(moves);
+                }else{piece.highlightfake(moves);}
 			}           
         }
     }   
@@ -749,8 +884,8 @@ function select(position) {
         piece.getValidMoves();
     }
     if (canCastle(piece)) {
+
         castle(piece);
-    } else {
-        console.log("castle fail");
+
     }
 }

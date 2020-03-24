@@ -13,6 +13,10 @@ class King extends Piece {
     }
   }
 
+  filterkingmove(){
+    //get the next moves and then compare to chessaray and
+  }
+
   getValidMoves() {
     let currentPos = Number(this.position);
     if (selectedPiece != this.position) {
@@ -41,9 +45,9 @@ class King extends Piece {
       }
       
     }
-    
+
     moveOptions = this.getMoveArray();
-    return this.getMoveArray()
+    return moveOptions
     //#this.highlightMoves(this.getMoveArray());
   }
     
@@ -154,9 +158,9 @@ class King extends Piece {
 
     getCheckValidMoves(checkarray,checkopponentpos){
         // this.clean();
-        this.clean();
         let moves = this.getValidMoves();
-        console.log("SDFAASDFFFFF");
+        this.clean();
+        console.log(checkarray);
         for(var i = 0; i<moves.length;i++){
             if(!(checkarray.includes(moves[i]))){
                 this.validMoves.push(moves[i]);
